@@ -539,16 +539,14 @@ funcionamento automático
 Valor do jogador:
 
 ```text
-V_pico = valor_mercado / curva_mercado(idade)
-V_atual = V_pico · curva_habilidade(idade)
+valor_efetivo = valor_mercado · nível_clube
+valor_seleção ← valor_seleção · mult_idade_seleção(idade_média)
 ```
 
-Correção para jovens:
-
-```text
-idade ≤ 22:
-V_atual ← V_atual · (0.6 + 0.4 · status)
-```
+No MVP real, o valor de mercado é escalado pelo nível do clube; o valor da seleção é
+então escalado por um multiplicador coletivo que cresce com a idade média (teto 2.30
+aos 31). Sem correção de idade por jogador; o desequilíbrio é tratado no score por
+setor.
 
 Antes de agregar:
 
@@ -565,15 +563,16 @@ GOL, DEF, MEI, ATA
 Score:
 
 ```text
-penalidade_balanco = β · (media_z − min_z)
-squad_score = media_z − penalidade_balanco
+déficit_crítico = Σ_setor máx(0, limiar_crítico − z_setor)
+squad_score = media_z − λ · déficit_crítico
 ```
 
 Parâmetros:
 
 ```text
-β = 0.30
-λ_e = 0.35
+limiar_crítico = −1.0
+λ = 0.50
+λ_e (encolhimento) = 0.35
 cap ajuste_elenco = ±1.000
 ```
 
@@ -590,9 +589,8 @@ ajuste_elenco = clamp(
 ## Pendências
 
 ```text
-calibrar curvas de idade
 validar pesos por setor
-calibrar β e λ_e
+calibrar limiar_crítico, λ e λ_e
 ```
 
 ---

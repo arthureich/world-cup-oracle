@@ -22,6 +22,7 @@ Pontos FIFA
 → Elo próprio do ciclo da Copa 2026
 → Elo ajustado por recência
 → TSI_base
+→ ajuste_calendário
 → ajuste_elenco
 → TSI_modelo
 → ajuste_odds
@@ -30,8 +31,27 @@ Pontos FIFA
 Fórmulas:
 
 TSI_base = mapear_0_20(Elo ajustado)
-TSI_modelo = TSI_base + ajuste_elenco
+TSI_modelo = TSI_base + ajuste_calendário + ajuste_elenco
 TSI_pré = TSI_modelo + ajuste_odds
+
+Ajuste de calendário
+
+O ajuste_calendário é pequeno e explícito.
+Ele reduz ou aumenta levemente o TSI conforme a força média dos adversários enfrentados no ciclo.
+
+Uso:
+
+evitar que uma seleção suba demais por acumular bons resultados contra adversários inferiores,
+sem substituir o Elo partida a partida.
+
+Nos outputs reais atuais:
+
+ajuste_elenco = 0.000 enquanto não houver valores de mercado confiáveis
+ajuste_odds = 0.000
+
+O ajuste de elenco usa valor de mercado como âncora direta e balanço setorial.
+Ele só é aplicado quando `market_value_trusted = true`.
+O ajuste de odds entra quando houver odds long-term confiáveis.
 Atualização pós-grupos
 
 O B3 gera o ajuste_desempenho.

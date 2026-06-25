@@ -14,28 +14,26 @@ somente os 26 convocados
 sem modelar lesões/ausências separadamente
 roda após a convocação
 funcionamento automático
-Valor de pico
-V_pico =
-valor_mercado / curva_mercado(idade)
-Valor atual
-V_atual =
-V_pico · curva_habilidade(idade)
-Correção de potencial
+Valor efetivo do jogador
 
-Para jogadores com idade ≤ 22:
-
-V_atual ←
-V_atual · (0.6 + 0.4 · status)
-
-Onde:
-
-status ∈ [0, 1]
-
-status mede minutagem recente ponderada por nível do clube/liga.
-
-Valor efetivo
 valor_efetivo =
-V_atual após correção de potencial
+valor_mercado · nível_clube
+
+Base simples: valor de mercado escalado pelo nível do clube, sem correção por idade,
+minutagem ou liga no jogador. nível_clube ∈ [0, ~1.2].
+
+Multiplicador coletivo de idade (por seleção)
+
+O valor do elenco é então escalado por um limiar que cresce com a idade média do
+elenco convocado, compensando o desconto de revenda do Transfermarkt em seleções
+veteranas:
+
+valor_seleção ←
+valor_seleção · mult_idade_seleção(idade_média)
+
+mult_idade_seleção vale 1.00 até a idade média de 26 anos, cresce linearmente até 2.30
+aos 31 anos, e permanece em 2.30 acima disso. É uniforme dentro do time, então não
+altera a comparação de equilíbrio entre setores.
 
 Antes de agregar:
 
@@ -54,19 +52,27 @@ Para cada setor:
 
 z_setor =
 padronizar valor do setor entre as 48 seleções
-Penalidade de desbalanceamento
+Penalidade de setor crítico
 media_z =
 média dos z dos 4 setores
-min_z =
-menor z_setor
-penalidade_balanco =
-β · (media_z − min_z)
+
+Só setores genuinamente fracos são punidos (não a mera falta de uniformidade). Um
+setor é crítico quando z_setor < limiar_crítico; pune-se a profundidade abaixo da
+linha, somada sobre todos os setores críticos:
+
+déficit_crítico =
+Σ_setor máx(0, limiar_crítico − z_setor)
 
 Com:
 
-β = 0.30
+limiar_crítico = −1.0   (≈ 16% pior do torneio no setor)
+λ = 0.5
 squad_score =
-media_z − penalidade_balanco
+media_z − λ · déficit_crítico
+
+Se nenhum setor está abaixo da linha, déficit = 0 e o time é ranqueado pelo talento
+total (media_z). Assim, elencos fortes mas concentrados (ex.: ataque excelente, meio
+mediano) não são penalizados por não serem uniformes.
 TSI implícito de elenco
 TSI_elenco_implícito =
 padronizar squad_score

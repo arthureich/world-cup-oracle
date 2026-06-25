@@ -60,9 +60,43 @@ multiplicador_margem =
 |---|---:|---|
 | escala mínima | 0.000 | Estrutural |
 | escala máxima | 20.000 | Estrutural |
+| centro do mapeamento real por coorte FIFA | 10.000 | Inicial |
+| escala z do mapeamento real por coorte FIFA | 2.25 | Recalibrável |
+| piso TSI para baseline de calendário contender | 13.000 | Recalibrável |
+| ajuste calendário por 100 Elo de adversário | 0.250 | Recalibrável |
+| cap ajuste calendário | ±0.350 | Recalibrável |
 | peso TSI pré no pós-grupos | 70% | Recalibrável |
 | peso Performance Grupo | 30% | Recalibrável |
 | cap variação pós-grupos | ±2.000 | Recalibrável |
+
+Regra atual dos outputs reais:
+
+```text
+TSI_base = clamp(10.0 + 2.25 · z(Elo_ajustado), 0.000, 20.000)
+```
+
+Isso evita que outliers de Elo recente encostem em 20.000 antes dos ajustes de elenco,
+odds e validação.
+
+Ajuste de calendário dos outputs reais:
+
+```text
+média_adversários =
+média(Elo_ajustado dos adversários enfrentados no ciclo)
+
+baseline_contender =
+média(média_adversários das seleções com TSI_base >= 13.000)
+
+ajuste_calendário =
+clamp(
+  0.250 · (média_adversários − baseline_contender) / 100,
+  -0.350,
+  +0.350
+)
+```
+
+Esse ajuste é propositalmente menor que elenco e odds. Ele serve para reduzir viés de
+calendário, não para substituir o Elo partida a partida.
 
 ---
 
@@ -135,16 +169,25 @@ Composto ofensivo:
 
 | Parâmetro | Valor | Status |
 |---|---:|---|
-| `β` balanço setorial | 0.30 | Recalibrável |
+| limiar setor crítico | −1.0 (z) | Recalibrável |
+| `λ` penalidade setor crítico | 0.50 | Recalibrável |
 | `λ_e` shrinkage elenco | 0.35 | Recalibrável |
 | cap ajuste elenco | ±1.000 | Recalibrável |
+| jogadores confiáveis mínimos | 22 | Operacional |
+| cobertura confiável mínima | 80% | Operacional |
 | faixa normal ajuste elenco | ±0.500 | Observação |
-| corte potencial jovem | 0.6 + 0.4·status | Recalibrável |
-| idade corte jovem | ≤ 22 | Recalibrável |
+| idade média início mult. seleção | 26 | Recalibrável |
+| idade média teto mult. seleção | 31 | Recalibrável |
+| multiplicador máximo idade seleção | 2.30 | Recalibrável |
 
 ```text
+valor_efetivo = valor_mercado · nível_clube
+valor_seleção ← valor_seleção · mult_idade_seleção(idade_média)
 valor_agregado_jogador = log(1 + valor_efetivo)
 ```
+
+Seleções abaixo do mínimo de cobertura ficam com `ajuste_elenco = 0.000` até que
+o cruzamento de valor de mercado seja completado.
 
 ---
 

@@ -202,11 +202,12 @@ se melhora pouco, manter simples
 
 ---
 
-## 13. Curvas de idade do B5
+## 13. Penalidade de setor crítico do B5
 
 ### Risco
 
-Podem supervalorizar veteranos ou jovens.
+O limiar/peso da penalidade de setor crítico pode punir de menos (ignora buracos) ou
+de mais (derruba elencos concentrados).
 
 ### Mitigação
 

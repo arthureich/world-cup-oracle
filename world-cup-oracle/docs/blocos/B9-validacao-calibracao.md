@@ -105,8 +105,6 @@ pesos dos índices O e D
 
 B5:
 
-curva_mercado por idade
-curva_habilidade por idade
 β do balanço por setor
 λ_e do ajuste de elenco
 cap do ajuste de elenco

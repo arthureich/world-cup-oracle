@@ -121,11 +121,12 @@ O elenco corrige o que o histórico ainda não mostrou.
 Exemplos:
 
 - uma geração nova explodiu recentemente;
-- a seleção envelheceu;
+- o valor de mercado já captura parte do envelhecimento da seleção;
 - o time tem muitos jogadores fortes em um setor e buracos em outro;
-- o valor de mercado cru distorce veteranos e jovens.
+- o valor de mercado cru ainda precisa ser agregado sem deixar estrelas isoladas dominarem.
 
-O projeto usa valor de mercado ajustado por idade, minutagem recente, nível de clube/liga e balanço entre setores.
+O projeto usa valor de mercado como âncora direta, com minutagem recente, nível de
+clube/liga e balanço entre setores quando essas fontes estiverem disponíveis.
 
 ### 3. Ajuste de odds
 

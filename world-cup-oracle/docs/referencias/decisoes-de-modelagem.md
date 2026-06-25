@@ -138,20 +138,26 @@ Elenco corrige, mas não domina o Elo.
 
 ---
 
-## 11. Valor de mercado precisa de correção por idade
+## 11. Valor de elenco = (mercado × clube), com multiplicador coletivo de idade
 
 ### Decisão
 
-Usar curva de mercado e curva de habilidade.
+O valor efetivo do jogador é o valor de mercado escalado pelo nível do clube. O valor
+da seleção é então escalado por um multiplicador coletivo que cresce com a idade média
+do elenco (teto 2.30 aos 31 anos).
 
 ```text
-V_pico = valor_mercado / curva_mercado(idade)
-V_atual = V_pico · curva_habilidade(idade)
+valor_efetivo  = valor_mercado · nível_clube
+valor_seleção ← valor_seleção · mult_idade_seleção(idade_média)
 ```
 
 ### Motivo
 
-Valor de mercado mede revenda, não só qualidade atual.
+O valor de mercado já embute idade/potencial no jogador, então não se corrige idade
+por jogador (evita distorcer a comparação entre setores). Mas o mercado desconta
+elencos veteranos por revenda; o multiplicador **coletivo** compensa isso no nível da
+seleção, uniformemente, sem mexer no equilíbrio interno. O risco de setor fraco é
+tratado à parte, no score por setor (penalidade de setor crítico).
 
 ---
 

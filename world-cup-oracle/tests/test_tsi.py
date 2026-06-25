@@ -5,6 +5,7 @@ import math
 from tactical_oracle.elo import EloRating
 from tactical_oracle.tsi import (
     build_tsi_ratings,
+    map_elo_distribution_to_tsi,
     map_elo_to_tsi,
     tsi_model,
     tsi_post_groups,
@@ -16,6 +17,20 @@ def test_map_elo_to_tsi_uses_zero_to_twenty_scale() -> None:
     assert map_elo_to_tsi(1100) == 0.0
     assert map_elo_to_tsi(1900) == 20.0
     assert math.isclose(map_elo_to_tsi(1500), 10.0)
+
+
+def test_map_elo_distribution_to_tsi_uses_cohort_without_top_saturation() -> None:
+    tsi = map_elo_distribution_to_tsi(
+        {
+            "Weak": 1200.0,
+            "Average": 1500.0,
+            "Strong": 1800.0,
+            "Outlier": 1925.0,
+        }
+    )
+
+    assert tsi["Outlier"] < 20.0
+    assert tsi["Outlier"] > tsi["Strong"] > tsi["Average"] > tsi["Weak"]
 
 
 def test_tsi_adjustments_are_capped() -> None:
@@ -42,9 +57,11 @@ def test_build_tsi_ratings_keeps_components() -> None:
 
     tsi = build_tsi_ratings(
         ratings,
+        schedule_adjustments={"Brazil": -0.25},
         squad_adjustments={"Brazil": 0.5},
         odds_adjustments={"Brazil": 0.2},
     )
 
-    assert tsi["Brazil"].tsi_model == tsi["Brazil"].tsi_base + 0.5
+    assert tsi["Brazil"].schedule_adjustment == -0.25
+    assert tsi["Brazil"].tsi_model == tsi["Brazil"].tsi_base + 0.25
     assert tsi["Brazil"].tsi_pre == tsi["Brazil"].tsi_model + 0.2

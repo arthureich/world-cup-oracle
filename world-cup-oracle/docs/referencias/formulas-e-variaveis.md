@@ -14,6 +14,7 @@ Pontos FIFA
 → Elo próprio do ciclo Copa 2026
 → Elo ajustado por recência
 → TSI_base
+→ ajuste_calendário
 → ajuste_elenco
 → TSI_modelo
 → ajuste_odds
@@ -80,8 +81,51 @@ TSI ∈ [0.000, 20.000]
 TSI_base = mapear_0_20(Elo_ajustado)
 ```
 
+No pipeline real com o universo FIFA completo, o mapeamento inicial usa a distribuição
+dos Elos ajustados para evitar saturar o teto da escala:
+
 ```text
-TSI_modelo = TSI_base + ajuste_elenco
+TSI_base =
+clamp(
+  10.0 + 2.25 · z(Elo_ajustado),
+  0.000,
+  20.000
+)
+```
+
+Onde:
+
+```text
+z(Elo_ajustado) =
+(Elo_ajustado − média_Elo_FIFA)
+/
+desvio_Elo_FIFA
+```
+
+O mapeamento linear 0–20 permanece como referência MVP e teste unitário simples, mas
+os outputs reais usam o mapeamento por coorte FIFA.
+
+```text
+média_adversários =
+média(Elo_ajustado dos adversários enfrentados no ciclo)
+```
+
+```text
+baseline_contender =
+média(média_adversários das seleções com TSI_base >= 13.000)
+```
+
+```text
+ajuste_calendário =
+clamp(
+  0.250 · (média_adversários − baseline_contender) / 100,
+  -0.350,
+  +0.350
+)
+```
+
+```text
+TSI_modelo = TSI_base + ajuste_calendário + ajuste_elenco
 ```
 
 ```text
@@ -441,26 +485,26 @@ base · exp(k · (Ataque_opp − Defesa_host) − δ)
 ## B5 — Elenco
 
 ```text
-V_pico =
-valor_mercado / curva_mercado(idade)
-```
-
-```text
-V_atual =
-V_pico · curva_habilidade(idade)
-```
-
-Para idade ≤ 22:
-
-```text
-V_atual ←
-V_atual · (0.6 + 0.4 · status)
-```
-
-```text
 valor_efetivo =
-V_atual após correção de potencial
+valor_mercado · nível_clube
 ```
+
+Base: valor de mercado escalado pelo nível do clube, sem correção por idade/minutagem/
+liga no jogador. O valor do elenco é então escalado por um multiplicador coletivo de
+idade:
+
+```text
+valor_seleção ←
+valor_seleção · mult_idade_seleção(idade_média)
+```
+
+```text
+mult_idade_seleção =
+1 + clamp((idade_média − 26) / 5, 0, 1) · 1.3
+```
+
+Chega a 2.30 com idade média de 31 anos. É uniforme dentro do time, então não altera a
+comparação de equilíbrio entre setores.
 
 Antes de agregar:
 
@@ -489,19 +533,18 @@ média dos z dos 4 setores
 ```
 
 ```text
-min_z =
-menor z_setor
-```
-
-```text
-penalidade_balanco =
-β · (media_z − min_z)
+déficit_crítico =
+Σ_setor máx(0, limiar_crítico − z_setor)
 ```
 
 ```text
 squad_score =
-media_z − penalidade_balanco
+media_z − λ · déficit_crítico
 ```
+
+Só setores abaixo de `limiar_crítico` (−1.0, ≈ 16% pior do torneio) são punidos, na
+profundidade abaixo da linha. Sem setor crítico, `déficit_crítico = 0` e o score é o
+talento total (`media_z`) — concentração não é penalizada.
 
 ```text
 TSI_elenco_implícito =
@@ -687,8 +730,9 @@ ln(P(gols_B = j | λ_B))
 | `ajuste_recência` | ajuste final por forma recente | B2 |
 | `Elo_ajustado` | Elo final pré-mapeamento | B2 |
 | `TSI_base` | TSI derivado do Elo | B1 |
+| `ajuste_calendário` | ajuste leve por força média dos adversários no ciclo | B1 |
 | `ajuste_elenco` | ajuste estrutural por elenco | B5 |
-| `TSI_modelo` | TSI após elenco | B1/B5 |
+| `TSI_modelo` | TSI após calendário e elenco | B1/B5 |
 | `ajuste_odds` | ajuste leve de mercado | B6 |
 | `TSI_pré` | TSI final antes da Copa | B1 |
 | `Perfil` | eixo abertura/ofensividade | B4 |
