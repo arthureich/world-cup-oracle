@@ -40,6 +40,9 @@ class TSIParameters:
 
     tsi_min: float = 0.0
     tsi_max: float = 20.0
+    schedule_contender_tsi_floor: float = 13.0
+    schedule_adjustment_per_100_elo: float = 0.25
+    schedule_adjustment_cap: float = 0.35
     squad_adjustment_cap: float = 1.0
     odds_adjustment_cap: float = 0.75
     post_groups_weight: float = 0.30
@@ -103,4 +106,3 @@ class ValidationParameters:
 
     calibration_bins: int = 10
     epsilon: float = 1e-15
-

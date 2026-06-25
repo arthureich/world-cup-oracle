@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import math
 from collections.abc import Iterable, Mapping
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from typing import Any
 
 from tactical_oracle.config import TSIParameters
@@ -23,49 +23,74 @@ class PlayerValue:
 
 SECTORS = ("GOL", "DEF", "MEI", "ATA")
 
+# Sector-balance penalty: only a *critical* sector (one well below the field, i.e.
+# z below CRITICAL_SECTOR_Z) is punished, proportionally to its depth below the line.
+# Ordinary unevenness above the line costs nothing, so total talent drives the score.
+CRITICAL_SECTOR_Z = -1.0  # a sector this far below the 48-team average is "critical"
+CRITICAL_SECTOR_PENALTY = 0.5  # score lost per std a critical sector sits below the line
 
-def market_age_curve(age: float) -> float:
-    """Approximate resale-value curve, peaking before the current-ability curve."""
-
-    return clamp(math.exp(-((age - 24.0) ** 2) / 72.0), 0.35, 1.0)
-
-
-def ability_age_curve(age: float) -> float:
-    """Approximate current-ability curve used for MVP squad valuation."""
-
-    return clamp(math.exp(-((age - 28.0) ** 2) / 98.0), 0.45, 1.0)
+# Collective (squad-level) experience uplift: the squad's total value is scaled by a
+# multiplier that grows with the squad's mean age, compensating the Transfermarkt
+# resale discount on veteran-heavy squads. Applied uniformly within a team, so it
+# does not change the sector-balance comparison.
+SQUAD_AGE_NEUTRAL_AGE = 26.0  # mean squad age at/below which there is no uplift
+SQUAD_AGE_FULL_AGE = 31.0  # mean squad age at/above which the uplift maxes out
+SQUAD_AGE_MAX_MULTIPLIER = 2.3  # cap of the uplift
 
 
-def player_effective_value(
-    market_value: float,
-    age: float,
-    recent_minutes_factor: float = 1.0,
-    club_level: float = 1.0,
-    league_level: float = 1.0,
-    status: float = 1.0,
-) -> float:
+def squad_age_multiplier(mean_age: float) -> float:
+    """Collective valuation uplift as a function of the squad's mean age."""
+
+    if mean_age <= SQUAD_AGE_NEUTRAL_AGE:
+        return 1.0
+    progress = (mean_age - SQUAD_AGE_NEUTRAL_AGE) / (SQUAD_AGE_FULL_AGE - SQUAD_AGE_NEUTRAL_AGE)
+    return 1.0 + clamp(progress, 0.0, 1.0) * (SQUAD_AGE_MAX_MULTIPLIER - 1.0)
+
+
+def player_effective_value(market_value: float, club_level: float = 1.0) -> float:
+    """Player value = market value scaled by club level. No age/minutes/league factor."""
+
     if market_value < 0:
         raise ValueError("market_value cannot be negative")
-    if age <= 0:
-        raise ValueError("age must be positive")
+    if club_level < 0:
+        raise ValueError("club_level cannot be negative")
+    return market_value * club_level
 
-    peak_value = market_value / market_age_curve(age)
-    current_value = peak_value * ability_age_curve(age)
-    if age <= 22:
-        current_value *= 0.6 + 0.4 * clamp(status, 0.0, 1.0)
-    return max(0.0, current_value * recent_minutes_factor * club_level * league_level)
+
+def squad_age_multipliers(rows: Iterable[Mapping[str, Any]]) -> dict[str, float]:
+    """Map each team to its collective age uplift, from the squad's mean age."""
+
+    ages: dict[str, list[float]] = {}
+    for row in rows:
+        if not row.get("called_up", True):
+            continue
+        ages.setdefault(str(row["team"]), []).append(float(row["age"]))
+    return {
+        team: squad_age_multiplier(sum(team_ages) / len(team_ages))
+        for team, team_ages in ages.items()
+    }
+
+
+def apply_squad_age_uplift(
+    players: Iterable[PlayerValue],
+    multiplier_by_team: Mapping[str, float],
+) -> list[PlayerValue]:
+    """Scale each team's player values by its collective squad-age multiplier."""
+
+    uplifted: list[PlayerValue] = []
+    for player in players:
+        multiplier = multiplier_by_team.get(player.team, 1.0)
+        scaled = player.effective_value * multiplier
+        uplifted.append(
+            replace(player, effective_value=scaled, aggregated_value=math.log1p(scaled))
+        )
+    return uplifted
 
 
 def player_value_from_row(row: Mapping[str, Any]) -> PlayerValue:
     effective = player_effective_value(
         market_value=float(row["market_value"]),
-        age=float(row["age"]),
-        recent_minutes_factor=float(
-            row.get("recent_minutes_factor", row.get("recent_minutes", 1.0))
-        ),
         club_level=float(row.get("club_level", 1.0)),
-        league_level=float(row.get("league_level", 1.0)),
-        status=float(row.get("status", 1.0)),
     )
     return PlayerValue(
         player_id=str(row.get("player_id", row["player_name"])),
@@ -89,8 +114,17 @@ def sector_values(players: Iterable[PlayerValue]) -> dict[str, dict[str, float]]
 
 def squad_scores(
     sector_value_by_team: Mapping[str, Mapping[str, float]],
-    balance_penalty: float = 0.30,
+    critical_threshold: float = CRITICAL_SECTOR_Z,
+    critical_penalty: float = CRITICAL_SECTOR_PENALTY,
 ) -> dict[str, float]:
+    """Rank squads by total talent (mean sector z), docking only critical holes.
+
+    A team is scored by its mean sector strength; a penalty applies only to sectors
+    that fall below ``critical_threshold`` (a genuinely weak sector relative to the
+    field), proportional to how far below the line they sit. Mere unevenness above
+    the line is not penalised, so strong-but-spiky squads are not dragged down.
+    """
+
     teams = list(sector_value_by_team)
     sector_z: dict[str, dict[str, float]] = {team: {} for team in teams}
     for sector in SECTORS:
@@ -103,8 +137,8 @@ def squad_scores(
     for team, values in sector_z.items():
         z_values = list(values.values())
         mean_z = sum(z_values) / len(z_values)
-        min_z = min(z_values)
-        scores[team] = mean_z - balance_penalty * (mean_z - min_z)
+        deficit = sum(max(0.0, critical_threshold - z) for z in z_values)
+        scores[team] = mean_z - critical_penalty * deficit
     return scores
 
 
@@ -121,7 +155,9 @@ def squad_adjustments_from_players(
     shrinkage: float = 0.35,
     params: TSIParameters | None = None,
 ) -> dict[str, float]:
+    rows = list(rows)
     players = [player_value_from_row(row) for row in rows if row.get("called_up", True)]
+    players = apply_squad_age_uplift(players, squad_age_multipliers(rows))
     sectors = sector_values(players)
     scores = squad_scores(sectors)
     implied = squad_implied_tsi(scores, tsi_base_by_team)

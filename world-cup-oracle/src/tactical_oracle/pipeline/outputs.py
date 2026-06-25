@@ -26,6 +26,7 @@ def tsi_rows(tsi_ratings: Mapping[str, Any]) -> list[dict[str, float | str]]:
             "team": rating.team,
             "elo_adjusted": rating.elo_adjusted,
             "tsi_base": rating.tsi_base,
+            "schedule_adjustment": rating.schedule_adjustment,
             "squad_adjustment": rating.squad_adjustment,
             "tsi_model": rating.tsi_model,
             "odds_adjustment": rating.odds_adjustment,

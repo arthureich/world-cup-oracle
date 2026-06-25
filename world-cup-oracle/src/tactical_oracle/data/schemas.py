@@ -66,6 +66,7 @@ class Match:
 class GroupAssignment:
     group: str
     team: str
+    position: int | None = None
     fifa_rank: int | None = None
 
 
@@ -75,6 +76,7 @@ class ScheduleMatch:
     group: str
     team_a: str
     team_b: str
+    match_number: int | None = None
     host_team: str | None = None
     neutral_site: bool = True
 
@@ -83,4 +85,3 @@ class ScheduleMatch:
             raise ValueError("team_a and team_b must be different teams")
         if self.host_team is not None and self.host_team not in {self.team_a, self.team_b}:
             raise ValueError("host_team must be one of the match teams")
-

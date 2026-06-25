@@ -33,5 +33,4 @@ def write_rows_parquet(rows: list[dict[str, Any]], path: str | Path) -> None:
     """Write row dictionaries to Parquet using Polars."""
 
     pl = _polars()
-    write_parquet(pl.DataFrame(rows), path)
-
+    write_parquet(pl.DataFrame(rows, infer_schema_length=None), path)
