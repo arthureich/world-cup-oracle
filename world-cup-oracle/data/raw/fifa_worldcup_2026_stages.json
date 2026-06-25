@@ -1,0 +1,188 @@
+{
+  "ContinuationHash": null,
+  "ContinuationToken": null,
+  "Results": [
+    {
+      "EndDate": "2026-07-19T19:00:00Z",
+      "IdCompetition": "17",
+      "IdSeason": "285023",
+      "IdStage": "289292",
+      "IsUpdateable": null,
+      "Name": [
+        {
+          "Description": "Final",
+          "Locale": "en-GB"
+        }
+      ],
+      "Properties": {
+        "IdIFES": "289292"
+      },
+      "SeasonName": [
+        {
+          "Description": "FIFA World Cup 2026\u2122",
+          "Locale": "en-GB"
+        }
+      ],
+      "SequenceOrder": 7,
+      "StageLevel": null,
+      "StartDate": "2026-07-19T19:00:00Z",
+      "Type": 0
+    },
+    {
+      "EndDate": "2026-07-18T21:00:00Z",
+      "IdCompetition": "17",
+      "IdSeason": "285023",
+      "IdStage": "289291",
+      "IsUpdateable": null,
+      "Name": [
+        {
+          "Description": "Play-off for third place",
+          "Locale": "en-GB"
+        }
+      ],
+      "Properties": {
+        "IdIFES": "289291"
+      },
+      "SeasonName": [
+        {
+          "Description": "FIFA World Cup 2026\u2122",
+          "Locale": "en-GB"
+        }
+      ],
+      "SequenceOrder": 6,
+      "StageLevel": null,
+      "StartDate": "2026-07-18T21:00:00Z",
+      "Type": 0
+    },
+    {
+      "EndDate": "2026-07-15T19:00:00Z",
+      "IdCompetition": "17",
+      "IdSeason": "285023",
+      "IdStage": "289290",
+      "IsUpdateable": null,
+      "Name": [
+        {
+          "Description": "Semi-final",
+          "Locale": "en-GB"
+        }
+      ],
+      "Properties": {
+        "IdIFES": "289290"
+      },
+      "SeasonName": [
+        {
+          "Description": "FIFA World Cup 2026\u2122",
+          "Locale": "en-GB"
+        }
+      ],
+      "SequenceOrder": 5,
+      "StageLevel": null,
+      "StartDate": "2026-07-14T19:00:00Z",
+      "Type": 0
+    },
+    {
+      "EndDate": "2026-07-12T01:00:00Z",
+      "IdCompetition": "17",
+      "IdSeason": "285023",
+      "IdStage": "289289",
+      "IsUpdateable": null,
+      "Name": [
+        {
+          "Description": "Quarter-final",
+          "Locale": "en-GB"
+        }
+      ],
+      "Properties": {
+        "IdIFES": "289289"
+      },
+      "SeasonName": [
+        {
+          "Description": "FIFA World Cup 2026\u2122",
+          "Locale": "en-GB"
+        }
+      ],
+      "SequenceOrder": 4,
+      "StageLevel": null,
+      "StartDate": "2026-07-09T20:00:00Z",
+      "Type": 0
+    },
+    {
+      "EndDate": "2026-07-07T20:00:00Z",
+      "IdCompetition": "17",
+      "IdSeason": "285023",
+      "IdStage": "289288",
+      "IsUpdateable": null,
+      "Name": [
+        {
+          "Description": "Round of 16",
+          "Locale": "en-GB"
+        }
+      ],
+      "Properties": {
+        "IdIFES": "289288"
+      },
+      "SeasonName": [
+        {
+          "Description": "FIFA World Cup 2026\u2122",
+          "Locale": "en-GB"
+        }
+      ],
+      "SequenceOrder": 3,
+      "StageLevel": null,
+      "StartDate": "2026-07-04T17:00:00Z",
+      "Type": 0
+    },
+    {
+      "EndDate": "2026-07-04T01:30:00Z",
+      "IdCompetition": "17",
+      "IdSeason": "285023",
+      "IdStage": "289287",
+      "IsUpdateable": null,
+      "Name": [
+        {
+          "Description": "Round of 32",
+          "Locale": "en-GB"
+        }
+      ],
+      "Properties": {
+        "IdIFES": "289287"
+      },
+      "SeasonName": [
+        {
+          "Description": "FIFA World Cup 2026\u2122",
+          "Locale": "en-GB"
+        }
+      ],
+      "SequenceOrder": 2,
+      "StageLevel": null,
+      "StartDate": "2026-06-28T19:00:00Z",
+      "Type": 0
+    },
+    {
+      "EndDate": "2026-06-28T02:00:00Z",
+      "IdCompetition": "17",
+      "IdSeason": "285023",
+      "IdStage": "289273",
+      "IsUpdateable": null,
+      "Name": [
+        {
+          "Description": "First Stage",
+          "Locale": "en-GB"
+        }
+      ],
+      "Properties": {
+        "IdIFES": "289273"
+      },
+      "SeasonName": [
+        {
+          "Description": "FIFA World Cup 2026\u2122",
+          "Locale": "en-GB"
+        }
+      ],
+      "SequenceOrder": 1,
+      "StageLevel": null,
+      "StartDate": "2026-06-11T19:00:00Z",
+      "Type": 1
+    }
+  ]
+}
