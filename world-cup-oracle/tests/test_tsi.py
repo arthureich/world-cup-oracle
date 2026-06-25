@@ -3,7 +3,13 @@ from __future__ import annotations
 import math
 
 from tactical_oracle.elo import EloRating
-from tactical_oracle.tsi import build_tsi_ratings, map_elo_to_tsi, tsi_model, tsi_post_groups, tsi_pre
+from tactical_oracle.tsi import (
+    build_tsi_ratings,
+    map_elo_to_tsi,
+    tsi_model,
+    tsi_post_groups,
+    tsi_pre,
+)
 
 
 def test_map_elo_to_tsi_uses_zero_to_twenty_scale() -> None:
@@ -34,7 +40,11 @@ def test_build_tsi_ratings_keeps_components() -> None:
         )
     }
 
-    tsi = build_tsi_ratings(ratings, squad_adjustments={"Brazil": 0.5}, odds_adjustments={"Brazil": 0.2})
+    tsi = build_tsi_ratings(
+        ratings,
+        squad_adjustments={"Brazil": 0.5},
+        odds_adjustments={"Brazil": 0.2},
+    )
 
     assert tsi["Brazil"].tsi_model == tsi["Brazil"].tsi_base + 0.5
     assert tsi["Brazil"].tsi_pre == tsi["Brazil"].tsi_model + 0.2

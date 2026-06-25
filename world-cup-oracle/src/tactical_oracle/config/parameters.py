@@ -59,6 +59,32 @@ class AttackDefenseParameters:
 
 
 @dataclass(frozen=True)
+class PerformanceParameters:
+    """Parameters documented for B3, group-stage performance."""
+
+    process_weight: float = 4.0
+    result_weight: float = 1.0
+    min_match_weight: float = 0.15
+    red_card_weight_factor: float = 0.5
+    offensive_weights: dict[str, float] = field(
+        default_factory=lambda: {
+            "xg": 0.45,
+            "clear_chances": 0.25,
+            "shots_on_target": 0.20,
+            "shots": 0.10,
+        }
+    )
+    defensive_weights: dict[str, float] = field(
+        default_factory=lambda: {
+            "xg_against": 0.45,
+            "clear_chances_against": 0.25,
+            "shots_on_target_against": 0.20,
+            "shots_against": 0.10,
+        }
+    )
+
+
+@dataclass(frozen=True)
 class SimulationParameters:
     """Parameters documented for B7."""
 

@@ -74,34 +74,34 @@ Atualizado após o primeiro MVP local em Python.
 | B0 — Dados | Parcial: dataclasses/schemas, IO Parquet com Polars, datasets mockados em código e writer para Parquet |
 | B1 — TSI | Implementado MVP: mapeamento linear Elo ajustado → 0–20, TSI_base, TSI_modelo, TSI_pré e TSI_pós-grupos |
 | B2 — Elo próprio | Implementado MVP: Elo inicial por pontos FIFA, esperado, real, pesos, margem, pênaltis, atualização jogo a jogo e recência |
-| B3 — Desempenho por jogo | Não implementado ainda |
+| B3 — Desempenho por jogo | Implementado MVP: pontos reais, surpresa de processo, surpresa de resultado, peso do jogo e agregação ponderada |
 | B4 — Ataque e Defesa | Implementado MVP: split reversível, Perfil pré por total de gols e λ com suporte a anfitrião |
-| B5 — Elenco | Parcial: função de ajuste estrutural com shrinkage e cap; falta cálculo completo por jogador/setor |
-| B6 — Odds | Parcial: devig binário/3-way e ajuste leve de mercado; falta ingestão real de mercados |
+| B5 — Elenco | Implementado MVP: valor efetivo por jogador, agregação por setor, penalidade de balanço, TSI implícito e ajuste com cap |
+| B6 — Odds | Implementado MVP: devig binário/3-way, odds de longo prazo por linhas e ajuste leve de mercado persistível |
 | B7 — Simulação | Implementado MVP: Poisson 90 min, probabilidades, placar provável, pontos esperados, ranking de grupos, melhores terceiros, prorrogação e pênaltis |
 | B8 — Produto final | Não implementado |
 | B9 — Validação | Implementado MVP: Brier Score, Log Loss, calibration bins, ECE e log-likelihood de placar |
-| B10 — Arquitetura | Implementado MVP local: pacote Python, pyproject, estrutura de pastas, testes e pipeline mockado |
+| B10 — Arquitetura | Implementado MVP local: pacote Python, pyproject, estrutura de pastas, testes, cache JSON, normalização mock, pipeline mockado e outputs Parquet processados |
 
 ### Evidência técnica
 
 ```text
-python3 -m compileall src tests
+pytest
+PASS 42 tests
+
+ruff check .
 PASS
 
-runner direto dos testes
-PASS 26 tests
-
-pipeline mockado
-8 seleções, 12 jogos, probabilidades geradas
+pipeline mockado, normalização e outputs Parquet
+8 seleções, 12 jogos, probabilidades, tabelas interim e tabelas processadas geradas
 ```
 
 Observação:
 
 ```text
-pytest, Polars, DuckDB e SciPy não estavam instalados no ambiente local usado na implementação.
-Por isso, os testes foram validados com runner direto e os Parquets mockados serão gravados
-após instalar as dependências do pyproject.
+Dependências locais instaladas via `pip install -e ".[dev]"`.
+Mocks gravados em `data/raw/`, normalizados em `data/interim/` e outputs processados
+gravados em `data/processed/`.
 ```
 
 ---
@@ -110,14 +110,11 @@ após instalar as dependências do pyproject.
 
 Ordem sugerida:
 
-1. Instalar dependências e rodar `pytest` de verdade.
-2. Gerar os arquivos Parquet mockados em `data/raw/`.
-3. Implementar B3 — desempenho por jogo e atualização pós-grupos a partir de estatísticas.
-4. Completar B5 — cálculo de elenco por jogador, idade, minutagem, clube/liga e setor.
-5. Completar B6 — ingestão de odds de longo prazo e persistência dos ajustes.
-6. Carregar o Anexo C oficial como dado estático para chaveamento dos melhores terceiros.
-7. Criar pipeline que escreva outputs Parquet em `data/processed/`.
-8. Definir B8 — dashboard/relatórios/exports.
+1. Substituir mocks por dados reais do ciclo Copa 2026.
+2. Carregar o Anexo C oficial completo como dado estático para chaveamento dos melhores terceiros.
+3. Validar/calibrar B3, B5 e B6 com dados reais e backtests.
+4. Conectar cache de API e normalização a fontes reais.
+5. Consolidar B8 — dashboard/relatórios/exports.
 
 ---
 

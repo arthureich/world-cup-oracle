@@ -1,3 +1,14 @@
+from tactical_oracle.simulation.annex_c import (
+    ANNEX_C_WINNER_SLOTS,
+    EXPECTED_ANNEX_C_COMBINATIONS,
+    AnnexCRow,
+    annex_c_assignments,
+    annex_c_row_from_mapping,
+    build_annex_c_table,
+    load_annex_c_table,
+    normalize_qualified_thirds,
+    validate_annex_c_table,
+)
 from tactical_oracle.simulation.model import (
     GroupFixture,
     GroupStanding,
@@ -15,17 +26,26 @@ from tactical_oracle.simulation.model import (
 )
 
 __all__ = [
+    "ANNEX_C_WINNER_SLOTS",
+    "EXPECTED_ANNEX_C_COMBINATIONS",
+    "AnnexCRow",
     "GroupFixture",
     "GroupStanding",
     "KnockoutResult",
     "MatchProbabilities",
     "MatchResult",
+    "annex_c_assignments",
+    "annex_c_row_from_mapping",
     "best_third_placed",
+    "build_annex_c_table",
+    "load_annex_c_table",
     "match_probabilities",
     "monte_carlo_match",
+    "normalize_qualified_thirds",
     "penalty_win_probability",
     "poisson_probabilities",
     "rank_group",
     "simulate_group",
     "simulate_knockout_match",
+    "validate_annex_c_table",
 ]

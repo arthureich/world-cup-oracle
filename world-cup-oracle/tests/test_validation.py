@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import math
 
-from tactical_oracle.odds import devig_three_way
+from tactical_oracle.odds import devig_three_way, long_term_market_adjustments_from_rows
 from tactical_oracle.validation import (
     brier_score,
     calibration_bins,
@@ -44,3 +44,16 @@ def test_devig_three_way_normalizes_market_probabilities() -> None:
 
     assert math.isclose(sum(probabilities), 1.0)
     assert probabilities[0] > probabilities[2]
+
+
+def test_long_term_market_adjustments_from_rows_are_capped() -> None:
+    adjustments = long_term_market_adjustments_from_rows(
+        {"A": 12.0, "B": 8.0},
+        [
+            {"team": "A", "pass_yes": 1.2, "pass_no": 5.5, "champion": 5.0},
+            {"team": "B", "pass_yes": 2.8, "pass_no": 1.4, "champion": 80.0},
+        ],
+    )
+
+    assert set(adjustments) == {"A", "B"}
+    assert all(-0.75 <= value <= 0.75 for value in adjustments.values())

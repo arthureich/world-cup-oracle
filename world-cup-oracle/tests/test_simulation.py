@@ -98,7 +98,9 @@ def test_best_third_placed_selects_highest_thirds() -> None:
 def test_monte_carlo_match_returns_probability_distribution() -> None:
     probabilities = monte_carlo_match(1.3, 1.3, simulations=1000, seed=1)
 
-    assert math.isclose(probabilities["win_a"] + probabilities["draw"] + probabilities["win_b"], 1.0)
+    total = probabilities["win_a"] + probabilities["draw"] + probabilities["win_b"]
+
+    assert math.isclose(total, 1.0)
 
 
 def test_simulate_group_accepts_expected_goals_provider() -> None:

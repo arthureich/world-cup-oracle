@@ -142,6 +142,79 @@ def worldcup_schedule_mock() -> list[dict[str, Any]]:
     ]
 
 
+def squads_mock() -> list[dict[str, Any]]:
+    profiles = {
+        "Argentina": (82.0, 0.98),
+        "France": (86.0, 1.00),
+        "England": (78.0, 0.98),
+        "Brazil": (80.0, 0.97),
+        "Morocco": (46.0, 0.90),
+        "Mexico": (39.0, 0.88),
+        "Japan": (36.0, 0.89),
+        "Canada": (28.0, 0.84),
+    }
+    sector_multipliers = {"GOL": 0.45, "DEF": 0.85, "MEI": 1.00, "ATA": 1.15}
+    rows: list[dict[str, Any]] = []
+    for team, (base_value, level) in profiles.items():
+        for idx, sector in enumerate(("GOL", "DEF", "MEI", "ATA"), start=1):
+            rows.append(
+                {
+                    "player_id": f"{team[:3].upper()}-{sector}",
+                    "player_name": f"{team} {sector}",
+                    "team": team,
+                    "age": 24 + idx,
+                    "sector": sector,
+                    "market_value": base_value * sector_multipliers[sector],
+                    "recent_minutes_factor": 0.82 + idx * 0.03,
+                    "club_level": level,
+                    "league_level": level,
+                    "status": 0.9,
+                    "called_up": True,
+                }
+            )
+    return rows
+
+
+def odds_long_term_mock() -> list[dict[str, Any]]:
+    return [
+        {"team": "Argentina", "pass_yes": 1.20, "pass_no": 5.80, "champion": 7.0},
+        {"team": "France", "pass_yes": 1.18, "pass_no": 6.20, "champion": 6.5},
+        {"team": "England", "pass_yes": 1.25, "pass_no": 5.20, "champion": 8.0},
+        {"team": "Brazil", "pass_yes": 1.22, "pass_no": 5.50, "champion": 7.5},
+        {"team": "Morocco", "pass_yes": 1.85, "pass_no": 1.95, "champion": 35.0},
+        {"team": "Mexico", "pass_yes": 1.75, "pass_no": 2.05, "champion": 42.0},
+        {"team": "Japan", "pass_yes": 1.90, "pass_no": 1.90, "champion": 45.0},
+        {"team": "Canada", "pass_yes": 2.65, "pass_no": 1.48, "champion": 90.0},
+    ]
+
+
+def worldcup_annex_c_mock() -> list[dict[str, Any]]:
+    return [
+        {
+            "qualified_thirds": "EFGHIJKL",
+            "1A": "3E",
+            "1B": "3J",
+            "1D": "3I",
+            "1E": "3F",
+            "1G": "3H",
+            "1I": "3G",
+            "1K": "3L",
+            "1L": "3K",
+        },
+        {
+            "qualified_thirds": "DFGHIJKL",
+            "1A": "3H",
+            "1B": "3G",
+            "1D": "3I",
+            "1E": "3D",
+            "1G": "3J",
+            "1I": "3F",
+            "1K": "3L",
+            "1L": "3K",
+        },
+    ]
+
+
 def all_mock_datasets() -> dict[str, list[dict[str, Any]]]:
     return {
         "teams_mock.parquet": teams_mock(),
@@ -149,6 +222,9 @@ def all_mock_datasets() -> dict[str, list[dict[str, Any]]]:
         "matches_cycle_mock.parquet": matches_cycle_mock(),
         "worldcup_groups_mock.parquet": worldcup_groups_mock(),
         "worldcup_schedule_mock.parquet": worldcup_schedule_mock(),
+        "squads_mock.parquet": squads_mock(),
+        "odds_long_term_mock.parquet": odds_long_term_mock(),
+        "worldcup_annex_c_mock.parquet": worldcup_annex_c_mock(),
     }
 
 

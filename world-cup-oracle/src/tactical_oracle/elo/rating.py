@@ -11,6 +11,8 @@ from tactical_oracle.config import EloParameters
 from tactical_oracle.data.schemas import FifaPoints, Match, parse_date
 from tactical_oracle.utils import clamp, z_scores_by_key
 
+DEFAULT_ELO_PARAMETERS = EloParameters()
+
 
 @dataclass(frozen=True)
 class MatchEloUpdate:
@@ -41,7 +43,8 @@ def _normalize_key(value: str) -> str:
     return ascii_value.strip().lower().replace(" ", "_").replace("-", "_").replace("/", "_")
 
 
-def importance_weight(match_type: str, params: EloParameters = EloParameters()) -> float:
+def importance_weight(match_type: str, params: EloParameters | None = None) -> float:
+    params = params or DEFAULT_ELO_PARAMETERS
     key = _normalize_key(match_type)
     aliases = {
         "amistoso": "friendly",
@@ -68,7 +71,9 @@ def importance_weight(match_type: str, params: EloParameters = EloParameters()) 
         raise ValueError(f"unknown match_type: {match_type}") from exc
 
 
-def _fifa_points_mapping(points: Mapping[str, float] | Iterable[FifaPoints | Mapping[str, Any]]) -> dict[str, float]:
+def _fifa_points_mapping(
+    points: Mapping[str, float] | Iterable[FifaPoints | Mapping[str, Any]],
+) -> dict[str, float]:
     if isinstance(points, Mapping):
         return {str(team): float(value) for team, value in points.items()}
 
@@ -83,10 +88,11 @@ def _fifa_points_mapping(points: Mapping[str, float] | Iterable[FifaPoints | Map
 
 def initial_elo_from_fifa_points(
     points: Mapping[str, float] | Iterable[FifaPoints | Mapping[str, Any]],
-    params: EloParameters = EloParameters(),
+    params: EloParameters | None = None,
 ) -> dict[str, float]:
     """Initialize Elo from FIFA points with z-score over the supplied FIFA universe."""
 
+    params = params or DEFAULT_ELO_PARAMETERS
     fifa_points = _fifa_points_mapping(points)
     z_scores = z_scores_by_key(fifa_points)
     return {
@@ -112,9 +118,14 @@ def expected_result(
     return 1.0 / (1.0 + 10.0 ** ((adjusted_b - adjusted_a) / 400.0))
 
 
-def actual_result_for_team(match: Match, team: str, params: EloParameters = EloParameters()) -> float:
+def actual_result_for_team(
+    match: Match,
+    team: str,
+    params: EloParameters | None = None,
+) -> float:
     """Return 1/0.5/0, or 0.55/0.45 for shootouts."""
 
+    params = params or DEFAULT_ELO_PARAMETERS
     if team not in {match.team_a, match.team_b}:
         raise ValueError(f"{team} did not play match {match.match_id}")
 
@@ -122,7 +133,9 @@ def actual_result_for_team(match: Match, team: str, params: EloParameters = EloP
     goals_against = match.goals_b if team == match.team_a else match.goals_a
 
     if match.went_to_penalties and goals_for == goals_against:
-        return params.penalty_win_score if match.penalty_winner == team else params.penalty_loss_score
+        if match.penalty_winner == team:
+            return params.penalty_win_score
+        return params.penalty_loss_score
     if goals_for > goals_against:
         return 1.0
     if goals_for < goals_against:
@@ -130,9 +143,10 @@ def actual_result_for_team(match: Match, team: str, params: EloParameters = EloP
     return 0.5
 
 
-def margin_multiplier(goal_difference: int, params: EloParameters = EloParameters()) -> float:
+def margin_multiplier(goal_difference: int, params: EloParameters | None = None) -> float:
     """Goal margin multiplier documented in B2."""
 
+    params = params or DEFAULT_ELO_PARAMETERS
     if goal_difference <= 1:
         return 1.0
     x = float(goal_difference - 1)
@@ -149,10 +163,11 @@ def _home_advantage(match: Match, team: str, params: EloParameters) -> float:
 def update_match(
     ratings: dict[str, float],
     match: Match,
-    params: EloParameters = EloParameters(),
+    params: EloParameters | None = None,
 ) -> MatchEloUpdate:
     """Update mutable ratings in place for one match and return the update details."""
 
+    params = params or DEFAULT_ELO_PARAMETERS
     ratings.setdefault(match.team_a, params.base_elo)
     ratings.setdefault(match.team_b, params.base_elo)
 
@@ -196,14 +211,16 @@ def months_before(reference: date, played_at: date) -> float:
     return max(0.0, days / 30.4375)
 
 
-def recency_weight(months_before_cup: float, params: EloParameters = EloParameters()) -> float:
+def recency_weight(months_before_cup: float, params: EloParameters | None = None) -> float:
+    params = params or DEFAULT_ELO_PARAMETERS
     return 0.5 ** (months_before_cup / params.recency_half_life_months)
 
 
 def recency_adjustment(
     deltas: Iterable[tuple[float, date | str]],
-    params: EloParameters = EloParameters(),
+    params: EloParameters | None = None,
 ) -> float:
+    params = params or DEFAULT_ELO_PARAMETERS
     weighted_sum = 0.0
     weight_sum = 0.0
     for delta, played_at in deltas:
@@ -224,10 +241,11 @@ def recency_adjustment(
 def compute_elo_ratings(
     fifa_points: Mapping[str, float] | Iterable[FifaPoints | Mapping[str, Any]],
     matches: Iterable[Match | Mapping[str, Any]],
-    params: EloParameters = EloParameters(),
+    params: EloParameters | None = None,
 ) -> dict[str, EloRating]:
     """Run the cycle Elo game by game and apply the final recency adjustment."""
 
+    params = params or DEFAULT_ELO_PARAMETERS
     initial = initial_elo_from_fifa_points(fifa_points, params)
     ratings = dict(initial)
     deltas_by_team: dict[str, list[tuple[float, date]]] = {team: [] for team in initial}

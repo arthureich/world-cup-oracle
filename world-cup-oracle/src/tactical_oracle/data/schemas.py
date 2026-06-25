@@ -53,7 +53,10 @@ class Match:
             raise ValueError("goals cannot be negative")
         if self.home_team is not None and self.home_team not in {self.team_a, self.team_b}:
             raise ValueError("home_team must be one of the match teams")
-        if self.penalty_winner is not None and self.penalty_winner not in {self.team_a, self.team_b}:
+        if self.penalty_winner is not None and self.penalty_winner not in {
+            self.team_a,
+            self.team_b,
+        }:
             raise ValueError("penalty_winner must be one of the match teams")
         if self.went_to_penalties and self.penalty_winner is None:
             raise ValueError("penalty_winner is required when went_to_penalties is true")

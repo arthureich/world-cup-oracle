@@ -9,6 +9,8 @@ import numpy as np
 from tactical_oracle.config import SimulationParameters
 from tactical_oracle.utils import clamp
 
+DEFAULT_SIMULATION_PARAMETERS = SimulationParameters()
+
 
 @dataclass(frozen=True)
 class MatchProbabilities:
@@ -76,8 +78,9 @@ def match_probabilities(
     lambda_a: float,
     lambda_b: float,
     max_goals: int | None = None,
-    params: SimulationParameters = SimulationParameters(),
+    params: SimulationParameters | None = None,
 ) -> MatchProbabilities:
+    params = params or DEFAULT_SIMULATION_PARAMETERS
     max_goals = params.score_max_goals if max_goals is None else max_goals
     probs_a = poisson_probabilities(lambda_a, max_goals)
     probs_b = poisson_probabilities(lambda_b, max_goals)
@@ -115,8 +118,9 @@ def match_probabilities(
 def penalty_win_probability(
     tsi_a: float,
     tsi_b: float,
-    params: SimulationParameters = SimulationParameters(),
+    params: SimulationParameters | None = None,
 ) -> float:
+    params = params or DEFAULT_SIMULATION_PARAMETERS
     raw = 0.5 + params.penalty_strength_factor * (tsi_a - tsi_b)
     return clamp(raw, params.penalty_min, params.penalty_max)
 
@@ -129,8 +133,9 @@ def simulate_knockout_match(
     tsi_a: float,
     tsi_b: float,
     rng: np.random.Generator | None = None,
-    params: SimulationParameters = SimulationParameters(),
+    params: SimulationParameters | None = None,
 ) -> KnockoutResult:
+    params = params or DEFAULT_SIMULATION_PARAMETERS
     rng = rng or np.random.default_rng()
     goals_a_90 = int(rng.poisson(lambda_a))
     goals_b_90 = int(rng.poisson(lambda_b))
@@ -211,7 +216,10 @@ def _add_result(standing: GroupStanding, goals_for: int, goals_against: int) -> 
     )
 
 
-def _head_to_head_stats(teams: set[str], results: Iterable[MatchResult]) -> dict[str, GroupStanding]:
+def _head_to_head_stats(
+    teams: set[str],
+    results: Iterable[MatchResult],
+) -> dict[str, GroupStanding]:
     result_list = list(results)
     group = result_list[0].group if result_list else ""
     stats = {team: _empty_stats(team, group or "") for team in teams}

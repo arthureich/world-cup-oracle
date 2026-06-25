@@ -7,6 +7,8 @@ from dataclasses import dataclass
 from tactical_oracle.config import AttackDefenseParameters
 from tactical_oracle.utils import clamp, mean, population_std
 
+DEFAULT_ATTACK_DEFENSE_PARAMETERS = AttackDefenseParameters()
+
 
 @dataclass(frozen=True)
 class StrengthComponents:
@@ -32,8 +34,9 @@ def reverse_components(attack: float, defense: float) -> tuple[float, float]:
 def profile_from_goal_totals(
     goals_for_per_game: Mapping[str, float],
     goals_against_per_game: Mapping[str, float],
-    params: AttackDefenseParameters = AttackDefenseParameters(),
+    params: AttackDefenseParameters | None = None,
 ) -> dict[str, float]:
+    params = params or DEFAULT_ATTACK_DEFENSE_PARAMETERS
     if set(goals_for_per_game) != set(goals_against_per_game):
         raise ValueError("goals_for_per_game and goals_against_per_game must have the same teams")
 
@@ -47,7 +50,11 @@ def profile_from_goal_totals(
     if std == 0:
         return {team: 0.0 for team in totals}
     return {
-        team: clamp(params.profile_multiplier * ((total - avg) / std), -params.profile_cap, params.profile_cap)
+        team: clamp(
+            params.profile_multiplier * ((total - avg) / std),
+            -params.profile_cap,
+            params.profile_cap,
+        )
         for team, total in totals.items()
     }
 
@@ -70,8 +77,9 @@ def expected_goals(
     defense_b: float,
     a_is_host: bool = False,
     b_is_host: bool = False,
-    params: AttackDefenseParameters = AttackDefenseParameters(),
+    params: AttackDefenseParameters | None = None,
 ) -> tuple[float, float]:
+    params = params or DEFAULT_ATTACK_DEFENSE_PARAMETERS
     if a_is_host and b_is_host:
         raise ValueError("only one team can receive host adjustment")
 
@@ -90,7 +98,7 @@ def expected_goals_from_components(
     team_b: StrengthComponents,
     a_is_host: bool = False,
     b_is_host: bool = False,
-    params: AttackDefenseParameters = AttackDefenseParameters(),
+    params: AttackDefenseParameters | None = None,
 ) -> tuple[float, float]:
     return expected_goals(
         team_a.attack,

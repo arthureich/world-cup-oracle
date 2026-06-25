@@ -11,7 +11,8 @@ The project builds a small, testable pipeline:
 5. TSI is split into attack and defense through a style profile.
 6. Attack and defense produce expected goals.
 7. Poisson and Monte Carlo functions simulate matches, groups and knockouts.
-8. Validation utilities compute Brier Score, Log Loss, calibration bins and score likelihood.
+8. Group-stage performance separates process and result surprise.
+9. Validation utilities compute Brier Score, Log Loss, calibration bins and score likelihood.
 
 ## Setup
 
@@ -37,6 +38,9 @@ data/raw/fifa_points_mock.parquet
 data/raw/matches_cycle_mock.parquet
 data/raw/worldcup_groups_mock.parquet
 data/raw/worldcup_schedule_mock.parquet
+data/raw/squads_mock.parquet
+data/raw/odds_long_term_mock.parquet
+data/raw/worldcup_annex_c_mock.parquet
 ```
 
 ## Smoke pipeline
@@ -45,10 +49,33 @@ data/raw/worldcup_schedule_mock.parquet
 tactical-oracle-mock-pipeline
 ```
 
+## Processed outputs
+
+```bash
+tactical-oracle-normalize-mocks
+tactical-oracle-validate-annex-c data/interim/worldcup_annex_c.parquet
+tactical-oracle-build-mock-outputs
+```
+
+That creates:
+
+```text
+data/processed/ratings_elo.parquet
+data/processed/squad_adjustments.parquet
+data/processed/odds_adjustments.parquet
+data/processed/tsi_pre_cup.parquet
+data/processed/attack_defense_pre_cup.parquet
+data/processed/match_probabilities.parquet
+```
+
+`tactical-oracle-validate-annex-c --complete` requires the full official Annex C table with
+495 combinations. The bundled mock table is intentionally partial and only exercises the loader.
+
 ## Tests
 
 ```bash
 pytest
+ruff check .
 ```
 
 ## Notes

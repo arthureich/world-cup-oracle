@@ -307,15 +307,16 @@ deploy
 
 ```text
 MVP local criado com pyproject, pacote Python, estrutura de dados,
-schemas, Elo, TSI, ataque/defesa, simulação, validação e testes mínimos.
+schemas, Elo, TSI, desempenho por jogo, elenco MVP, odds MVP,
+ataque/defesa, simulação, validação, cache JSON, normalização mock,
+outputs Parquet e testes.
 ```
 
 Ainda faltam:
 
 ```text
-CLI/pipeline completo
-cache de API
-outputs Parquet processados
+pipeline real conectado a fontes externas
+cache de API aplicado a endpoints reais
 dashboard
 ```
 
@@ -345,14 +346,11 @@ rodar tactical-oracle-mock-pipeline
 ## Próximos passos
 
 ```text
-1. instalar dependências e rodar pytest
-2. gerar Parquets mockados
-3. implementar B3 — desempenho por jogo
-4. completar B5 — elenco
-5. completar B6 — odds de longo prazo
-6. carregar Anexo C oficial como dado estático
-7. criar pipeline que escreva outputs em data/processed/
-8. consolidar B8 — Produto final
-9. fazer data spike com API/base aberta
-10. criar dataset mínimo do ciclo Copa 2026
+1. carregar Anexo C oficial completo como dado estático
+2. fazer data spike com API/base aberta
+3. criar dataset mínimo real do ciclo Copa 2026
+4. conectar endpoints reais ao cache local
+5. calibrar B3/B5/B6/B7/B9 com dados reais
+6. consolidar B8 — Produto final
+7. criar dashboard/relatórios sobre `data/processed/`
 ```

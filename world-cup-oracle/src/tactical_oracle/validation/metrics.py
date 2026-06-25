@@ -7,6 +7,8 @@ from dataclasses import dataclass
 from tactical_oracle.config import ValidationParameters
 from tactical_oracle.utils import clamp, require_probability_vector
 
+DEFAULT_VALIDATION_PARAMETERS = ValidationParameters()
+
 
 @dataclass(frozen=True)
 class CalibrationBin:
@@ -28,15 +30,19 @@ def brier_score(probabilities: Sequence[Sequence[float]], outcomes: Sequence[int
         probs = require_probability_vector(vector)
         if not 0 <= outcome < len(probs):
             raise ValueError("outcome index is outside the probability vector")
-        total += sum((probability - (1.0 if idx == outcome else 0.0)) ** 2 for idx, probability in enumerate(probs))
+        total += sum(
+            (probability - (1.0 if idx == outcome else 0.0)) ** 2
+            for idx, probability in enumerate(probs)
+        )
     return total / len(probabilities)
 
 
 def log_loss(
     probabilities: Sequence[Sequence[float]],
     outcomes: Sequence[int],
-    params: ValidationParameters = ValidationParameters(),
+    params: ValidationParameters | None = None,
 ) -> float:
+    params = params or DEFAULT_VALIDATION_PARAMETERS
     if len(probabilities) != len(outcomes):
         raise ValueError("probabilities and outcomes must have the same length")
     if not probabilities:

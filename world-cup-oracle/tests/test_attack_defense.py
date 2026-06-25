@@ -21,7 +21,12 @@ def test_attack_defense_is_reversible() -> None:
 
 
 def test_expected_goals_equal_strengths_are_base_goals() -> None:
-    lambda_a, lambda_b = expected_goals(attack_a=12.0, defense_a=12.0, attack_b=12.0, defense_b=12.0)
+    lambda_a, lambda_b = expected_goals(
+        attack_a=12.0,
+        defense_a=12.0,
+        attack_b=12.0,
+        defense_b=12.0,
+    )
 
     assert math.isclose(lambda_a, 1.30)
     assert math.isclose(lambda_b, 1.30)

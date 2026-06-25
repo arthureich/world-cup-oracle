@@ -2,9 +2,20 @@ from __future__ import annotations
 
 import math
 from collections.abc import Mapping
+from dataclasses import dataclass
 
 from tactical_oracle.config import TSIParameters
 from tactical_oracle.utils import clamp, safe_logit, standardize_to_reference
+
+DEFAULT_TSI_PARAMETERS = TSIParameters()
+
+
+@dataclass(frozen=True)
+class LongTermOdds:
+    team: str
+    pass_yes: float
+    pass_no: float
+    champion: float
 
 
 def devig_binary(odd_yes: float, odd_no: float) -> float:
@@ -37,10 +48,11 @@ def long_term_market_adjustments(
     champion_odds_by_team: Mapping[str, float],
     champion_weight: float = 0.35,
     champion_probability_floor: float = 1e-6,
-    params: TSIParameters = TSIParameters(),
+    params: TSIParameters | None = None,
 ) -> dict[str, float]:
     """B6 light market adjustment from long-term markets."""
 
+    params = params or DEFAULT_TSI_PARAMETERS
     teams = set(tsi_model_by_team)
     if not teams <= set(pass_odds_by_team) or not teams <= set(champion_odds_by_team):
         raise ValueError("all TSI teams must have pass and champion odds")
@@ -68,3 +80,39 @@ def long_term_market_adjustments(
         )
         for team in teams
     }
+
+
+def long_term_odds_from_rows(rows: list[Mapping[str, float | str]]) -> dict[str, LongTermOdds]:
+    output: dict[str, LongTermOdds] = {}
+    for row in rows:
+        team = str(row["team"])
+        output[team] = LongTermOdds(
+            team=team,
+            pass_yes=float(row["pass_yes"]),
+            pass_no=float(row["pass_no"]),
+            champion=float(row["champion"]),
+        )
+    return output
+
+
+def long_term_market_adjustments_from_rows(
+    tsi_model_by_team: Mapping[str, float],
+    rows: list[Mapping[str, float | str]],
+    champion_weight: float = 0.35,
+    params: TSIParameters | None = None,
+) -> dict[str, float]:
+    odds = long_term_odds_from_rows(rows)
+    return long_term_market_adjustments(
+        tsi_model_by_team=tsi_model_by_team,
+        pass_odds_by_team={team: (row.pass_yes, row.pass_no) for team, row in odds.items()},
+        champion_odds_by_team={team: row.champion for team, row in odds.items()},
+        champion_weight=champion_weight,
+        params=params,
+    )
+
+
+def odds_adjustment_rows(adjustments: Mapping[str, float]) -> list[dict[str, float | str]]:
+    return [
+        {"team": team, "odds_adjustment": adjustment}
+        for team, adjustment in sorted(adjustments.items())
+    ]
