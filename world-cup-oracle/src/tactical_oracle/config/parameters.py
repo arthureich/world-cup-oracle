@@ -59,6 +59,8 @@ class AttackDefenseParameters:
     k: float = 0.09
     host_gamma: float = 0.15
     opponent_delta: float = 0.0
+    guaranteed_first_tsi_penalty: float = 0.35
+    rotated_squad_tsi_penalty: float = 1.25
 
 
 @dataclass(frozen=True)

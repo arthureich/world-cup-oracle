@@ -7,8 +7,9 @@ from tactical_oracle.attack_defense import (
     build_components,
     expected_goals_from_components,
     profile_from_goal_totals,
+    split_attack_defense,
 )
-from tactical_oracle.config import TSIParameters
+from tactical_oracle.config import AttackDefenseParameters, TSIParameters
 from tactical_oracle.data.io import read_parquet, write_rows_parquet
 from tactical_oracle.elo import compute_elo_ratings, elo_rows
 from tactical_oracle.odds import champion_market_adjustments_from_rows, odds_adjustment_rows
@@ -284,6 +285,34 @@ def _optional_rows(path: Path) -> list[dict[str, Any]]:
     return _rows_from_parquet(path)
 
 
+def _fixture_bool(fixture: dict[str, Any], key: str) -> bool:
+    value = fixture.get(key, False)
+    if isinstance(value, str):
+        return value.strip().lower() in {"1", "true", "t", "yes", "y", "sim"}
+    return bool(value)
+
+
+def _match_tsi_penalty(
+    fixture: dict[str, Any],
+    side: str,
+    params: AttackDefenseParameters,
+) -> float:
+    penalty = 0.0
+    if _fixture_bool(fixture, f"{side}_guaranteed_first"):
+        penalty += params.guaranteed_first_tsi_penalty
+    if _fixture_bool(fixture, f"{side}_rotated"):
+        penalty += params.rotated_squad_tsi_penalty
+    return penalty
+
+
+def _adjusted_match_component(component: Any, tsi_penalty: float) -> Any:
+    return split_attack_defense(
+        component.team,
+        component.tsi - tsi_penalty,
+        component.profile,
+    )
+
+
 def build_real_elo_outputs(
     interim_dir: str | Path = "data/interim",
 ) -> dict[str, list[dict[str, Any]]]:
@@ -352,7 +381,9 @@ def _real_components_from_interim(interim_dir: str | Path) -> dict[str, Any]:
 def real_match_probability_rows(
     schedule: list[dict[str, Any]],
     components: dict[str, Any],
+    params: AttackDefenseParameters | None = None,
 ) -> list[dict[str, Any]]:
+    params = params or AttackDefenseParameters()
     rows: list[dict[str, Any]] = []
     missing_teams: set[str] = set()
 
@@ -364,11 +395,20 @@ def real_match_probability_rows(
             continue
 
         host_team = fixture.get("host_team")
+        team_a_guaranteed_first = _fixture_bool(fixture, "team_a_guaranteed_first")
+        team_b_guaranteed_first = _fixture_bool(fixture, "team_b_guaranteed_first")
+        team_a_rotated = _fixture_bool(fixture, "team_a_rotated")
+        team_b_rotated = _fixture_bool(fixture, "team_b_rotated")
+        team_a_tsi_penalty = _match_tsi_penalty(fixture, "team_a", params)
+        team_b_tsi_penalty = _match_tsi_penalty(fixture, "team_b", params)
+        team_a_component = _adjusted_match_component(components[team_a], team_a_tsi_penalty)
+        team_b_component = _adjusted_match_component(components[team_b], team_b_tsi_penalty)
         lambda_a, lambda_b = expected_goals_from_components(
-            components[team_a],
-            components[team_b],
+            team_a_component,
+            team_b_component,
             a_is_host=host_team == team_a,
             b_is_host=host_team == team_b,
+            params=params,
         )
         probabilities = match_probabilities(lambda_a, lambda_b)
         most_likely_a, most_likely_b = probabilities.most_likely_score
@@ -381,6 +421,12 @@ def real_match_probability_rows(
                 "team_b": team_b,
                 "host_team": host_team,
                 "neutral_site": bool(fixture["neutral_site"]),
+                "team_a_guaranteed_first": team_a_guaranteed_first,
+                "team_b_guaranteed_first": team_b_guaranteed_first,
+                "team_a_rotated": team_a_rotated,
+                "team_b_rotated": team_b_rotated,
+                "team_a_match_tsi_penalty": team_a_tsi_penalty,
+                "team_b_match_tsi_penalty": team_b_tsi_penalty,
                 "lambda_a": lambda_a,
                 "lambda_b": lambda_b,
                 "p_win_a": probabilities.win_a,
