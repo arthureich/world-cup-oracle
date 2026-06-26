@@ -5,6 +5,7 @@ import gzip
 from tactical_oracle.data.io import read_parquet, write_rows_parquet
 from tactical_oracle.pipeline.transfermarkt_values import (
     apply_transfermarkt_values_to_squads,
+    impute_team_mean_market_values,
     write_transfermarkt_squads,
 )
 
@@ -188,3 +189,45 @@ def test_apply_transfermarkt_values_reads_gzipped_exports(tmp_path) -> None:
     assert rows[0]["market_value"] == 12_000_000.0
     assert rows[0]["market_value_source"] == "transfermarkt"
     assert rows[0]["market_value_trusted"] is True
+
+
+def test_impute_team_mean_market_values_uses_trusted_team_average() -> None:
+    rows = impute_team_mean_market_values(
+        [
+            {
+                "team": "Tunisia",
+                "player_name": "Trusted A",
+                "called_up": True,
+                "market_value": 10.0,
+                "market_value_eur": 10.0,
+                "market_value_source": "transfermarkt",
+                "market_value_trusted": True,
+            },
+            {
+                "team": "Tunisia",
+                "player_name": "Trusted B",
+                "called_up": True,
+                "market_value": 30.0,
+                "market_value_eur": 30.0,
+                "market_value_source": "transfermarkt",
+                "market_value_trusted": True,
+            },
+            {
+                "team": "Tunisia",
+                "player_name": "Missing",
+                "called_up": True,
+                "market_value": 999.0,
+                "market_value_eur": 999.0,
+                "market_value_source": "world-cup-detail",
+                "market_value_trusted": False,
+            },
+        ],
+        as_of="2026-06-11",
+    )
+
+    assert rows[2]["market_value"] == 20.0
+    assert rows[2]["market_value_eur"] == 20.0
+    assert rows[2]["market_value_source"] == "team_mean_imputed"
+    assert rows[2]["market_value_trusted"] is True
+    assert rows[2]["market_value_imputed"] is True
+    assert rows[2]["imputed_from_trusted_player_count"] == 2

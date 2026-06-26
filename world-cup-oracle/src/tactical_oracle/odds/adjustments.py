@@ -18,6 +18,14 @@ class LongTermOdds:
     champion: float
 
 
+def american_to_decimal(american_odd: float) -> float:
+    if american_odd == 0:
+        raise ValueError("american odds cannot be zero")
+    if american_odd > 0:
+        return 1.0 + american_odd / 100.0
+    return 1.0 + 100.0 / abs(american_odd)
+
+
 def devig_binary(odd_yes: float, odd_no: float) -> float:
     if odd_yes <= 1.0 or odd_no <= 1.0:
         raise ValueError("decimal odds must be greater than 1")
@@ -40,6 +48,38 @@ def _champion_probabilities(champion_odds: Mapping[str, float]) -> dict[str, flo
     if total <= 0:
         raise ValueError("champion odds must have positive implied mass")
     return {team: value / total for team, value in raw.items()}
+
+
+def champion_market_adjustments(
+    tsi_model_by_team: Mapping[str, float],
+    champion_odds_by_team: Mapping[str, float],
+    champion_probability_floor: float = 1e-6,
+    params: TSIParameters | None = None,
+) -> dict[str, float]:
+    """B6 light market adjustment from World Cup winner odds only."""
+
+    params = params or DEFAULT_TSI_PARAMETERS
+    teams = set(tsi_model_by_team) & set(champion_odds_by_team)
+    if not teams:
+        return {}
+
+    champion_probs = _champion_probabilities(
+        {team: champion_odds_by_team[team] for team in teams}
+    )
+    champion_strength = {
+        team: math.log(max(champion_probs[team], champion_probability_floor))
+        for team in teams
+    }
+    reference = {team: tsi_model_by_team[team] for team in teams}
+    tsi_market = standardize_to_reference(champion_strength, reference)
+    return {
+        team: clamp(
+            tsi_market[team] - tsi_model_by_team[team],
+            -params.odds_adjustment_cap,
+            params.odds_adjustment_cap,
+        )
+        for team in teams
+    }
 
 
 def long_term_market_adjustments(
@@ -93,6 +133,31 @@ def long_term_odds_from_rows(rows: list[Mapping[str, float | str]]) -> dict[str,
             champion=float(row["champion"]),
         )
     return output
+
+
+def champion_odds_from_rows(rows: list[Mapping[str, float | str]]) -> dict[str, float]:
+    output: dict[str, float] = {}
+    for row in rows:
+        team = str(row["team"])
+        if "champion" in row and row["champion"] is not None:
+            output[team] = float(row["champion"])
+        elif "american_odd" in row and row["american_odd"] is not None:
+            output[team] = american_to_decimal(float(row["american_odd"]))
+        else:
+            raise ValueError("long-term odds rows must include champion or american_odd")
+    return output
+
+
+def champion_market_adjustments_from_rows(
+    tsi_model_by_team: Mapping[str, float],
+    rows: list[Mapping[str, float | str]],
+    params: TSIParameters | None = None,
+) -> dict[str, float]:
+    return champion_market_adjustments(
+        tsi_model_by_team=tsi_model_by_team,
+        champion_odds_by_team=champion_odds_from_rows(rows),
+        params=params,
+    )
 
 
 def long_term_market_adjustments_from_rows(

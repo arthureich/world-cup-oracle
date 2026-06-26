@@ -197,6 +197,14 @@ def test_write_real_core_outputs_creates_tsi_and_attack_defense(tmp_path) -> Non
                 }
             )
     write_rows_parquet(squad_rows, interim / "squads.parquet")
+    write_rows_parquet(
+        [
+            {"team": "Brazil", "american_odd": 850},
+            {"team": "Argentina", "american_odd": 1000},
+            {"team": "France", "american_odd": 460},
+        ],
+        interim / "odds_long_term.parquet",
+    )
 
     written = write_real_core_outputs(interim, processed)
 
@@ -204,6 +212,7 @@ def test_write_real_core_outputs_creates_tsi_and_attack_defense(tmp_path) -> Non
     assert names == {
         "ratings_elo.parquet",
         "squad_adjustments.parquet",
+        "odds_adjustments.parquet",
         "tsi_pre_cup.parquet",
         "attack_defense_pre_cup.parquet",
     }
@@ -211,6 +220,9 @@ def test_write_real_core_outputs_creates_tsi_and_attack_defense(tmp_path) -> Non
     assert tsi.height == 3
     assert tsi["tsi_pre"].max() < 20.0
     assert tsi["squad_adjustment"].max() > 0.0
+    assert tsi["odds_adjustment"].abs().max() > 0.0
+    odds_adjustments = read_parquet(processed / "odds_adjustments.parquet")
+    assert odds_adjustments.height == 3
     squad_adjustments = read_parquet(processed / "squad_adjustments.parquet")
     assert squad_adjustments.height == 3
     assert squad_adjustments["squad_adjustment"].max() > 0.0

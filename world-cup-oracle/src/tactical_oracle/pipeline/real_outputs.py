@@ -11,9 +11,10 @@ from tactical_oracle.attack_defense import (
 from tactical_oracle.config import TSIParameters
 from tactical_oracle.data.io import read_parquet, write_rows_parquet
 from tactical_oracle.elo import compute_elo_ratings, elo_rows
+from tactical_oracle.odds import champion_market_adjustments_from_rows, odds_adjustment_rows
 from tactical_oracle.simulation import match_probabilities
 from tactical_oracle.squad import squad_adjustments_from_players
-from tactical_oracle.tsi import TSIRating, map_elo_distribution_to_tsi
+from tactical_oracle.tsi import TSIRating, map_elo_distribution_to_tsi, tsi_pre
 from tactical_oracle.utils import clamp, mean
 
 MIN_TRUSTED_SQUAD_PLAYERS = 22
@@ -165,6 +166,7 @@ def build_real_tsi_ratings(
     elo_ratings: dict[str, Any],
     matches: list[dict[str, Any]] | None = None,
     squad_rows: list[dict[str, Any]] | None = None,
+    odds_rows: list[dict[str, Any]] | None = None,
 ) -> dict[str, TSIRating]:
     adjusted_elo_by_team = {team: rating.adjusted_elo for team, rating in elo_ratings.items()}
     base_by_team = map_elo_distribution_to_tsi(adjusted_elo_by_team)
@@ -197,6 +199,18 @@ def build_real_tsi_ratings(
         if squad_reference
         else {}
     )
+    tsi_model_by_team = {
+        team: base_by_team[team]
+        + schedule_adjustments[team]
+        + squad_adjustments.get(team, 0.0)
+        for team in elo_ratings
+    }
+    odds_adjustments = (
+        champion_market_adjustments_from_rows(tsi_model_by_team, odds_rows)
+        if odds_rows
+        else {}
+    )
+
     return {
         team: TSIRating(
             team=team,
@@ -204,13 +218,9 @@ def build_real_tsi_ratings(
             tsi_base=base_by_team[team],
             schedule_adjustment=schedule_adjustments[team],
             squad_adjustment=squad_adjustments.get(team, 0.0),
-            tsi_model=base_by_team[team]
-            + schedule_adjustments[team]
-            + squad_adjustments.get(team, 0.0),
-            odds_adjustment=0.0,
-            tsi_pre=base_by_team[team]
-            + schedule_adjustments[team]
-            + squad_adjustments.get(team, 0.0),
+            tsi_model=tsi_model_by_team[team],
+            odds_adjustment=odds_adjustments.get(team, 0.0),
+            tsi_pre=tsi_pre(tsi_model_by_team[team], odds_adjustments.get(team, 0.0)),
         )
         for team, rating in elo_ratings.items()
     }
@@ -292,10 +302,16 @@ def build_real_core_outputs(
     fifa_points = _rows_from_parquet(interim_path / "fifa_points.parquet")
     matches = _rows_from_parquet(interim_path / "matches_cycle.parquet")
     squad_rows = _optional_rows(interim_path / "squads.parquet")
+    odds_rows = _optional_rows(interim_path / "odds_long_term.parquet")
     filtered_matches = filter_matches_to_fifa_teams(matches, fifa_team_names(fifa_points))
 
     elo = compute_elo_ratings(fifa_points, filtered_matches)
-    tsi = build_real_tsi_ratings(elo, filtered_matches, squad_rows=squad_rows)
+    tsi = build_real_tsi_ratings(
+        elo,
+        filtered_matches,
+        squad_rows=squad_rows,
+        odds_rows=odds_rows,
+    )
     squad_coverage = squad_coverage_by_team(squad_rows)
     eligible_teams = eligible_squad_teams(squad_coverage)
     goals_for, goals_against = cycle_goal_rates(filtered_matches)
@@ -305,6 +321,9 @@ def build_real_core_outputs(
     return {
         "ratings_elo.parquet": elo_rows(elo),
         "squad_adjustments.parquet": squad_adjustment_rows(tsi, squad_coverage, eligible_teams),
+        "odds_adjustments.parquet": odds_adjustment_rows(
+            {team: rating.odds_adjustment for team, rating in tsi.items()}
+        ),
         "tsi_pre_cup.parquet": tsi_rows(tsi),
         "attack_defense_pre_cup.parquet": attack_defense_rows(components),
     }
@@ -315,10 +334,16 @@ def _real_components_from_interim(interim_dir: str | Path) -> dict[str, Any]:
     fifa_points = _rows_from_parquet(interim_path / "fifa_points.parquet")
     matches = _rows_from_parquet(interim_path / "matches_cycle.parquet")
     squad_rows = _optional_rows(interim_path / "squads.parquet")
+    odds_rows = _optional_rows(interim_path / "odds_long_term.parquet")
     filtered_matches = filter_matches_to_fifa_teams(matches, fifa_team_names(fifa_points))
 
     elo = compute_elo_ratings(fifa_points, filtered_matches)
-    tsi = build_real_tsi_ratings(elo, filtered_matches, squad_rows=squad_rows)
+    tsi = build_real_tsi_ratings(
+        elo,
+        filtered_matches,
+        squad_rows=squad_rows,
+        odds_rows=odds_rows,
+    )
     goals_for, goals_against = cycle_goal_rates(filtered_matches)
     profiles = profile_from_goal_totals(goals_for, goals_against)
     return build_components({team: rating.tsi_pre for team, rating in tsi.items()}, profiles)

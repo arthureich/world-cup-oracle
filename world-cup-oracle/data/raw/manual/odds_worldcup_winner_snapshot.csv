@@ -1,0 +1,49 @@
+snapshot_date,source,bookmaker,source_team,team,market,american_odd
+2026-06-25,manual_snapshot,market_consensus,Spain,Spain,champion,420
+2026-06-25,manual_snapshot,market_consensus,France,France,champion,460
+2026-06-25,manual_snapshot,market_consensus,England,England,champion,650
+2026-06-25,manual_snapshot,market_consensus,Brazil,Brazil,champion,850
+2026-06-25,manual_snapshot,market_consensus,Portugal,Portugal,champion,1000
+2026-06-25,manual_snapshot,market_consensus,Argentina,Argentina,champion,1000
+2026-06-25,manual_snapshot,market_consensus,Germany,Germany,champion,1300
+2026-06-25,manual_snapshot,market_consensus,Netherlands,Netherlands,champion,1600
+2026-06-25,manual_snapshot,market_consensus,Belgium,Belgium,champion,2200
+2026-06-25,manual_snapshot,market_consensus,Norway,Norway,champion,3500
+2026-06-25,manual_snapshot,market_consensus,Colombia,Colombia,champion,4000
+2026-06-25,manual_snapshot,market_consensus,Japan,Japan,champion,4500
+2026-06-25,manual_snapshot,market_consensus,Morocco,Morocco,champion,6000
+2026-06-25,manual_snapshot,market_consensus,USA,United States,champion,6000
+2026-06-25,manual_snapshot,market_consensus,Uruguay,Uruguay,champion,6000
+2026-06-25,manual_snapshot,market_consensus,Mexico,Mexico,champion,6500
+2026-06-25,manual_snapshot,market_consensus,Switzerland,Switzerland,champion,6500
+2026-06-25,manual_snapshot,market_consensus,Croatia,Croatia,champion,7000
+2026-06-25,manual_snapshot,market_consensus,Turkiye,Turkey,champion,8000
+2026-06-25,manual_snapshot,market_consensus,Ecuador,Ecuador,champion,10000
+2026-06-25,manual_snapshot,market_consensus,Senegal,Senegal,champion,12500
+2026-06-25,manual_snapshot,market_consensus,Austria,Austria,champion,12500
+2026-06-25,manual_snapshot,market_consensus,Canada,Canada,champion,17500
+2026-06-25,manual_snapshot,market_consensus,Sweden,Sweden,champion,17500
+2026-06-25,manual_snapshot,market_consensus,Ivory Coast,Ivory Coast,champion,17500
+2026-06-25,manual_snapshot,market_consensus,Paraguay,Paraguay,champion,20000
+2026-06-25,manual_snapshot,market_consensus,Egypt,Egypt,champion,25000
+2026-06-25,manual_snapshot,market_consensus,Scotland,Scotland,champion,30000
+2026-06-25,manual_snapshot,market_consensus,Bosnia & Herzegovina,Bosnia and Herzegovina,champion,40000
+2026-06-25,manual_snapshot,market_consensus,Ghana,Ghana,champion,60000
+2026-06-25,manual_snapshot,market_consensus,Czechia,Czech Republic,champion,60000
+2026-06-25,manual_snapshot,market_consensus,South Korea,South Korea,champion,70000
+2026-06-25,manual_snapshot,market_consensus,Iran,Iran,champion,100000
+2026-06-25,manual_snapshot,market_consensus,Tunisia,Tunisia,champion,200000
+2026-06-25,manual_snapshot,market_consensus,Algeria,Algeria,champion,200000
+2026-06-25,manual_snapshot,market_consensus,Cape Verde,Cape Verde,champion,250000
+2026-06-25,manual_snapshot,market_consensus,Uzbekistan,Uzbekistan,champion,250000
+2026-06-25,manual_snapshot,market_consensus,Haiti,Haiti,champion,250000
+2026-06-25,manual_snapshot,market_consensus,Panama,Panama,champion,250000
+2026-06-25,manual_snapshot,market_consensus,Curacao,Curacao,champion,250000
+2026-06-25,manual_snapshot,market_consensus,Qatar,Qatar,champion,250000
+2026-06-25,manual_snapshot,market_consensus,Saudi Arabia,Saudi Arabia,champion,250000
+2026-06-25,manual_snapshot,market_consensus,New Zealand,New Zealand,champion,250000
+2026-06-25,manual_snapshot,market_consensus,Australia,Australia,champion,250000
+2026-06-25,manual_snapshot,market_consensus,DR Congo,DR Congo,champion,250000
+2026-06-25,manual_snapshot,market_consensus,Iraq,Iraq,champion,250000
+2026-06-25,manual_snapshot,market_consensus,Jordan,Jordan,champion,250000
+2026-06-25,manual_snapshot,market_consensus,South Africa,South Africa,champion,250000

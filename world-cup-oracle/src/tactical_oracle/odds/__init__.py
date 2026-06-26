@@ -1,5 +1,9 @@
 from tactical_oracle.odds.adjustments import (
     LongTermOdds,
+    american_to_decimal,
+    champion_market_adjustments,
+    champion_market_adjustments_from_rows,
+    champion_odds_from_rows,
     devig_binary,
     devig_three_way,
     long_term_market_adjustments,
@@ -10,6 +14,10 @@ from tactical_oracle.odds.adjustments import (
 
 __all__ = [
     "LongTermOdds",
+    "american_to_decimal",
+    "champion_market_adjustments",
+    "champion_market_adjustments_from_rows",
+    "champion_odds_from_rows",
     "devig_binary",
     "devig_three_way",
     "long_term_market_adjustments",

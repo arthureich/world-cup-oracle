@@ -200,6 +200,68 @@ def apply_transfermarkt_values_to_squads(
     return rows
 
 
+def impute_team_mean_market_values(
+    rows: list[dict[str, Any]],
+    as_of: date | str = DEFAULT_AS_OF,
+) -> list[dict[str, Any]]:
+    trusted_values: dict[str, list[float]] = {}
+    for row in rows:
+        if not row.get("called_up", True):
+            continue
+        if not row.get("market_value_trusted", True):
+            continue
+        value = row.get("market_value")
+        if value is None:
+            continue
+        trusted_values.setdefault(str(row["team"]), []).append(float(value))
+
+    means = {
+        team: sum(values) / len(values)
+        for team, values in trusted_values.items()
+        if values
+    }
+
+    output: list[dict[str, Any]] = []
+    for row in rows:
+        updated = {
+            **row,
+            "market_value_imputed": bool(row.get("market_value_imputed", False)),
+            "imputed_team_mean_market_value": row.get("imputed_team_mean_market_value"),
+            "imputed_from_trusted_player_count": row.get("imputed_from_trusted_player_count"),
+        }
+        team = str(row["team"])
+        if (
+            row.get("called_up", True)
+            and not row.get("market_value_trusted", True)
+            and team in means
+        ):
+            mean_value = means[team]
+            updated["market_value"] = mean_value
+            updated["market_value_eur"] = mean_value
+            updated["market_value_source"] = "team_mean_imputed"
+            updated["market_value_trusted"] = True
+            updated["market_value_imputed"] = True
+            updated["market_value_date"] = str(as_of)
+            updated["imputed_team_mean_market_value"] = mean_value
+            updated["imputed_from_trusted_player_count"] = len(trusted_values[team])
+        output.append(updated)
+    return output
+
+
+def write_imputed_squads(
+    squads_path: str | Path = "data/interim/squads.parquet",
+    output_path: str | Path = "data/interim/squads.parquet",
+    as_of: date | str = DEFAULT_AS_OF,
+) -> Path:
+    rows = impute_team_mean_market_values(
+        read_parquet(squads_path).to_dicts(),
+        as_of=as_of,
+    )
+    destination = Path(output_path)
+    write_rows_parquet(rows, destination)
+    return destination
+
+
 def write_transfermarkt_squads(
     squads_path: str | Path = "data/interim/squads.parquet",
     players_csv: str | Path = "data/raw/transfermarkt/players.csv",
@@ -232,12 +294,32 @@ def _build_parser() -> argparse.ArgumentParser:
     return parser
 
 
+def _build_impute_parser() -> argparse.ArgumentParser:
+    parser = argparse.ArgumentParser(
+        description="Impute missing squad market values with each team's trusted mean."
+    )
+    parser.add_argument("--squads", default="data/interim/squads.parquet")
+    parser.add_argument("--output", default="data/interim/squads.parquet")
+    parser.add_argument("--as-of", default=DEFAULT_AS_OF.isoformat())
+    return parser
+
+
 def main() -> None:
     args = _build_parser().parse_args()
     path = write_transfermarkt_squads(
         squads_path=args.squads,
         players_csv=args.players_csv,
         valuations_csv=args.valuations_csv,
+        output_path=args.output,
+        as_of=args.as_of,
+    )
+    print(path)
+
+
+def impute_main() -> None:
+    args = _build_impute_parser().parse_args()
+    path = write_imputed_squads(
+        squads_path=args.squads,
         output_path=args.output,
         as_of=args.as_of,
     )

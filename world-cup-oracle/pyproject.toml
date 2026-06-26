@@ -25,6 +25,12 @@ tactical-oracle-mock-pipeline = "tactical_oracle.pipeline.mock_pipeline:main"
 tactical-oracle-build-mock-outputs = "tactical_oracle.pipeline.outputs:main"
 tactical-oracle-normalize-mocks = "tactical_oracle.pipeline.normalize:main"
 tactical-oracle-validate-annex-c = "tactical_oracle.simulation.annex_c:main"
+tactical-oracle-collect-odds = "tactical_oracle.pipeline.the_odds_api:main"
+tactical-oracle-normalize-outrights = "tactical_oracle.pipeline.manual_odds:main"
+tactical-oracle-audit-data = "tactical_oracle.pipeline.data_quality:main"
+tactical-oracle-impute-squads = "tactical_oracle.pipeline.transfermarkt_values:impute_main"
+tactical-oracle-extract-annex-c = "tactical_oracle.pipeline.annex_c_pdf:main"
+tactical-oracle-calibrate-attack-defense = "tactical_oracle.pipeline.calibration:main"
 
 [tool.pytest.ini_options]
 pythonpath = ["src"]

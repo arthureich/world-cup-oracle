@@ -1,54 +1,51 @@
 from __future__ import annotations
 
+import math
+
 from tactical_oracle.data.mocks import squads_mock
 from tactical_oracle.squad import (
-    apply_squad_age_uplift,
+    age_factor,
     player_effective_value,
     player_value_from_row,
     sector_values,
     squad_adjustments_from_players,
-    squad_age_multiplier,
-    squad_age_multipliers,
     squad_scores,
 )
 
 
-def test_player_effective_value_is_market_value_scaled_by_club_level() -> None:
-    assert player_effective_value(market_value=50.0) == 50.0
-    assert player_effective_value(market_value=50.0, club_level=1.2) == 60.0
+def test_age_factor_matches_documented_curve() -> None:
+    assert age_factor(24.0) == 1.0
+    assert age_factor(27.0) == 1.0
+    assert math.isclose(age_factor(39.0), 6.67, rel_tol=1e-3)
+    assert age_factor(60.0) == 7.0
 
 
-def test_squad_age_multiplier_rewards_older_squads_monotonically() -> None:
-    assert squad_age_multiplier(24.0) == 1.0
-    assert squad_age_multiplier(26.0) == 1.0
-    assert round(squad_age_multiplier(29.4), 2) == 1.88
-    assert squad_age_multiplier(33.0) == 2.3
+def test_player_effective_value_is_market_value_scaled_by_age_factor() -> None:
+    assert player_effective_value(market_value=50.0, age=24.0) == 50.0
+    assert player_effective_value(market_value=50.0, age=39.0) > 300.0
 
 
-def test_apply_squad_age_uplift_scales_each_team_by_its_multiplier() -> None:
-    rows = []
-    for team, age in (("Old", 31.0), ("Young", 24.0)):
-        for sector in ("GOL", "DEF", "MEI", "ATA"):
-            rows.append({"team": team, "sector": sector, "age": age,
-                         "player_name": f"{team} {sector}", "market_value": 50.0})
-
-    players = [player_value_from_row(row) for row in rows]
-    uplifted = {p.team: p for p in apply_squad_age_uplift(players, squad_age_multipliers(rows))}
-
-    assert uplifted["Old"].effective_value == 50.0 * 2.3
-    assert uplifted["Young"].effective_value == 50.0
-
-
-def test_player_value_from_row_ignores_age_and_minutes() -> None:
+def test_player_value_from_row_uses_age_and_ignores_minutes() -> None:
     base = {"player_name": "P", "team": "T", "sector": "MEI", "market_value": 50.0}
     veteran = player_value_from_row({**base, "age": 34, "recent_minutes_factor": 0.5})
     youngster = player_value_from_row({**base, "age": 20, "recent_minutes_factor": 1.0})
 
-    assert veteran.effective_value == youngster.effective_value == 50.0
+    assert veteran.effective_value > youngster.effective_value
+
+
+def test_squad_scores_weight_outfield_lines_more_than_goalkeepers() -> None:
+    teams = {
+        "GkOnly": {"GOL": 10.0, "DEF": 5.0, "MEI": 5.0, "ATA": 5.0},
+        "Outfield": {"GOL": 5.0, "DEF": 10.0, "MEI": 10.0, "ATA": 10.0},
+        "Base": {"GOL": 5.0, "DEF": 5.0, "MEI": 5.0, "ATA": 5.0},
+    }
+
+    scores = squad_scores(teams)
+
+    assert scores["Outfield"] > scores["GkOnly"]
 
 
 def test_squad_scores_penalize_only_critical_sectors() -> None:
-    # Fillers fix the per-sector distribution; "Holed" has a genuinely critical GOL.
     teams = {f"F{i}": {"GOL": 5.0, "DEF": 5.0, "MEI": 5.0, "ATA": 5.0} for i in range(6)}
     teams["Holed"] = {"GOL": 0.0, "DEF": 9.0, "MEI": 9.0, "ATA": 9.0}
 
@@ -59,9 +56,6 @@ def test_squad_scores_penalize_only_critical_sectors() -> None:
 
 
 def test_squad_scores_do_not_penalize_uneven_squad_above_the_critical_line() -> None:
-    # "Spiky" is elite in ATA and merely average (not critical) elsewhere. With no
-    # sector under the line, its score is the same whatever the threshold — i.e. the
-    # uneven shape costs nothing; only the total talent (mean) counts.
     teams = {f"F{i}": {"GOL": 5.0, "DEF": 5.0, "MEI": 5.0, "ATA": 5.0} for i in range(6)}
     teams["Spiky"] = {"GOL": 5.0, "DEF": 5.0, "MEI": 5.0, "ATA": 20.0}
 

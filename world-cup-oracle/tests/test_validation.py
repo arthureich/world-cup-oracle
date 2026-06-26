@@ -2,7 +2,12 @@ from __future__ import annotations
 
 import math
 
-from tactical_oracle.odds import devig_three_way, long_term_market_adjustments_from_rows
+from tactical_oracle.odds import (
+    american_to_decimal,
+    champion_market_adjustments_from_rows,
+    devig_three_way,
+    long_term_market_adjustments_from_rows,
+)
 from tactical_oracle.validation import (
     brier_score,
     calibration_bins,
@@ -46,6 +51,11 @@ def test_devig_three_way_normalizes_market_probabilities() -> None:
     assert probabilities[0] > probabilities[2]
 
 
+def test_american_to_decimal_converts_positive_and_negative_odds() -> None:
+    assert math.isclose(american_to_decimal(420), 5.2)
+    assert math.isclose(american_to_decimal(-125), 1.8)
+
+
 def test_long_term_market_adjustments_from_rows_are_capped() -> None:
     adjustments = long_term_market_adjustments_from_rows(
         {"A": 12.0, "B": 8.0},
@@ -56,4 +66,19 @@ def test_long_term_market_adjustments_from_rows_are_capped() -> None:
     )
 
     assert set(adjustments) == {"A", "B"}
+    assert all(-0.75 <= value <= 0.75 for value in adjustments.values())
+
+
+def test_champion_market_adjustments_from_rows_can_use_champion_only_snapshot() -> None:
+    adjustments = champion_market_adjustments_from_rows(
+        {"Spain": 9.0, "Brazil": 10.0, "Long Shot": 11.0},
+        [
+            {"team": "Spain", "american_odd": 420},
+            {"team": "Brazil", "american_odd": 850},
+            {"team": "Long Shot", "american_odd": 250000},
+        ],
+    )
+
+    assert set(adjustments) == {"Spain", "Brazil", "Long Shot"}
+    assert adjustments["Spain"] > adjustments["Long Shot"]
     assert all(-0.75 <= value <= 0.75 for value in adjustments.values())
