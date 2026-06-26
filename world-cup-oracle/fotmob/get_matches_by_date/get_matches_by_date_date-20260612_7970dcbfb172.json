@@ -1,0 +1,2341 @@
+{
+  "data": {
+    "date": "20260612",
+    "leagues": [
+      {
+        "ccode": "INT",
+        "groupName": "A",
+        "id": 894790,
+        "internalRank": 0,
+        "isGroup": true,
+        "localRank": 4,
+        "matches": [
+          {
+            "away": {
+              "id": 8496,
+              "longName": "Czechia",
+              "name": "Czechia",
+              "score": 1
+            },
+            "eliminatedTeamId": null,
+            "home": {
+              "id": 7804,
+              "longName": "South Korea",
+              "name": "South Korea",
+              "score": 2
+            },
+            "id": 4667752,
+            "leagueId": 894790,
+            "status": {
+              "awarded": false,
+              "cancelled": false,
+              "finished": true,
+              "halfs": {
+                "firstHalfStarted": "12.06.2026 04:00:49",
+                "secondHalfStarted": "12.06.2026 05:03:57"
+              },
+              "periodLength": 45,
+              "reason": {
+                "long": "Full-Time",
+                "longKey": "finished",
+                "short": "FT",
+                "shortKey": "fulltime_short"
+              },
+              "scoreStr": "2 - 1",
+              "started": true,
+              "utcTime": "2026-06-12T02:00:00.000Z"
+            },
+            "statusId": 6,
+            "time": "12.06.2026 04:00",
+            "timeTS": 1781229600000,
+            "tournamentStage": "1"
+          }
+        ],
+        "name": "World Cup Grp. A",
+        "parentLeagueId": 77,
+        "parentLeagueName": "World Cup",
+        "primaryId": 77,
+        "simpleLeague": false
+      },
+      {
+        "ccode": "INT",
+        "groupName": "B",
+        "id": 894791,
+        "internalRank": 0,
+        "isGroup": true,
+        "localRank": 4,
+        "matches": [
+          {
+            "away": {
+              "id": 10106,
+              "longName": "Bosnia and Herzegovina",
+              "name": "Bosnia and Herzegovina",
+              "score": 1
+            },
+            "eliminatedTeamId": null,
+            "home": {
+              "id": 5810,
+              "longName": "Canada",
+              "name": "Canada",
+              "score": 1
+            },
+            "id": 4667757,
+            "leagueId": 894791,
+            "status": {
+              "awarded": false,
+              "cancelled": false,
+              "finished": true,
+              "halfs": {
+                "firstHalfStarted": "12.06.2026 21:02:21",
+                "secondHalfStarted": "12.06.2026 22:06:38"
+              },
+              "periodLength": 45,
+              "reason": {
+                "long": "Full-Time",
+                "longKey": "finished",
+                "short": "FT",
+                "shortKey": "fulltime_short"
+              },
+              "scoreStr": "1 - 1",
+              "started": true,
+              "utcTime": "2026-06-12T19:00:00.000Z"
+            },
+            "statusId": 6,
+            "time": "12.06.2026 21:00",
+            "timeTS": 1781290800000,
+            "tournamentStage": "1"
+          }
+        ],
+        "name": "World Cup Grp. B",
+        "parentLeagueId": 77,
+        "parentLeagueName": "World Cup",
+        "primaryId": 77,
+        "simpleLeague": false
+      },
+      {
+        "ccode": "ISL",
+        "id": 216,
+        "internalRank": 99,
+        "matches": [
+          {
+            "away": {
+              "id": 4516,
+              "longName": "HK Kopavogs",
+              "name": "HK Kopavogs",
+              "score": 0
+            },
+            "eliminatedTeamId": null,
+            "home": {
+              "id": 4661,
+              "longName": "Throttur Reykjavik",
+              "name": "Throttur Reykjavik",
+              "score": 2
+            },
+            "id": 5225784,
+            "leagueId": 216,
+            "status": {
+              "awarded": false,
+              "cancelled": false,
+              "finished": true,
+              "halfs": {
+                "firstHalfStarted": "12.06.2026 21:16:12",
+                "secondHalfStarted": "12.06.2026 22:21:37"
+              },
+              "periodLength": 45,
+              "reason": {
+                "long": "Full-Time",
+                "longKey": "finished",
+                "short": "FT",
+                "shortKey": "fulltime_short"
+              },
+              "scoreStr": "2 - 0",
+              "started": true,
+              "utcTime": "2026-06-12T19:15:00.000Z"
+            },
+            "statusId": 6,
+            "time": "12.06.2026 21:15",
+            "timeTS": 1781291700000,
+            "tournamentStage": "9"
+          }
+        ],
+        "name": "1. Deild",
+        "primaryId": 216,
+        "simpleLeague": false
+      },
+      {
+        "ccode": "NOR",
+        "id": 919791,
+        "internalRank": 8,
+        "matches": [
+          {
+            "away": {
+              "id": 6560,
+              "longName": "Kjelsås",
+              "name": "Kjelsås",
+              "score": 4
+            },
+            "eliminatedTeamId": null,
+            "home": {
+              "id": 7963,
+              "longName": "Follo",
+              "name": "Follo",
+              "score": 1
+            },
+            "id": 5143669,
+            "leagueId": 919791,
+            "status": {
+              "awarded": false,
+              "cancelled": false,
+              "finished": true,
+              "halfs": {
+                "firstHalfStarted": "12.06.2026 18:01:12",
+                "secondHalfStarted": "12.06.2026 19:04:04"
+              },
+              "periodLength": 45,
+              "reason": {
+                "long": "Full-Time",
+                "longKey": "finished",
+                "short": "FT",
+                "shortKey": "fulltime_short"
+              },
+              "scoreStr": "1 - 4",
+              "started": true,
+              "utcTime": "2026-06-12T16:00:00.000Z"
+            },
+            "statusId": 6,
+            "time": "12.06.2026 18:00",
+            "timeTS": 1781280000000,
+            "tournamentStage": "10"
+          }
+        ],
+        "name": "2. Divisjon Avd. 2",
+        "parentLeagueId": 204,
+        "primaryId": 204,
+        "simpleLeague": false
+      },
+      {
+        "ccode": "LTU",
+        "id": 228,
+        "internalRank": 0,
+        "matches": [
+          {
+            "away": {
+              "id": 1447232,
+              "longName": "FK TransINVEST",
+              "name": "FK TransINVEST",
+              "score": 2
+            },
+            "eliminatedTeamId": null,
+            "home": {
+              "id": 479143,
+              "longName": "FK Panevezys",
+              "name": "FK Panevezys",
+              "score": 1
+            },
+            "id": 5185239,
+            "leagueId": 228,
+            "status": {
+              "awarded": false,
+              "cancelled": false,
+              "finished": true,
+              "halfs": {
+                "firstHalfStarted": "12.06.2026 17:31:36",
+                "secondHalfStarted": "12.06.2026 18:33:50"
+              },
+              "periodLength": 45,
+              "reason": {
+                "long": "Full-Time",
+                "longKey": "finished",
+                "short": "FT",
+                "shortKey": "fulltime_short"
+              },
+              "scoreStr": "1 - 2",
+              "started": true,
+              "utcTime": "2026-06-12T15:30:00.000Z"
+            },
+            "statusId": 6,
+            "time": "12.06.2026 17:30",
+            "timeTS": 1781278200000,
+            "tournamentStage": "17"
+          },
+          {
+            "away": {
+              "id": 1099941,
+              "longName": "FA Siauliai",
+              "name": "FA Siauliai",
+              "score": 3
+            },
+            "eliminatedTeamId": null,
+            "home": {
+              "id": 624858,
+              "longName": "Dziugas Telsiai",
+              "name": "Dziugas Telsiai",
+              "score": 4
+            },
+            "id": 5185236,
+            "leagueId": 228,
+            "status": {
+              "awarded": false,
+              "cancelled": false,
+              "finished": true,
+              "halfs": {
+                "firstHalfStarted": "12.06.2026 18:03:33",
+                "secondHalfStarted": "12.06.2026 19:06:49"
+              },
+              "periodLength": 45,
+              "reason": {
+                "long": "Full-Time",
+                "longKey": "finished",
+                "short": "FT",
+                "shortKey": "fulltime_short"
+              },
+              "scoreStr": "4 - 3",
+              "started": true,
+              "utcTime": "2026-06-12T16:00:00.000Z"
+            },
+            "statusId": 6,
+            "time": "12.06.2026 18:00",
+            "timeTS": 1781280000000,
+            "tournamentStage": "17"
+          },
+          {
+            "away": {
+              "id": 257518,
+              "longName": "Riteriai",
+              "name": "Riteriai",
+              "score": 2
+            },
+            "eliminatedTeamId": null,
+            "home": {
+              "id": 4616,
+              "longName": "Zalgiris Vilnius",
+              "name": "Zalgiris Vilnius",
+              "score": 3
+            },
+            "id": 5185237,
+            "leagueId": 228,
+            "status": {
+              "awarded": false,
+              "cancelled": false,
+              "finished": true,
+              "halfs": {
+                "firstHalfStarted": "12.06.2026 19:04:39",
+                "secondHalfStarted": "12.06.2026 20:05:51"
+              },
+              "periodLength": 45,
+              "reason": {
+                "long": "Full-Time",
+                "longKey": "finished",
+                "short": "FT",
+                "shortKey": "fulltime_short"
+              },
+              "scoreStr": "3 - 2",
+              "started": true,
+              "utcTime": "2026-06-12T17:00:00.000Z"
+            },
+            "statusId": 6,
+            "time": "12.06.2026 19:00",
+            "timeTS": 1781283600000,
+            "tournamentStage": "17"
+          }
+        ],
+        "name": "A Lyga",
+        "primaryId": 228,
+        "simpleLeague": false
+      },
+      {
+        "ccode": "MAR",
+        "id": 530,
+        "internalRank": 0,
+        "matches": [
+          {
+            "away": {
+              "id": 102043,
+              "longName": "MAS Fes",
+              "name": "MAS Fes",
+              "score": 1
+            },
+            "eliminatedTeamId": null,
+            "home": {
+              "id": 102036,
+              "longName": "FUS Rabat",
+              "name": "FUS Rabat",
+              "score": 1
+            },
+            "id": 5765485,
+            "leagueId": 530,
+            "status": {
+              "awarded": false,
+              "cancelled": false,
+              "finished": true,
+              "halfs": {
+                "firstHalfStarted": "12.06.2026 17:02:36",
+                "secondHalfStarted": "12.06.2026 18:11:12"
+              },
+              "periodLength": 45,
+              "reason": {
+                "long": "Full-Time",
+                "longKey": "finished",
+                "short": "FT",
+                "shortKey": "fulltime_short"
+              },
+              "scoreStr": "1 - 1",
+              "started": true,
+              "utcTime": "2026-06-12T15:00:00.000Z"
+            },
+            "statusId": 6,
+            "time": "12.06.2026 17:00",
+            "timeTS": 1781276400000,
+            "tournamentStage": "24"
+          },
+          {
+            "away": {
+              "id": 102042,
+              "longName": "KACM",
+              "name": "KACM",
+              "score": 0
+            },
+            "eliminatedTeamId": null,
+            "home": {
+              "id": 102047,
+              "longName": "Olympic Club de Safi",
+              "name": "Olympic Club de Safi",
+              "score": 1
+            },
+            "id": 5765486,
+            "leagueId": 530,
+            "status": {
+              "awarded": false,
+              "cancelled": false,
+              "finished": true,
+              "halfs": {
+                "firstHalfStarted": "12.06.2026 17:01:35",
+                "secondHalfStarted": "12.06.2026 18:03:33"
+              },
+              "periodLength": 45,
+              "reason": {
+                "long": "Full-Time",
+                "longKey": "finished",
+                "short": "FT",
+                "shortKey": "fulltime_short"
+              },
+              "scoreStr": "1 - 0",
+              "started": true,
+              "utcTime": "2026-06-12T15:00:00.000Z"
+            },
+            "statusId": 6,
+            "time": "12.06.2026 17:00",
+            "timeTS": 1781276400000,
+            "tournamentStage": "24"
+          },
+          {
+            "away": {
+              "id": 950070,
+              "longName": "Renaissance Club Zemamra",
+              "name": "Renaissance Club Zemamra",
+              "score": 2
+            },
+            "eliminatedTeamId": null,
+            "home": {
+              "id": 102032,
+              "longName": "CODM Meknes",
+              "name": "CODM Meknes",
+              "score": 1
+            },
+            "id": 5765487,
+            "leagueId": 530,
+            "status": {
+              "awarded": false,
+              "cancelled": false,
+              "finished": true,
+              "halfs": {
+                "firstHalfStarted": "12.06.2026 19:04:39",
+                "secondHalfStarted": "12.06.2026 20:09:10"
+              },
+              "periodLength": 45,
+              "reason": {
+                "long": "Full-Time",
+                "longKey": "finished",
+                "short": "FT",
+                "shortKey": "fulltime_short"
+              },
+              "scoreStr": "1 - 2",
+              "started": true,
+              "utcTime": "2026-06-12T17:00:00.000Z"
+            },
+            "statusId": 6,
+            "time": "12.06.2026 19:00",
+            "timeTS": 1781283600000,
+            "tournamentStage": "24"
+          },
+          {
+            "away": {
+              "id": 570487,
+              "longName": "Olympique Dcheira",
+              "name": "Olympique Dcheira",
+              "score": 2
+            },
+            "eliminatedTeamId": null,
+            "home": {
+              "id": 102033,
+              "longName": "Difaa El Jadida",
+              "name": "Difaa El Jadida",
+              "score": 2
+            },
+            "id": 5765488,
+            "leagueId": 530,
+            "status": {
+              "awarded": false,
+              "cancelled": false,
+              "finished": true,
+              "halfs": {
+                "firstHalfStarted": "12.06.2026 19:01:31",
+                "secondHalfStarted": "12.06.2026 20:05:51"
+              },
+              "periodLength": 45,
+              "reason": {
+                "long": "Full-Time",
+                "longKey": "finished",
+                "short": "FT",
+                "shortKey": "fulltime_short"
+              },
+              "scoreStr": "2 - 2",
+              "started": true,
+              "utcTime": "2026-06-12T17:00:00.000Z"
+            },
+            "statusId": 6,
+            "time": "12.06.2026 19:00",
+            "timeTS": 1781283600000,
+            "tournamentStage": "24"
+          }
+        ],
+        "name": "Botola Pro",
+        "primaryId": 530,
+        "simpleLeague": false
+      },
+      {
+        "ccode": "ISL",
+        "id": 925063,
+        "internalRank": 98,
+        "matches": [
+          {
+            "away": {
+              "id": 8332,
+              "longName": "Breidablik",
+              "name": "Breidablik",
+              "score": 3
+            },
+            "eliminatedTeamId": null,
+            "home": {
+              "id": 559291,
+              "longName": "Ægir",
+              "name": "Ægir",
+              "score": 0
+            },
+            "id": 5653100,
+            "leagueId": 925063,
+            "status": {
+              "awarded": false,
+              "cancelled": false,
+              "finished": true,
+              "halfs": {
+                "firstHalfStarted": "12.06.2026 19:30:06",
+                "secondHalfStarted": "12.06.2026 20:33:04"
+              },
+              "periodLength": 45,
+              "reason": {
+                "long": "Full-Time",
+                "longKey": "finished",
+                "short": "FT",
+                "shortKey": "fulltime_short"
+              },
+              "scoreStr": "0 - 3",
+              "started": true,
+              "utcTime": "2026-06-12T17:30:00.000Z"
+            },
+            "statusId": 6,
+            "time": "12.06.2026 19:30",
+            "timeTS": 1781285400000,
+            "tournamentStage": "1/4"
+          },
+          {
+            "away": {
+              "id": 6017,
+              "longName": "Vikingur Reykjavik",
+              "name": "Vikingur Reykjavik",
+              "score": 2
+            },
+            "eliminatedTeamId": null,
+            "home": {
+              "id": 8004,
+              "longName": "IA Akranes",
+              "name": "IA Akranes",
+              "score": 1
+            },
+            "id": 5653102,
+            "leagueId": 925063,
+            "status": {
+              "awarded": false,
+              "cancelled": false,
+              "finished": true,
+              "halfs": {
+                "firstHalfStarted": "12.06.2026 22:21:05",
+                "secondHalfStarted": "12.06.2026 23:21:34"
+              },
+              "periodLength": 45,
+              "reason": {
+                "long": "Full-Time",
+                "longKey": "finished",
+                "short": "FT",
+                "shortKey": "fulltime_short"
+              },
+              "scoreStr": "1 - 2",
+              "started": true,
+              "utcTime": "2026-06-12T20:15:00.000Z"
+            },
+            "statusId": 6,
+            "time": "12.06.2026 22:15",
+            "timeTS": 1781295300000,
+            "tournamentStage": "1/4"
+          }
+        ],
+        "name": "Cup",
+        "parentLeagueId": 217,
+        "primaryId": 217,
+        "simpleLeague": false
+      },
+      {
+        "ccode": "SWE",
+        "id": 9089,
+        "internalRank": 6,
+        "matches": [
+          {
+            "away": {
+              "id": 181470,
+              "longName": "Kristianstads DFF (W)",
+              "name": "Kristianstads DFF (W)",
+              "score": 1
+            },
+            "eliminatedTeamId": null,
+            "home": {
+              "id": 300220,
+              "longName": "Vittsjö GIK (W)",
+              "name": "Vittsjö GIK (W)",
+              "score": 1
+            },
+            "id": 5107856,
+            "leagueId": 9089,
+            "status": {
+              "awarded": false,
+              "cancelled": false,
+              "finished": true,
+              "halfs": {
+                "firstHalfStarted": "12.06.2026 19:02:44",
+                "secondHalfStarted": "12.06.2026 20:00:59"
+              },
+              "periodLength": 45,
+              "reason": {
+                "long": "Full-Time",
+                "longKey": "finished",
+                "short": "FT",
+                "shortKey": "fulltime_short"
+              },
+              "scoreStr": "1 - 1",
+              "started": true,
+              "utcTime": "2026-06-12T17:00:00.000Z"
+            },
+            "statusId": 6,
+            "time": "12.06.2026 19:00",
+            "timeTS": 1781283600000,
+            "tournamentStage": "9"
+          }
+        ],
+        "name": "Damallsvenskan",
+        "primaryId": 9089,
+        "simpleLeague": false
+      },
+      {
+        "ccode": "GEO",
+        "id": 439,
+        "internalRank": 0,
+        "matches": [
+          {
+            "away": {
+              "id": 1328532,
+              "longName": "Spaeri",
+              "name": "Spaeri",
+              "score": 1
+            },
+            "eliminatedTeamId": null,
+            "home": {
+              "id": 480291,
+              "longName": "Iberia 1999",
+              "name": "Iberia 1999",
+              "score": 1
+            },
+            "id": 5165279,
+            "leagueId": 439,
+            "status": {
+              "awarded": false,
+              "cancelled": false,
+              "finished": true,
+              "halfs": {
+                "firstHalfStarted": "12.06.2026 17:04:24",
+                "secondHalfStarted": "12.06.2026 18:10:09"
+              },
+              "periodLength": 45,
+              "reason": {
+                "long": "Full-Time",
+                "longKey": "finished",
+                "short": "FT",
+                "shortKey": "fulltime_short"
+              },
+              "scoreStr": "1 - 1",
+              "started": true,
+              "utcTime": "2026-06-12T15:00:00.000Z"
+            },
+            "statusId": 6,
+            "time": "12.06.2026 17:00",
+            "timeTS": 1781276400000,
+            "tournamentStage": "8"
+          },
+          {
+            "away": {
+              "id": 2217,
+              "longName": "Dila Gori",
+              "name": "Dila Gori",
+              "score": 2
+            },
+            "eliminatedTeamId": null,
+            "home": {
+              "id": 6193,
+              "longName": "Dinamo Batumi",
+              "name": "Dinamo Batumi",
+              "redCards": 1,
+              "score": 3
+            },
+            "id": 5165322,
+            "leagueId": 439,
+            "status": {
+              "awarded": false,
+              "cancelled": false,
+              "finished": true,
+              "halfs": {
+                "firstHalfStarted": "12.06.2026 19:04:39",
+                "secondHalfStarted": "12.06.2026 20:12:40"
+              },
+              "numberOfHomeRedCards": 1,
+              "periodLength": 45,
+              "reason": {
+                "long": "Full-Time",
+                "longKey": "finished",
+                "short": "FT",
+                "shortKey": "fulltime_short"
+              },
+              "scoreStr": "3 - 2",
+              "started": true,
+              "utcTime": "2026-06-12T17:00:00.000Z"
+            },
+            "statusId": 6,
+            "time": "12.06.2026 19:00",
+            "timeTS": 1781283600000,
+            "tournamentStage": "17"
+          }
+        ],
+        "name": "Erovnuli Liga",
+        "primaryId": 439,
+        "simpleLeague": false
+      },
+      {
+        "ccode": "SWE",
+        "id": 918043,
+        "internalRank": 0,
+        "matches": [
+          {
+            "away": {
+              "id": 2006,
+              "longName": "Piteå",
+              "name": "Piteå",
+              "score": 0
+            },
+            "eliminatedTeamId": null,
+            "home": {
+              "id": 8601,
+              "longName": "Umeå",
+              "name": "Umeå",
+              "score": 2
+            },
+            "id": 5127507,
+            "leagueId": 918043,
+            "status": {
+              "awarded": false,
+              "cancelled": false,
+              "finished": true,
+              "halfs": {
+                "firstHalfStarted": "12.06.2026 19:02:47",
+                "secondHalfStarted": "12.06.2026 20:01:50"
+              },
+              "periodLength": 45,
+              "reason": {
+                "long": "Full-Time",
+                "longKey": "finished",
+                "short": "FT",
+                "shortKey": "fulltime_short"
+              },
+              "scoreStr": "2 - 0",
+              "started": true,
+              "utcTime": "2026-06-12T17:00:00.000Z"
+            },
+            "statusId": 6,
+            "time": "12.06.2026 19:00",
+            "timeTS": 1781283600000,
+            "tournamentStage": "12"
+          }
+        ],
+        "name": "Ettan Norra",
+        "parentLeagueId": 169,
+        "primaryId": 169,
+        "simpleLeague": false
+      },
+      {
+        "ccode": "SWE",
+        "id": 918053,
+        "internalRank": 0,
+        "matches": [
+          {
+            "away": {
+              "id": 1331261,
+              "longName": "AFC Malmoe",
+              "name": "AFC Malmoe",
+              "score": 4
+            },
+            "eliminatedTeamId": null,
+            "home": {
+              "id": 6174,
+              "longName": "Lunds BK",
+              "name": "Lunds BK",
+              "score": 1
+            },
+            "id": 5127852,
+            "leagueId": 918053,
+            "status": {
+              "awarded": false,
+              "cancelled": false,
+              "finished": true,
+              "halfs": {
+                "firstHalfStarted": "12.06.2026 19:04:39",
+                "secondHalfStarted": "12.06.2026 20:03:41"
+              },
+              "periodLength": 45,
+              "reason": {
+                "long": "Full-Time",
+                "longKey": "finished",
+                "short": "FT",
+                "shortKey": "fulltime_short"
+              },
+              "scoreStr": "1 - 4",
+              "started": true,
+              "utcTime": "2026-06-12T17:00:00.000Z"
+            },
+            "statusId": 6,
+            "time": "12.06.2026 19:00",
+            "timeTS": 1781283600000,
+            "tournamentStage": "12"
+          }
+        ],
+        "name": "Ettan Soedra",
+        "parentLeagueId": 169,
+        "primaryId": 169,
+        "simpleLeague": false
+      },
+      {
+        "ccode": "IRL",
+        "id": 916016,
+        "internalRank": 8,
+        "matches": [
+          {
+            "away": {
+              "id": 1578,
+              "longName": "UCD",
+              "name": "UCD",
+              "score": 5
+            },
+            "eliminatedTeamId": null,
+            "home": {
+              "id": 1627,
+              "longName": "Finn Harps",
+              "name": "Finn Harps",
+              "score": 0
+            },
+            "id": 5101214,
+            "leagueId": 916016,
+            "status": {
+              "awarded": false,
+              "cancelled": false,
+              "finished": true,
+              "halfs": {
+                "firstHalfStarted": "12.06.2026 20:47:29",
+                "secondHalfStarted": "12.06.2026 21:48:57"
+              },
+              "periodLength": 45,
+              "reason": {
+                "long": "Full-Time",
+                "longKey": "finished",
+                "short": "FT",
+                "shortKey": "fulltime_short"
+              },
+              "scoreStr": "0 - 5",
+              "started": true,
+              "utcTime": "2026-06-12T18:45:00.000Z"
+            },
+            "statusId": 6,
+            "time": "12.06.2026 20:45",
+            "timeTS": 1781289900000,
+            "tournamentStage": "19"
+          },
+          {
+            "away": {
+              "id": 2378,
+              "longName": "Athlone Town",
+              "name": "Athlone Town",
+              "score": 0
+            },
+            "eliminatedTeamId": null,
+            "home": {
+              "id": 1426348,
+              "longName": "Kerry FC",
+              "name": "Kerry FC",
+              "score": 1
+            },
+            "id": 5101215,
+            "leagueId": 916016,
+            "status": {
+              "awarded": false,
+              "cancelled": false,
+              "finished": true,
+              "halfs": {
+                "firstHalfStarted": "12.06.2026 20:47:00",
+                "secondHalfStarted": "12.06.2026 21:48:57"
+              },
+              "periodLength": 45,
+              "reason": {
+                "long": "Full-Time",
+                "longKey": "finished",
+                "short": "FT",
+                "shortKey": "fulltime_short"
+              },
+              "scoreStr": "1 - 0",
+              "started": true,
+              "utcTime": "2026-06-12T18:45:00.000Z"
+            },
+            "statusId": 6,
+            "time": "12.06.2026 20:45",
+            "timeTS": 1781289900000,
+            "tournamentStage": "19"
+          },
+          {
+            "away": {
+              "id": 1629,
+              "longName": "Bray Wanderers",
+              "name": "Bray Wanderers",
+              "score": 2
+            },
+            "eliminatedTeamId": null,
+            "home": {
+              "id": 1233534,
+              "longName": "Treaty United",
+              "name": "Treaty United",
+              "score": 2
+            },
+            "id": 5101216,
+            "leagueId": 916016,
+            "status": {
+              "awarded": false,
+              "cancelled": false,
+              "finished": true,
+              "halfs": {
+                "firstHalfStarted": "12.06.2026 20:46:35",
+                "secondHalfStarted": "12.06.2026 21:48:26"
+              },
+              "periodLength": 45,
+              "reason": {
+                "long": "Full-Time",
+                "longKey": "finished",
+                "short": "FT",
+                "shortKey": "fulltime_short"
+              },
+              "scoreStr": "2 - 2",
+              "started": true,
+              "utcTime": "2026-06-12T18:45:00.000Z"
+            },
+            "statusId": 6,
+            "time": "12.06.2026 20:45",
+            "timeTS": 1781289900000,
+            "tournamentStage": "19"
+          },
+          {
+            "away": {
+              "id": 2201,
+              "longName": "Cork City",
+              "name": "Cork City",
+              "score": 2
+            },
+            "eliminatedTeamId": null,
+            "home": {
+              "id": 62337,
+              "longName": "Wexford FC",
+              "name": "Wexford FC",
+              "score": 0
+            },
+            "id": 5101217,
+            "leagueId": 916016,
+            "status": {
+              "awarded": false,
+              "cancelled": false,
+              "finished": true,
+              "halfs": {
+                "firstHalfStarted": "12.06.2026 20:46:35",
+                "secondHalfStarted": "12.06.2026 21:48:57"
+              },
+              "periodLength": 45,
+              "reason": {
+                "long": "Full-Time",
+                "longKey": "finished",
+                "short": "FT",
+                "shortKey": "fulltime_short"
+              },
+              "scoreStr": "0 - 2",
+              "started": true,
+              "utcTime": "2026-06-12T18:45:00.000Z"
+            },
+            "statusId": 6,
+            "time": "12.06.2026 20:45",
+            "timeTS": 1781289900000,
+            "tournamentStage": "19"
+          }
+        ],
+        "name": "First Division",
+        "parentLeagueId": 218,
+        "primaryId": 218,
+        "simpleLeague": false
+      },
+      {
+        "ccode": "FIN",
+        "id": 923619,
+        "internalRank": 6,
+        "matches": [
+          {
+            "away": {
+              "id": 1179352,
+              "longName": "KuPS (W)",
+              "name": "KuPS (W)",
+              "score": 2
+            },
+            "eliminatedTeamId": null,
+            "home": {
+              "id": 394120,
+              "longName": "PK-35 Vantaa (W)",
+              "name": "PK-35 Vantaa (W)",
+              "score": 1
+            },
+            "id": 5234904,
+            "leagueId": 923619,
+            "status": {
+              "awarded": false,
+              "cancelled": false,
+              "finished": true,
+              "halfs": {
+                "firstHalfStarted": "12.06.2026 17:31:36",
+                "secondHalfStarted": "12.06.2026 18:31:42"
+              },
+              "periodLength": 45,
+              "reason": {
+                "long": "Full-Time",
+                "longKey": "finished",
+                "short": "FT",
+                "shortKey": "fulltime_short"
+              },
+              "scoreStr": "1 - 2",
+              "started": true,
+              "utcTime": "2026-06-12T15:30:00.000Z"
+            },
+            "statusId": 6,
+            "time": "12.06.2026 17:30",
+            "timeTS": 1781278200000,
+            "tournamentStage": "9"
+          },
+          {
+            "away": {
+              "id": 545023,
+              "longName": "HJK (W)",
+              "name": "HJK (W)",
+              "score": 3
+            },
+            "eliminatedTeamId": null,
+            "home": {
+              "id": 552493,
+              "longName": "Åland United (W)",
+              "name": "Åland United (W)",
+              "score": 2
+            },
+            "id": 5234905,
+            "leagueId": 923619,
+            "status": {
+              "awarded": false,
+              "cancelled": false,
+              "finished": true,
+              "halfs": {
+                "firstHalfStarted": "12.06.2026 18:00:38",
+                "secondHalfStarted": "12.06.2026 19:01:11"
+              },
+              "periodLength": 45,
+              "reason": {
+                "long": "Full-Time",
+                "longKey": "finished",
+                "short": "FT",
+                "shortKey": "fulltime_short"
+              },
+              "scoreStr": "2 - 3",
+              "started": true,
+              "utcTime": "2026-06-12T16:00:00.000Z"
+            },
+            "statusId": 6,
+            "time": "12.06.2026 18:00",
+            "timeTS": 1781280000000,
+            "tournamentStage": "9"
+          }
+        ],
+        "name": "Kansallinen Liiga",
+        "parentLeagueId": 10174,
+        "primaryId": 10174,
+        "simpleLeague": false
+      },
+      {
+        "ccode": "NOR",
+        "groupName": "5",
+        "id": 919796,
+        "internalRank": 0,
+        "isGroup": true,
+        "matches": [
+          {
+            "away": {
+              "id": 6538,
+              "longName": "Tromsø 2",
+              "name": "Tromsø 2",
+              "score": 3
+            },
+            "eliminatedTeamId": null,
+            "home": {
+              "id": 8353,
+              "longName": "Alta",
+              "name": "Alta",
+              "redCards": 1,
+              "score": 3
+            },
+            "id": 5144497,
+            "leagueId": 919796,
+            "status": {
+              "awarded": false,
+              "cancelled": false,
+              "finished": true,
+              "halfs": {
+                "firstHalfStarted": "12.06.2026 18:30:48",
+                "secondHalfStarted": "12.06.2026 19:35:34"
+              },
+              "numberOfHomeRedCards": 1,
+              "periodLength": 45,
+              "reason": {
+                "long": "Full-Time",
+                "longKey": "finished",
+                "short": "FT",
+                "shortKey": "fulltime_short"
+              },
+              "scoreStr": "3 - 3",
+              "started": true,
+              "utcTime": "2026-06-12T16:30:00.000Z"
+            },
+            "statusId": 6,
+            "time": "12.06.2026 18:30",
+            "timeTS": 1781281800000,
+            "tournamentStage": "10"
+          }
+        ],
+        "name": "3. Divisjon Avd. 5",
+        "parentLeagueId": 205,
+        "parentLeagueName": "Norsk Tipping-ligaen",
+        "primaryId": 205,
+        "simpleLeague": false
+      },
+      {
+        "ccode": "NOR",
+        "groupName": "4",
+        "id": 919795,
+        "internalRank": 0,
+        "isGroup": true,
+        "matches": [
+          {
+            "away": {
+              "id": 10018,
+              "longName": "Viking 2",
+              "name": "Viking 2",
+              "score": 3
+            },
+            "eliminatedTeamId": null,
+            "home": {
+              "id": 4230,
+              "longName": "Varhaug",
+              "name": "Varhaug",
+              "redCards": 1,
+              "score": 0
+            },
+            "id": 5144314,
+            "leagueId": 919795,
+            "status": {
+              "awarded": false,
+              "cancelled": false,
+              "finished": true,
+              "halfs": {
+                "firstHalfStarted": "12.06.2026 19:04:39",
+                "secondHalfStarted": "12.06.2026 20:02:23"
+              },
+              "numberOfHomeRedCards": 1,
+              "periodLength": 45,
+              "reason": {
+                "long": "Full-Time",
+                "longKey": "finished",
+                "short": "FT",
+                "shortKey": "fulltime_short"
+              },
+              "scoreStr": "0 - 3",
+              "started": true,
+              "utcTime": "2026-06-12T17:00:00.000Z"
+            },
+            "statusId": 6,
+            "time": "12.06.2026 19:00",
+            "timeTS": 1781283600000,
+            "tournamentStage": "10"
+          }
+        ],
+        "name": "3. Divisjon Avd. 4",
+        "parentLeagueId": 205,
+        "parentLeagueName": "Norsk Tipping-ligaen",
+        "primaryId": 205,
+        "simpleLeague": false
+      },
+      {
+        "ccode": "IRL",
+        "id": 126,
+        "internalRank": 10,
+        "matches": [
+          {
+            "away": {
+              "id": 4594,
+              "longName": "Bohemian FC",
+              "name": "Bohemian FC",
+              "score": 1
+            },
+            "eliminatedTeamId": null,
+            "home": {
+              "id": 8338,
+              "longName": "Derry City",
+              "name": "Derry City",
+              "score": 4
+            },
+            "id": 5100909,
+            "leagueId": 126,
+            "status": {
+              "awarded": false,
+              "cancelled": false,
+              "finished": true,
+              "halfs": {
+                "firstHalfStarted": "12.06.2026 20:54:55",
+                "secondHalfStarted": "12.06.2026 22:01:37"
+              },
+              "periodLength": 45,
+              "reason": {
+                "long": "Full-Time",
+                "longKey": "finished",
+                "short": "FT",
+                "shortKey": "fulltime_short"
+              },
+              "scoreStr": "4 - 1",
+              "started": true,
+              "utcTime": "2026-06-12T18:45:00.000Z"
+            },
+            "statusId": 6,
+            "time": "12.06.2026 20:45",
+            "timeTS": 1781289900000,
+            "tournamentStage": "20"
+          },
+          {
+            "away": {
+              "id": 1853,
+              "longName": "Dundalk",
+              "name": "Dundalk",
+              "score": 1
+            },
+            "eliminatedTeamId": null,
+            "home": {
+              "id": 520517,
+              "longName": "Galway United FC",
+              "name": "Galway United FC",
+              "score": 0
+            },
+            "id": 5100910,
+            "leagueId": 126,
+            "status": {
+              "awarded": false,
+              "cancelled": false,
+              "finished": true,
+              "halfs": {
+                "firstHalfStarted": "12.06.2026 20:45:29",
+                "secondHalfStarted": "12.06.2026 21:46:18"
+              },
+              "periodLength": 45,
+              "reason": {
+                "long": "Full-Time",
+                "longKey": "finished",
+                "short": "FT",
+                "shortKey": "fulltime_short"
+              },
+              "scoreStr": "0 - 1",
+              "started": true,
+              "utcTime": "2026-06-12T18:45:00.000Z"
+            },
+            "statusId": 6,
+            "time": "12.06.2026 20:45",
+            "timeTS": 1781289900000,
+            "tournamentStage": "20"
+          },
+          {
+            "away": {
+              "id": 8339,
+              "longName": "Drogheda United",
+              "name": "Drogheda United",
+              "score": 0
+            },
+            "eliminatedTeamId": null,
+            "home": {
+              "id": 1854,
+              "longName": "St. Patrick's Athletic",
+              "name": "St. Patrick's Athletic",
+              "score": 2
+            },
+            "id": 5100912,
+            "leagueId": 126,
+            "status": {
+              "awarded": false,
+              "cancelled": false,
+              "finished": true,
+              "halfs": {
+                "firstHalfStarted": "12.06.2026 20:47:29",
+                "secondHalfStarted": "12.06.2026 21:52:32"
+              },
+              "periodLength": 45,
+              "reason": {
+                "long": "Full-Time",
+                "longKey": "finished",
+                "short": "FT",
+                "shortKey": "fulltime_short"
+              },
+              "scoreStr": "2 - 0",
+              "started": true,
+              "utcTime": "2026-06-12T18:45:00.000Z"
+            },
+            "statusId": 6,
+            "time": "12.06.2026 20:45",
+            "timeTS": 1781289900000,
+            "tournamentStage": "20"
+          },
+          {
+            "away": {
+              "id": 6361,
+              "longName": "Sligo Rovers",
+              "name": "Sligo Rovers",
+              "redCards": 1,
+              "score": 0
+            },
+            "eliminatedTeamId": null,
+            "home": {
+              "id": 6042,
+              "longName": "Waterford FC",
+              "name": "Waterford FC",
+              "score": 4
+            },
+            "id": 5100913,
+            "leagueId": 126,
+            "status": {
+              "awarded": false,
+              "cancelled": false,
+              "finished": true,
+              "halfs": {
+                "firstHalfStarted": "12.06.2026 20:45:29",
+                "secondHalfStarted": "12.06.2026 21:45:47"
+              },
+              "numberOfAwayRedCards": 1,
+              "periodLength": 45,
+              "reason": {
+                "long": "Full-Time",
+                "longKey": "finished",
+                "short": "FT",
+                "shortKey": "fulltime_short"
+              },
+              "scoreStr": "4 - 0",
+              "started": true,
+              "utcTime": "2026-06-12T18:45:00.000Z"
+            },
+            "statusId": 6,
+            "time": "12.06.2026 20:45",
+            "timeTS": 1781289900000,
+            "tournamentStage": "20"
+          },
+          {
+            "away": {
+              "id": 4131,
+              "longName": "Shamrock Rovers",
+              "name": "Shamrock Rovers",
+              "score": 1
+            },
+            "eliminatedTeamId": null,
+            "home": {
+              "id": 5751,
+              "longName": "Shelbourne",
+              "name": "Shelbourne",
+              "score": 2
+            },
+            "id": 5100911,
+            "leagueId": 126,
+            "status": {
+              "awarded": false,
+              "cancelled": false,
+              "finished": true,
+              "halfs": {
+                "firstHalfStarted": "12.06.2026 21:02:36",
+                "secondHalfStarted": "12.06.2026 22:03:50"
+              },
+              "periodLength": 45,
+              "reason": {
+                "long": "Full-Time",
+                "longKey": "finished",
+                "short": "FT",
+                "shortKey": "fulltime_short"
+              },
+              "scoreStr": "2 - 1",
+              "started": true,
+              "utcTime": "2026-06-12T19:00:00.000Z"
+            },
+            "statusId": 6,
+            "time": "12.06.2026 21:00",
+            "timeTS": 1781290800000,
+            "tournamentStage": "20"
+          }
+        ],
+        "name": "Premier Division",
+        "primaryId": 126,
+        "simpleLeague": false
+      },
+      {
+        "ccode": "BLR",
+        "id": 923169,
+        "internalRank": 11,
+        "matches": [
+          {
+            "away": {
+              "id": 10071,
+              "longName": "Naftan Novopolotsk",
+              "name": "Naftan Novopolotsk",
+              "score": 1
+            },
+            "eliminatedTeamId": null,
+            "home": {
+              "id": 439329,
+              "longName": "Isloch",
+              "name": "Isloch",
+              "score": 3
+            },
+            "id": 5215434,
+            "leagueId": 923169,
+            "status": {
+              "awarded": false,
+              "cancelled": false,
+              "finished": true,
+              "halfs": {
+                "firstHalfStarted": "12.06.2026 16:03:22",
+                "secondHalfStarted": "12.06.2026 17:04:24"
+              },
+              "periodLength": 45,
+              "reason": {
+                "long": "Full-Time",
+                "longKey": "finished",
+                "short": "FT",
+                "shortKey": "fulltime_short"
+              },
+              "scoreStr": "3 - 1",
+              "started": true,
+              "utcTime": "2026-06-12T14:00:00.000Z"
+            },
+            "statusId": 6,
+            "time": "12.06.2026 16:00",
+            "timeTS": 1781272800000,
+            "tournamentStage": "11"
+          },
+          {
+            "away": {
+              "id": 10063,
+              "longName": "BATE Borisov",
+              "name": "BATE Borisov",
+              "score": 1
+            },
+            "eliminatedTeamId": null,
+            "home": {
+              "id": 10064,
+              "longName": "Belshina Bobruisk",
+              "name": "Belshina Bobruisk",
+              "score": 1
+            },
+            "id": 5215430,
+            "leagueId": 923169,
+            "status": {
+              "awarded": false,
+              "cancelled": false,
+              "finished": true,
+              "halfs": {
+                "firstHalfStarted": "12.06.2026 18:01:12",
+                "secondHalfStarted": "12.06.2026 19:02:26"
+              },
+              "periodLength": 45,
+              "reason": {
+                "long": "Full-Time",
+                "longKey": "finished",
+                "short": "FT",
+                "shortKey": "fulltime_short"
+              },
+              "scoreStr": "1 - 1",
+              "started": true,
+              "utcTime": "2026-06-12T16:00:00.000Z"
+            },
+            "statusId": 6,
+            "time": "12.06.2026 18:00",
+            "timeTS": 1781280000000,
+            "tournamentStage": "11"
+          }
+        ],
+        "name": "Premier League",
+        "parentLeagueId": 263,
+        "primaryId": 263,
+        "simpleLeague": false
+      },
+      {
+        "ccode": "KUW",
+        "id": 902649,
+        "internalRank": 0,
+        "matches": [
+          {
+            "away": {
+              "id": 101718,
+              "longName": "Kazma",
+              "name": "Kazma",
+              "score": 2
+            },
+            "eliminatedTeamId": null,
+            "home": {
+              "id": 101710,
+              "longName": "Al Nasr",
+              "name": "Al Nasr",
+              "score": 1
+            },
+            "id": 5483479,
+            "leagueId": 902649,
+            "status": {
+              "awarded": false,
+              "cancelled": false,
+              "finished": true,
+              "halfs": {
+                "firstHalfStarted": "12.06.2026 19:47:55",
+                "secondHalfStarted": "12.06.2026 20:56:52"
+              },
+              "periodLength": 45,
+              "reason": {
+                "long": "Full-Time",
+                "longKey": "finished",
+                "short": "FT",
+                "shortKey": "fulltime_short"
+              },
+              "scoreStr": "1 - 2",
+              "started": true,
+              "utcTime": "2026-06-12T17:45:00.000Z"
+            },
+            "statusId": 6,
+            "time": "12.06.2026 19:45",
+            "timeTS": 1781286300000,
+            "tournamentStage": "18"
+          },
+          {
+            "away": {
+              "id": 101713,
+              "longName": "Kuwait SC",
+              "name": "Kuwait SC",
+              "redCards": 1,
+              "score": 0
+            },
+            "eliminatedTeamId": null,
+            "home": {
+              "id": 101716,
+              "longName": "Al-Salmiyah",
+              "name": "Al-Salmiyah",
+              "score": 0
+            },
+            "id": 5483475,
+            "leagueId": 902649,
+            "status": {
+              "awarded": false,
+              "cancelled": false,
+              "finished": true,
+              "halfs": {
+                "firstHalfStarted": "12.06.2026 19:47:55",
+                "secondHalfStarted": "12.06.2026 20:54:11"
+              },
+              "numberOfAwayRedCards": 1,
+              "periodLength": 45,
+              "reason": {
+                "long": "Full-Time",
+                "longKey": "finished",
+                "short": "FT",
+                "shortKey": "fulltime_short"
+              },
+              "scoreStr": "0 - 0",
+              "started": true,
+              "utcTime": "2026-06-12T17:45:00.000Z"
+            },
+            "statusId": 6,
+            "time": "12.06.2026 19:45",
+            "timeTS": 1781286300000,
+            "tournamentStage": "18"
+          }
+        ],
+        "name": "Premier League",
+        "parentLeagueId": 529,
+        "primaryId": 529,
+        "simpleLeague": false
+      },
+      {
+        "ccode": "TAN",
+        "id": 9066,
+        "internalRank": 0,
+        "matches": [
+          {
+            "away": {
+              "id": 1084108,
+              "longName": "Namungo FC",
+              "name": "Namungo FC",
+              "score": 1
+            },
+            "eliminatedTeamId": null,
+            "home": {
+              "id": 287669,
+              "longName": "Coastal Union",
+              "name": "Coastal Union",
+              "score": 1
+            },
+            "id": 4951099,
+            "leagueId": 9066,
+            "status": {
+              "awarded": false,
+              "cancelled": false,
+              "finished": true,
+              "halfs": {
+                "firstHalfStarted": "12.06.2026 15:02:46",
+                "secondHalfStarted": "12.06.2026 16:04:56"
+              },
+              "periodLength": 45,
+              "reason": {
+                "long": "Full-Time",
+                "longKey": "finished",
+                "short": "FT",
+                "shortKey": "fulltime_short"
+              },
+              "scoreStr": "1 - 1",
+              "started": true,
+              "utcTime": "2026-06-12T13:00:00.000Z"
+            },
+            "statusId": 6,
+            "time": "12.06.2026 15:00",
+            "timeTS": 1781269200000,
+            "tournamentStage": "26"
+          },
+          {
+            "away": {
+              "id": 165091,
+              "longName": "Azam FC",
+              "name": "Azam FC",
+              "score": 2
+            },
+            "eliminatedTeamId": null,
+            "home": {
+              "id": 1396530,
+              "longName": "Fountain Gate FC",
+              "name": "Fountain Gate FC",
+              "score": 0
+            },
+            "id": 4951100,
+            "leagueId": 9066,
+            "status": {
+              "awarded": false,
+              "cancelled": false,
+              "finished": true,
+              "halfs": {
+                "firstHalfStarted": "12.06.2026 15:02:49",
+                "secondHalfStarted": "12.06.2026 16:04:56"
+              },
+              "periodLength": 45,
+              "reason": {
+                "long": "Full-Time",
+                "longKey": "finished",
+                "short": "FT",
+                "shortKey": "fulltime_short"
+              },
+              "scoreStr": "0 - 2",
+              "started": true,
+              "utcTime": "2026-06-12T13:00:00.000Z"
+            },
+            "statusId": 6,
+            "time": "12.06.2026 15:00",
+            "timeTS": 1781269200000,
+            "tournamentStage": "26"
+          },
+          {
+            "away": {
+              "id": 1524586,
+              "longName": "TRA United",
+              "name": "TRA United",
+              "score": 1
+            },
+            "eliminatedTeamId": null,
+            "home": {
+              "id": 1045551,
+              "longName": "Kinondoni MC",
+              "name": "Kinondoni MC",
+              "score": 0
+            },
+            "id": 4951097,
+            "leagueId": 9066,
+            "status": {
+              "awarded": false,
+              "cancelled": false,
+              "finished": true,
+              "halfs": {
+                "firstHalfStarted": "12.06.2026 19:04:39",
+                "secondHalfStarted": "12.06.2026 20:05:51"
+              },
+              "periodLength": 45,
+              "reason": {
+                "long": "Full-Time",
+                "longKey": "finished",
+                "short": "FT",
+                "shortKey": "fulltime_short"
+              },
+              "scoreStr": "0 - 1",
+              "started": true,
+              "utcTime": "2026-06-12T17:00:00.000Z"
+            },
+            "statusId": 6,
+            "time": "12.06.2026 19:00",
+            "timeTS": 1781283600000,
+            "tournamentStage": "26"
+          }
+        ],
+        "name": "Premier League",
+        "primaryId": 9066,
+        "simpleLeague": false
+      },
+      {
+        "ccode": "ARG",
+        "id": 916561,
+        "internalRank": 7,
+        "matches": [
+          {
+            "away": {
+              "id": 298630,
+              "longName": "Villa Dalmine",
+              "name": "Villa Dalmine",
+              "score": 2
+            },
+            "eliminatedTeamId": null,
+            "home": {
+              "id": 581825,
+              "longName": "San Martin Burzaco",
+              "name": "San Martin Burzaco",
+              "redCards": 1,
+              "score": 0
+            },
+            "id": 5113889,
+            "leagueId": 916561,
+            "status": {
+              "awarded": false,
+              "cancelled": false,
+              "finished": true,
+              "halfs": {
+                "firstHalfStarted": "13.06.2026 01:17:15",
+                "secondHalfStarted": "13.06.2026 02:24:30"
+              },
+              "numberOfHomeRedCards": 1,
+              "periodLength": 45,
+              "reason": {
+                "long": "Full-Time",
+                "longKey": "finished",
+                "short": "FT",
+                "shortKey": "fulltime_short"
+              },
+              "scoreStr": "0 - 2",
+              "started": true,
+              "utcTime": "2026-06-12T23:15:00.000Z"
+            },
+            "statusId": 6,
+            "time": "13.06.2026 01:15",
+            "timeTS": 1781306100000,
+            "tournamentStage": "20"
+          }
+        ],
+        "name": "Primera B Metropolitana",
+        "parentLeagueId": 9213,
+        "primaryId": 9213,
+        "simpleLeague": false
+      },
+      {
+        "ccode": "VIE",
+        "id": 9628,
+        "internalRank": 0,
+        "matches": [
+          {
+            "away": {
+              "id": 1801359,
+              "longName": "Bac Ninh",
+              "name": "Bac Ninh",
+              "penScore": 5,
+              "score": 1
+            },
+            "eliminatedTeamId": 1105640,
+            "home": {
+              "id": 1105640,
+              "longName": "PVF-CAND",
+              "name": "PVF-CAND",
+              "penScore": 4,
+              "score": 1
+            },
+            "id": 5769192,
+            "leagueId": 9628,
+            "status": {
+              "awarded": false,
+              "cancelled": false,
+              "finished": true,
+              "halfs": {
+                "firstHalfStarted": "12.06.2026 13:00:49",
+                "secondHalfStarted": "12.06.2026 14:07:05"
+              },
+              "periodLength": 45,
+              "reason": {
+                "long": "After penalties",
+                "longKey": "afterpenalties",
+                "short": "Pen",
+                "shortKey": "penalties_short"
+              },
+              "scoreStr": "1 - 1",
+              "started": true,
+              "utcTime": "2026-06-12T11:00:00.000Z"
+            },
+            "statusId": 13,
+            "time": "12.06.2026 13:00",
+            "timeTS": 1781262000000,
+            "tournamentStage": "final"
+          }
+        ],
+        "name": "V-League Qualification",
+        "primaryId": 9628,
+        "simpleLeague": false
+      },
+      {
+        "ccode": "FIN",
+        "id": 920263,
+        "internalRank": 7,
+        "matches": [
+          {
+            "away": {
+              "id": 1970,
+              "longName": "FC Jazz",
+              "name": "FC Jazz",
+              "score": 1
+            },
+            "eliminatedTeamId": null,
+            "home": {
+              "id": 616809,
+              "longName": "FC Inter Turku II",
+              "name": "FC Inter Turku II",
+              "score": 1
+            },
+            "id": 5163985,
+            "leagueId": 920263,
+            "status": {
+              "awarded": false,
+              "cancelled": false,
+              "finished": true,
+              "halfs": {
+                "firstHalfStarted": "12.06.2026 17:31:36",
+                "secondHalfStarted": "12.06.2026 18:31:42"
+              },
+              "periodLength": 45,
+              "reason": {
+                "long": "Full-Time",
+                "longKey": "finished",
+                "short": "FT",
+                "shortKey": "fulltime_short"
+              },
+              "scoreStr": "1 - 1",
+              "started": true,
+              "utcTime": "2026-06-12T15:30:00.000Z"
+            },
+            "statusId": 6,
+            "time": "12.06.2026 17:30",
+            "timeTS": 1781278200000,
+            "tournamentStage": "1"
+          },
+          {
+            "away": {
+              "id": 1340078,
+              "longName": "KuPS Akatemia",
+              "name": "KuPS Akatemia",
+              "score": 3
+            },
+            "eliminatedTeamId": null,
+            "home": {
+              "id": 162150,
+              "longName": "SalPa",
+              "name": "SalPa",
+              "score": 4
+            },
+            "id": 5163984,
+            "leagueId": 920263,
+            "status": {
+              "awarded": false,
+              "cancelled": false,
+              "finished": true,
+              "halfs": {
+                "firstHalfStarted": "12.06.2026 17:32:09",
+                "secondHalfStarted": "12.06.2026 18:36:56"
+              },
+              "periodLength": 45,
+              "reason": {
+                "long": "Full-Time",
+                "longKey": "finished",
+                "short": "FT",
+                "shortKey": "fulltime_short"
+              },
+              "scoreStr": "4 - 3",
+              "started": true,
+              "utcTime": "2026-06-12T15:30:00.000Z"
+            },
+            "statusId": 6,
+            "time": "12.06.2026 17:30",
+            "timeTS": 1781278200000,
+            "tournamentStage": "1"
+          }
+        ],
+        "name": "Ykkonen",
+        "parentLeagueId": 8969,
+        "primaryId": 8969,
+        "simpleLeague": false
+      },
+      {
+        "ccode": "FIN",
+        "id": 920261,
+        "internalRank": 9,
+        "matches": [
+          {
+            "away": {
+              "id": 162142,
+              "longName": "EIF",
+              "name": "EIF",
+              "score": 1
+            },
+            "eliminatedTeamId": null,
+            "home": {
+              "id": 6701,
+              "longName": "FC KTP",
+              "name": "FC KTP",
+              "score": 5
+            },
+            "id": 5163706,
+            "leagueId": 920261,
+            "status": {
+              "awarded": false,
+              "cancelled": false,
+              "finished": true,
+              "halfs": {
+                "firstHalfStarted": "12.06.2026 17:31:36",
+                "secondHalfStarted": "12.06.2026 18:32:44"
+              },
+              "periodLength": 45,
+              "reason": {
+                "long": "Full-Time",
+                "longKey": "finished",
+                "short": "FT",
+                "shortKey": "fulltime_short"
+              },
+              "scoreStr": "5 - 1",
+              "started": true,
+              "utcTime": "2026-06-12T15:30:00.000Z"
+            },
+            "statusId": 6,
+            "time": "12.06.2026 17:30",
+            "timeTS": 1781278200000,
+            "tournamentStage": "1"
+          },
+          {
+            "away": {
+              "id": 260273,
+              "longName": "PK-35",
+              "name": "PK-35",
+              "score": 5
+            },
+            "eliminatedTeamId": null,
+            "home": {
+              "id": 1906,
+              "longName": "JäPS",
+              "name": "JäPS",
+              "score": 0
+            },
+            "id": 5163707,
+            "leagueId": 920261,
+            "status": {
+              "awarded": false,
+              "cancelled": false,
+              "finished": true,
+              "halfs": {
+                "firstHalfStarted": "12.06.2026 17:32:39",
+                "secondHalfStarted": "12.06.2026 18:34:41"
+              },
+              "periodLength": 45,
+              "reason": {
+                "long": "Full-Time",
+                "longKey": "finished",
+                "short": "FT",
+                "shortKey": "fulltime_short"
+              },
+              "scoreStr": "0 - 5",
+              "started": true,
+              "utcTime": "2026-06-12T15:30:00.000Z"
+            },
+            "statusId": 6,
+            "time": "12.06.2026 17:30",
+            "timeTS": 1781278200000,
+            "tournamentStage": "1"
+          }
+        ],
+        "name": "Ykkosliiga",
+        "parentLeagueId": 251,
+        "primaryId": 251,
+        "simpleLeague": false
+      },
+      {
+        "ccode": "BOL",
+        "id": 144,
+        "internalRank": 0,
+        "matches": [
+          {
+            "away": {
+              "id": 1297346,
+              "longName": "ABB",
+              "name": "ABB",
+              "score": 0
+            },
+            "eliminatedTeamId": null,
+            "home": {
+              "id": 1297060,
+              "longName": "San Antonio Bulo Bulo",
+              "name": "San Antonio Bulo Bulo",
+              "score": 0
+            },
+            "id": 1000010872,
+            "leagueId": 144,
+            "status": {
+              "cancelled": true,
+              "finished": false,
+              "halfs": {
+                "firstHalfStarted": "12.06.2026 21:00:00"
+              },
+              "periodLength": 45,
+              "reason": {
+                "long": "Postponed",
+                "longKey": "postponed",
+                "short": "PP",
+                "shortKey": "postponed_short"
+              },
+              "started": false,
+              "utcTime": "2026-06-12T19:00:00.000Z"
+            },
+            "statusId": 5,
+            "time": "12.06.2026 21:00",
+            "timeTS": 1781290800000,
+            "tournamentStage": "9"
+          },
+          {
+            "away": {
+              "id": 1074622,
+              "longName": "Real Tomayapo",
+              "name": "Real Tomayapo",
+              "score": 0
+            },
+            "eliminatedTeamId": null,
+            "home": {
+              "id": 164353,
+              "longName": "Nacional Potosi",
+              "name": "Nacional Potosi",
+              "score": 0
+            },
+            "id": 1000011156,
+            "leagueId": 144,
+            "status": {
+              "cancelled": true,
+              "finished": false,
+              "halfs": {
+                "firstHalfStarted": "12.06.2026 23:00:00"
+              },
+              "periodLength": 45,
+              "reason": {
+                "long": "Postponed",
+                "longKey": "postponed",
+                "short": "PP",
+                "shortKey": "postponed_short"
+              },
+              "started": false,
+              "utcTime": "2026-06-12T21:00:00.000Z"
+            },
+            "statusId": 5,
+            "time": "12.06.2026 23:00",
+            "timeTS": 1781298000000,
+            "tournamentStage": "11"
+          },
+          {
+            "away": {
+              "id": 1504766,
+              "longName": "CDT Real Oruro",
+              "name": "CDT Real Oruro",
+              "score": 0
+            },
+            "eliminatedTeamId": null,
+            "home": {
+              "id": 164353,
+              "longName": "Nacional Potosi",
+              "name": "Nacional Potosi",
+              "score": 0
+            },
+            "id": 1000010877,
+            "leagueId": 144,
+            "status": {
+              "cancelled": true,
+              "finished": false,
+              "halfs": {
+                "firstHalfStarted": "13.06.2026 01:00:00"
+              },
+              "periodLength": 45,
+              "reason": {
+                "long": "Postponed",
+                "longKey": "postponed",
+                "short": "PP",
+                "shortKey": "postponed_short"
+              },
+              "started": false,
+              "utcTime": "2026-06-12T23:00:00.000Z"
+            },
+            "statusId": 5,
+            "time": "13.06.2026 01:00",
+            "timeTS": 1781305200000,
+            "tournamentStage": "9"
+          },
+          {
+            "away": {
+              "id": 1297346,
+              "longName": "ABB",
+              "name": "ABB",
+              "score": 0
+            },
+            "eliminatedTeamId": null,
+            "home": {
+              "id": 49720,
+              "longName": "Aurora",
+              "name": "Aurora",
+              "score": 0
+            },
+            "id": 1000011157,
+            "leagueId": 144,
+            "status": {
+              "cancelled": true,
+              "finished": false,
+              "halfs": {
+                "firstHalfStarted": "13.06.2026 01:30:00"
+              },
+              "periodLength": 45,
+              "reason": {
+                "long": "Postponed",
+                "longKey": "postponed",
+                "short": "PP",
+                "shortKey": "postponed_short"
+              },
+              "started": false,
+              "utcTime": "2026-06-12T23:30:00.000Z"
+            },
+            "statusId": 5,
+            "time": "13.06.2026 01:30",
+            "timeTS": 1781307000000,
+            "tournamentStage": "11"
+          }
+        ],
+        "name": "Primera División",
+        "primaryId": 144,
+        "simpleLeague": false
+      },
+      {
+        "ccode": "BRA",
+        "id": 8814,
+        "internalRank": 0,
+        "matches": [
+          {
+            "away": {
+              "id": 104821,
+              "longName": "CRB",
+              "name": "CRB",
+              "score": 3
+            },
+            "eliminatedTeamId": null,
+            "home": {
+              "id": 165545,
+              "longName": "Atletico GO",
+              "name": "Atletico GO",
+              "score": 3
+            },
+            "id": 5190564,
+            "leagueId": 8814,
+            "status": {
+              "awarded": false,
+              "cancelled": false,
+              "finished": true,
+              "halfs": {
+                "firstHalfStarted": "12.06.2026 23:59:55",
+                "secondHalfStarted": "13.06.2026 01:04:59"
+              },
+              "periodLength": 45,
+              "reason": {
+                "long": "Full-Time",
+                "longKey": "finished",
+                "short": "FT",
+                "shortKey": "fulltime_short"
+              },
+              "scoreStr": "3 - 3",
+              "started": true,
+              "utcTime": "2026-06-12T22:00:00.000Z"
+            },
+            "statusId": 6,
+            "time": "13.06.2026 00:00",
+            "timeTS": 1781301600000,
+            "tournamentStage": "13"
+          }
+        ],
+        "name": "Serie B",
+        "primaryId": 8814,
+        "simpleLeague": false
+      },
+      {
+        "ccode": "LVA",
+        "id": 226,
+        "internalRank": 0,
+        "matches": [
+          {
+            "away": {
+              "id": 197864,
+              "longName": "BFC Daugavpils",
+              "name": "BFC Daugavpils",
+              "score": 1
+            },
+            "eliminatedTeamId": null,
+            "home": {
+              "id": 197870,
+              "longName": "FK Tukums 2000",
+              "name": "FK Tukums 2000",
+              "redCards": 1,
+              "score": 1
+            },
+            "id": 5161997,
+            "leagueId": 226,
+            "status": {
+              "awarded": false,
+              "cancelled": false,
+              "finished": true,
+              "halfs": {
+                "firstHalfStarted": "12.06.2026 17:01:52",
+                "secondHalfStarted": "12.06.2026 18:03:38"
+              },
+              "numberOfHomeRedCards": 1,
+              "periodLength": 45,
+              "reason": {
+                "long": "Full-Time",
+                "longKey": "finished",
+                "short": "FT",
+                "shortKey": "fulltime_short"
+              },
+              "scoreStr": "1 - 1",
+              "started": true,
+              "utcTime": "2026-06-12T15:00:00.000Z"
+            },
+            "statusId": 6,
+            "time": "12.06.2026 17:00",
+            "timeTS": 1781276400000,
+            "tournamentStage": "17"
+          },
+          {
+            "away": {
+              "id": 981193,
+              "longName": "SK Super Nova",
+              "name": "SK Super Nova",
+              "score": 1
+            },
+            "eliminatedTeamId": null,
+            "home": {
+              "id": 8016,
+              "longName": "FK Liepaja",
+              "name": "FK Liepaja",
+              "score": 2
+            },
+            "id": 5161998,
+            "leagueId": 226,
+            "status": {
+              "awarded": false,
+              "cancelled": false,
+              "finished": true,
+              "halfs": {
+                "firstHalfStarted": "12.06.2026 18:01:26",
+                "secondHalfStarted": "12.06.2026 19:09:05"
+              },
+              "periodLength": 45,
+              "reason": {
+                "long": "Full-Time",
+                "longKey": "finished",
+                "short": "FT",
+                "shortKey": "fulltime_short"
+              },
+              "scoreStr": "2 - 1",
+              "started": true,
+              "utcTime": "2026-06-12T16:00:00.000Z"
+            },
+            "statusId": 6,
+            "time": "12.06.2026 18:00",
+            "timeTS": 1781280000000,
+            "tournamentStage": "17"
+          }
+        ],
+        "name": "Virsliga",
+        "primaryId": 226,
+        "simpleLeague": false
+      }
+    ]
+  },
+  "status": "success"
+}
