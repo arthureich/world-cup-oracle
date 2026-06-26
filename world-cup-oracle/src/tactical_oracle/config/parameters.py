@@ -66,23 +66,28 @@ class PerformanceParameters:
     """Parameters documented for B3, group-stage performance."""
 
     process_weight: float = 4.0
-    result_weight: float = 1.0
+    result_weight: float = 3.0
+    match_delta_soft_cap: float = 4.0
     min_match_weight: float = 0.15
     red_card_weight_factor: float = 0.5
     offensive_weights: dict[str, float] = field(
         default_factory=lambda: {
             "xg": 0.45,
             "clear_chances": 0.25,
-            "shots_on_target": 0.20,
-            "shots": 0.10,
+            "touches_in_opposition_box": 0.10,
+            "opposition_half_passes": 0.05,
+            "ground_duels": 0.075,
+            "successful_dribbles": 0.075,
         }
     )
     defensive_weights: dict[str, float] = field(
         default_factory=lambda: {
             "xg_against": 0.45,
             "clear_chances_against": 0.25,
-            "shots_on_target_against": 0.20,
-            "shots_against": 0.10,
+            "touches_in_opposition_box_against": 0.10,
+            "opposition_half_passes_against": 0.05,
+            "ground_duels_against": 0.075,
+            "successful_dribbles_against": 0.075,
         }
     )
 
