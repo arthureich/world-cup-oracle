@@ -8,6 +8,7 @@ from tactical_oracle.pipeline.real_outputs import (
     cycle_goal_rates,
     filter_matches_to_fifa_teams,
     schedule_strength_adjustments,
+    write_post_group_match_probability_outputs,
     write_real_core_outputs,
     write_real_elo_outputs,
     write_real_match_probability_outputs,
@@ -316,3 +317,78 @@ def test_write_real_match_probability_outputs_creates_group_fixture_probabilitie
     assert row["team_a"] == "Brazil"
     assert row["team_b"] == "Argentina"
     assert row["p_win_a"] + row["p_draw"] + row["p_win_b"] == pytest.approx(1.0)
+
+
+def test_write_post_group_match_probability_outputs_uses_tsi_post_groups(tmp_path) -> None:
+    interim = tmp_path / "interim"
+    processed = tmp_path / "processed"
+    write_rows_parquet(
+        [
+            {
+                "match_id": "ko-1",
+                "group": "R32",
+                "team_a": "Brazil",
+                "team_b": "Argentina",
+                "match_number": 73,
+                "host_team": None,
+                "neutral_site": True,
+            }
+        ],
+        interim / "worldcup_knockout_schedule.parquet",
+    )
+    write_rows_parquet(
+        [
+            {"team": "Brazil", "tsi": 12.0, "profile": 0.0, "attack": 12.0, "defense": 12.0},
+            {
+                "team": "Argentina",
+                "tsi": 14.0,
+                "profile": 0.0,
+                "attack": 14.0,
+                "defense": 14.0,
+            },
+        ],
+        processed / "attack_defense_pre_cup.parquet",
+    )
+    write_rows_parquet(
+        [
+            {
+                "team": "Brazil",
+                "matches_played": 3,
+                "total_match_weight": 3.0,
+                "performance_adjustment": 6.0,
+                "tsi_pre": 12.0,
+                "performance_group_tsi": 18.0,
+                "post_groups_tsi_delta": 1.8,
+                "tsi_post_groups": 13.8,
+            },
+            {
+                "team": "Argentina",
+                "matches_played": 3,
+                "total_match_weight": 3.0,
+                "performance_adjustment": -6.0,
+                "tsi_pre": 14.0,
+                "performance_group_tsi": 8.0,
+                "post_groups_tsi_delta": -1.8,
+                "tsi_post_groups": 12.2,
+            },
+        ],
+        processed / "team_performance_adjustments.parquet",
+    )
+
+    written = write_post_group_match_probability_outputs(
+        interim,
+        processed,
+        schedule_file="worldcup_knockout_schedule.parquet",
+    )
+
+    assert [path.name for path in written] == [
+        "attack_defense_post_groups.parquet",
+        "match_probabilities_post_groups.parquet",
+    ]
+    components = read_parquet(processed / "attack_defense_post_groups.parquet")
+    brazil = components.filter(components["team"] == "Brazil").row(0, named=True)
+    probabilities = read_parquet(processed / "match_probabilities_post_groups.parquet")
+    row = probabilities.row(0, named=True)
+    assert brazil["tsi"] == pytest.approx(13.8)
+    assert row["match_number"] == 73
+    assert row["p_win_a"] > row["p_win_b"]

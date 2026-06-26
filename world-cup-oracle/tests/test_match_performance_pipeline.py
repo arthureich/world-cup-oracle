@@ -7,6 +7,7 @@ import pytest
 
 from tactical_oracle.data.io import write_rows_parquet
 from tactical_oracle.pipeline.match_performance import (
+    b3_calibration_review_frame,
     build_real_match_performance_outputs,
     match_performance_audit_frame,
     match_performance_frame,
@@ -491,9 +492,83 @@ def test_match_performance_audit_frame_adds_raw_context(tmp_path) -> None:
     assert row["score"] == "2-1"
     assert row["raw_xg"] == pytest.approx(1.7)
     assert row["xg_difference"] == pytest.approx(0.8)
+    assert row["raw"] == row["raw_match_tsi_delta"]
+    assert row["delta_final"] == row["weighted_match_tsi_delta"]
     assert row["data_source"] == "fotmob-manual"
     assert row["has_process_stats"] is True
     assert row["weighted_match_tsi_delta"] > 0
+
+
+def test_b3_calibration_review_flags_sensitive_cases(tmp_path) -> None:
+    stats = tmp_path / "match_stats.parquet"
+    probabilities = tmp_path / "probabilities.parquet"
+    write_rows_parquet(
+        [
+            {
+                "match_id": "m1",
+                "match_number": 1,
+                "date": "2026-06-11",
+                "team": "Favorite",
+                "opponent": "Underdog",
+                "goals": 0,
+                "goals_against": 1,
+                "xg": 1.8,
+                "xg_against": 0.4,
+                "red_cards": 0,
+                "first_red_card_minute": None,
+            },
+            {
+                "match_id": "m1",
+                "match_number": 1,
+                "date": "2026-06-11",
+                "team": "Underdog",
+                "opponent": "Favorite",
+                "goals": 1,
+                "goals_against": 0,
+                "xg": 0.4,
+                "xg_against": 1.8,
+                "red_cards": 0,
+                "first_red_card_minute": None,
+            },
+        ],
+        stats,
+    )
+    write_rows_parquet(
+        [
+            {
+                "match_id": "m1",
+                "match_number": 1,
+                "team_a": "Favorite",
+                "team_b": "Underdog",
+                "lambda_a": 1.7,
+                "lambda_b": 0.7,
+                "expected_points_a": 2.0,
+                "expected_points_b": 0.7,
+            }
+        ],
+        probabilities,
+    )
+    tsi = pl.DataFrame(
+        [
+            {"team": "Favorite", "tsi_pre": 14.0},
+            {"team": "Underdog", "tsi_pre": 10.5},
+        ]
+    )
+    match_frame = match_performance_frame(
+        match_stats=pl.read_parquet(stats),
+        match_probabilities=pl.read_parquet(probabilities),
+    )
+    audit = match_performance_audit_frame(match_frame, pl.read_parquet(stats))
+
+    review = b3_calibration_review_frame(audit, tsi)
+    favorite = review.filter(pl.col("team") == "Favorite").row(0, named=True)
+    underdog = review.filter(pl.col("team") == "Underdog").row(0, named=True)
+
+    assert favorite["favorite_loss"] is True
+    assert favorite["process_against_result"] is True
+    assert underdog["process_against_result"] is True
+    assert favorite["review_priority"] > 0
+    assert underdog["review_priority"] > 0
 
 
 def test_build_real_match_performance_outputs_reads_standard_paths(tmp_path) -> None:
@@ -565,10 +640,12 @@ def test_build_real_match_performance_outputs_reads_standard_paths(tmp_path) -> 
     outputs = build_real_match_performance_outputs(interim, processed)
 
     assert set(outputs) == {
+        "calibration_b3_review.parquet",
         "match_performance.parquet",
         "match_performance_audit.parquet",
         "team_performance_adjustments.parquet",
     }
+    assert outputs["calibration_b3_review.parquet"].height >= 0
     assert outputs["match_performance.parquet"].height == 2
     assert outputs["match_performance_audit.parquet"].height == 2
     assert outputs["team_performance_adjustments.parquet"].height == 2

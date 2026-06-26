@@ -400,6 +400,46 @@ def real_match_probability_rows(
     return rows
 
 
+def post_group_components_from_rows(
+    attack_defense_pre_rows: list[dict[str, Any]],
+    team_performance_rows: list[dict[str, Any]],
+) -> dict[str, Any]:
+    post_tsi_by_team = {
+        str(row["team"]): float(row["tsi_post_groups"]) for row in team_performance_rows
+    }
+    profile_by_team = {
+        str(row["team"]): float(row["profile"]) for row in attack_defense_pre_rows
+    }
+    tsi_by_team = {
+        str(row["team"]): post_tsi_by_team.get(str(row["team"]), float(row["tsi"]))
+        for row in attack_defense_pre_rows
+    }
+    return build_components(tsi_by_team, profile_by_team)
+
+
+def build_post_group_match_probability_outputs(
+    interim_dir: str | Path = "data/interim",
+    processed_dir: str | Path = "data/processed",
+    schedule_file: str | Path = "worldcup_schedule.parquet",
+) -> dict[str, list[dict[str, Any]]]:
+    interim_path = Path(interim_dir)
+    processed_path = Path(processed_dir)
+    schedule_path = Path(schedule_file)
+    if not schedule_path.is_absolute():
+        schedule_path = interim_path / schedule_path
+    components = post_group_components_from_rows(
+        _rows_from_parquet(processed_path / "attack_defense_pre_cup.parquet"),
+        _rows_from_parquet(processed_path / "team_performance_adjustments.parquet"),
+    )
+    return {
+        "attack_defense_post_groups.parquet": attack_defense_rows(components),
+        "match_probabilities_post_groups.parquet": real_match_probability_rows(
+            _rows_from_parquet(schedule_path),
+            components,
+        ),
+    }
+
+
 def build_real_match_probability_outputs(
     interim_dir: str | Path = "data/interim",
 ) -> dict[str, list[dict[str, Any]]]:
@@ -448,6 +488,24 @@ def write_real_match_probability_outputs(
     return written
 
 
+def write_post_group_match_probability_outputs(
+    interim_dir: str | Path = "data/interim",
+    processed_dir: str | Path = "data/processed",
+    schedule_file: str | Path = "worldcup_schedule.parquet",
+) -> list[Path]:
+    output_path = Path(processed_dir)
+    written: list[Path] = []
+    for filename, rows in build_post_group_match_probability_outputs(
+        interim_dir,
+        processed_dir,
+        schedule_file,
+    ).items():
+        destination = output_path / filename
+        write_rows_parquet(rows, destination)
+        written.append(destination)
+    return written
+
+
 def main() -> None:
     for path in write_real_elo_outputs():
         print(path)
@@ -460,6 +518,29 @@ def core_main() -> None:
 
 def match_probabilities_main() -> None:
     for path in write_real_match_probability_outputs():
+        print(path)
+
+
+def post_group_match_probabilities_main() -> None:
+    import argparse
+
+    parser = argparse.ArgumentParser(
+        description="Build post-group attack/defense and match probabilities."
+    )
+    parser.add_argument("--interim-dir", default="data/interim")
+    parser.add_argument("--processed-dir", default="data/processed")
+    parser.add_argument(
+        "--schedule-file",
+        default="worldcup_schedule.parquet",
+        help="Schedule parquet path or filename under --interim-dir.",
+    )
+    args = parser.parse_args()
+
+    for path in write_post_group_match_probability_outputs(
+        interim_dir=args.interim_dir,
+        processed_dir=args.processed_dir,
+        schedule_file=args.schedule_file,
+    ):
         print(path)
 
 

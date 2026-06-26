@@ -385,6 +385,8 @@ def match_performance_audit_frame(match_performance: Any, match_stats: Any) -> A
             score.alias("score"),
             (pl.col("goals") - pl.col("goals_against")).alias("goal_difference"),
             (pl.col("raw_xg") - pl.col("raw_xg_against")).alias("xg_difference"),
+            pl.col("raw_match_tsi_delta").alias("raw"),
+            pl.col("weighted_match_tsi_delta").alias("delta_final"),
         )
         .select(
             "match_id",
@@ -409,10 +411,12 @@ def match_performance_audit_frame(match_performance: Any, match_stats: Any) -> A
             "actual_points",
             "process_surprise",
             "result_surprise",
+            "raw",
             "raw_match_tsi_delta",
             "compressed_match_tsi_delta",
             "match_tsi_delta",
             "match_weight",
+            "delta_final",
             "weighted_match_tsi_delta",
             "has_process_stats",
             "minutes_numerical_imbalance",
@@ -426,6 +430,84 @@ def match_performance_audit_frame(match_performance: Any, match_stats: Any) -> A
             "last_updated",
         )
         .sort(["match_number", "team"])
+    )
+
+
+def b3_calibration_review_frame(
+    match_audit: Any,
+    tsi_pre_cup: Any,
+    favorite_gap: float = 2.0,
+    process_threshold: float = 0.50,
+    blowout_goals: int = 3,
+    extreme_raw_threshold: float = 6.0,
+) -> Any:
+    pl = _polars()
+    team_tsi = tsi_pre_cup.select("team", "tsi_pre")
+    opponent_tsi = team_tsi.rename({"team": "opponent", "tsi_pre": "opponent_tsi_pre"})
+    goal_diff = pl.col("goal_difference")
+    process_diff = pl.col("process_goal_difference")
+    tsi_gap = pl.col("tsi_pre") - pl.col("opponent_tsi_pre")
+    favorite_loss = (tsi_gap >= favorite_gap) & (goal_diff < 0)
+    underdog_draw = (tsi_gap <= -favorite_gap) & (goal_diff == 0)
+    blowout = goal_diff.abs() >= blowout_goals
+    process_against_result = ((goal_diff > 0) & (process_diff <= -process_threshold)) | (
+        (goal_diff < 0) & (process_diff >= process_threshold)
+    )
+    strong_process_draw = (goal_diff == 0) & (process_diff.abs() >= process_threshold)
+    extreme_raw = pl.col("raw").abs() >= extreme_raw_threshold
+    review_priority = (
+        pl.when(favorite_loss).then(5).otherwise(0)
+        + pl.when(process_against_result).then(4).otherwise(0)
+        + pl.when(underdog_draw).then(3).otherwise(0)
+        + pl.when(blowout).then(2).otherwise(0)
+        + pl.when(strong_process_draw).then(1).otherwise(0)
+        + pl.when(extreme_raw).then(1).otherwise(0)
+    )
+    return (
+        match_audit.join(team_tsi, on="team", how="left")
+        .join(opponent_tsi, on="opponent", how="left")
+        .with_columns(
+            tsi_gap.alias("tsi_gap"),
+            favorite_loss.alias("favorite_loss"),
+            underdog_draw.alias("underdog_draw"),
+            blowout.alias("blowout"),
+            process_against_result.alias("process_against_result"),
+            strong_process_draw.alias("strong_process_draw"),
+            extreme_raw.alias("extreme_raw"),
+            review_priority.alias("review_priority"),
+        )
+        .filter(pl.col("review_priority") > 0)
+        .select(
+            "review_priority",
+            "match_number",
+            "team",
+            "opponent",
+            "score",
+            "tsi_pre",
+            "opponent_tsi_pre",
+            "tsi_gap",
+            "raw_xg",
+            "raw_xg_against",
+            "xg_difference",
+            "process_for",
+            "process_against",
+            "process_goal_difference",
+            "expected_points",
+            "actual_points",
+            "result_surprise",
+            "process_surprise",
+            "raw",
+            "delta_final",
+            "favorite_loss",
+            "underdog_draw",
+            "blowout",
+            "process_against_result",
+            "strong_process_draw",
+            "extreme_raw",
+            "has_process_stats",
+            "data_source",
+        )
+        .sort(["review_priority", "match_number", "team"], descending=[True, False, False])
     )
 
 
@@ -499,9 +581,14 @@ def build_real_match_performance_outputs(
         match_performance,
         read_parquet(interim_path / "worldcup_match_stats.parquet"),
     )
+    b3_review = b3_calibration_review_frame(
+        match_audit,
+        read_parquet(processed_path / "tsi_pre_cup.parquet"),
+    )
     return {
         "match_performance.parquet": match_performance,
         "match_performance_audit.parquet": match_audit,
+        "calibration_b3_review.parquet": b3_review,
         "team_performance_adjustments.parquet": team_adjustments,
     }
 
