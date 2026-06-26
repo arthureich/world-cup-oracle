@@ -105,7 +105,8 @@ calendário, não para substituir o Elo partida a partida.
 | Parâmetro | Valor | Status |
 |---|---:|---|
 | `c_proc` | 4.0 | Recalibrável |
-| `c_res` | 1.0 | Recalibrável |
+| `c_res` | 3.0 | Recalibrável |
+| `match_delta_soft_cap` | 4.0 | Recalibrável |
 | piso `peso_jogo` | 0.15 | Recalibrável |
 | `ρ_vermelho` | 0.5 | Recalibrável |
 | rotação pesada | ~0.40 | Recalibrável |
@@ -116,8 +117,10 @@ Composto ofensivo:
 |---|---:|
 | xG criado | 45% |
 | chances claras | 25% |
-| finalizações no alvo | 20% |
-| finalizações | 10% |
+| touches in opposition box | 10% |
+| opposition half passes | 5% |
+| ground duels | 7.5% |
+| successful dribbles | 7.5% |
 
 ---
 

@@ -41,14 +41,14 @@ Resultado:
 surpresa_res =
 pontos_reais − pts_esp
 Nota única do jogo
-desempenho_jogo =
+desempenho_bruto =
 c_proc · surpresa_proc
 + c_res · surpresa_res
 
 Parâmetros iniciais:
 
 c_proc = 4.0
-c_res  = 1.0
+c_res  = 3.0
 
 c_proc vem da aproximação:
 
@@ -61,13 +61,49 @@ Com k = 0.09 e base = 1.30:
 Logo:
 
 1 / 0.234 ≈ 4.0 pontos de TSI por gol de surpresa
+
+c_res foi elevado para 3.0 para evitar que empates ou vitórias
+claramente acima do esperado sejam anulados demais pelo processo.
+
+Compressão e soma zero
+
+O sinal bruto da partida é comprimido:
+
+desempenho_comprimido =
+4.0 · tanh(desempenho_bruto / 4.0)
+
+Depois a média dos dois times no jogo é subtraída:
+
+delta_partida =
+desempenho_comprimido − média(desempenho_comprimido no jogo)
+
+Assim, toda partida redistribui TSI entre os dois times:
+
+Σ(delta_partida no jogo) = 0
+
+Após aplicar peso de jogo, a mesma centralização é refeita para manter:
+
+Σ(delta_partida_ponderado no jogo) = 0
+
 Composto ofensivo
 xG criado:            45%
 chances claras:       25%
-finalizações no alvo: 20%
-finalizações:         10%
+touches in opposition box: 10%
+opposition half passes:   5%
+ground duels:             7.5%
+successful dribbles:      7.5%
 
 Todas as métricas devem ser convertidas ou normalizadas para escala equivalente a xG/gols antes da combinação.
+
+Fallback score-only
+
+Se uma partida tem placar, mas não tem xG/stats de processo:
+
+process_surprise = 0
+
+Nesse caso o delta vem apenas de:
+
+pontos_reais − pontos_esperados
 
 Peso do jogo
 peso_jogo =
@@ -102,7 +138,7 @@ Necessidade competitiva:
 menor para jogo irrelevante / time já classificado poupando
 Agregação da fase de grupos
 ajuste_desempenho =
-Σ(peso_jogo · desempenho_jogo)
+Σ(delta_partida_ponderado)
 /
 Σ(peso_jogo)
 Performance Grupo =

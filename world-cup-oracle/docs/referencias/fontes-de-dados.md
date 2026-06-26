@@ -242,8 +242,8 @@ Saídas atuais:
 
 ```text
 data/interim/worldcup_match_stats.parquet
-104 linhas
-52 partidas concluídas × 2 seleções
+120 linhas
+60 partidas concluídas × 2 seleções
 
 data/interim/worldcup_match_events.parquet
 303 linhas
@@ -260,6 +260,44 @@ A normalização cruza esse valor com worldcup_schedule.match_number
 para preservar o IdMatch oficial da FIFA em match_id.
 ```
 
+Suplemento FotMob:
+
+```text
+data/raw/fotmob/worldcup_match_ids.json
+data/raw/fotmob/worldcup_match_team_stats.csv
+data/raw/fotmob/get_matches_by_date/*.json
+data/raw/fotmob/get_match_details/*.json
+```
+
+Uso atual:
+
+```text
+FotMob via Parse.bot é a fonte preferencial para xG e métricas de processo.
+world-cup-detail segue como base oficial local de calendário, elencos e estrutura.
+Quando existe detalhe FotMob, ele sobrepõe placar, data, status, xG e stats do jogo.
+Quando só existe cache diário com placar, a partida entra como score-only.
+```
+
+Estado do cache FotMob:
+
+```text
+60 partidas carregadas em worldcup_match_team_stats.csv
+56 partidas com detalhe completo via get_match_details
+4 partidas com estatísticas preenchidas manualmente a partir do FotMob:
+- Japan 1-1 Sweden
+- Tunisia 1-3 Netherlands
+- Turkey 3-2 United States
+- Paraguay 0-0 Australia
+```
+
+Observação:
+
+```text
+Turkey 3-2 United States e Paraguay 0-0 Australia ainda não têm JSON bruto
+FotMob no cache. O placar foi inferido das estatísticas copiadas manualmente
+usando shots_on_target − keeper_saves.
+```
+
 Essenciais:
 
 ```text
@@ -267,12 +305,16 @@ gols
 gols sofridos
 xG
 xG sofrido
-chutes
-chutes sofridos
-chutes no alvo
-chutes no alvo sofridos
 chances claras
 chances claras cedidas
+touches in opposition box
+touches in opposition box cedidos
+opposition half passes
+opposition half passes cedidos
+ground duels won
+ground duels won %
+successful dribbles
+successful dribbles %
 posse de bola
 cartão vermelho
 minuto do cartão vermelho
@@ -322,8 +364,9 @@ misturar provedores quebra a calibração
 Regra:
 
 ```text
-escolher uma fonte principal de xG/stats da Copa
-não misturar com outra fonte no mesmo modelo
+usar FotMob como fonte principal de xG/stats da Copa quando disponível
+não misturar xG de provedores diferentes na mesma partida
+se faltar detalhe FotMob, a partida pode entrar como score-only
 ```
 
 Outra fonte pode ser usada apenas para conferência manual.

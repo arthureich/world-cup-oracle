@@ -100,6 +100,13 @@ RESULTADO → pontos reais
 
 Evita inflar processo com variância de finalização.
 
+O resultado tem peso maior que no rascunho inicial (`c_res = 3.0`) para que
+surpresas claras no placar, como empate de azarão contra favorito forte, não
+sejam anuladas demais por volume territorial.
+
+Quando não há xG/stats de processo, a partida entra como score-only:
+`surpresa_proc = 0`.
+
 ---
 
 ## 8. Força do adversário entra pelo esperado
@@ -111,6 +118,24 @@ Sem termo separado de adversário no B3.
 ### Motivo
 
 A força do adversário já está em `GD_esp`.
+
+---
+
+## 8.1 Delta de partida soma zero
+
+### Decisão
+
+O delta B3 é centralizado por partida:
+
+```text
+Σ(delta_partida no jogo) = 0
+Σ(delta_ponderado no jogo) = 0
+```
+
+### Motivo
+
+Uma partida redistribui força entre as duas seleções. Ela não deve criar nem
+remover TSI líquido do sistema inteiro.
 
 ---
 

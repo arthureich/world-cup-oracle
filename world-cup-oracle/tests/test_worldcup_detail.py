@@ -120,6 +120,45 @@ def test_normalize_worldcup_match_stats_uses_match_number_and_opponent_stats(tmp
     assert rows[1]["first_red_card_minute"] == 55
 
 
+def test_normalize_worldcup_match_stats_can_overlay_fotmob_stats(tmp_path) -> None:
+    detail = tmp_path / "detail"
+    fotmob_stats = tmp_path / "fotmob_stats.csv"
+    _write_detail_csvs(detail)
+    fotmob_stats.write_text(
+        "\n".join(
+            [
+                "match_id,team_id,date,status,home_score,away_score,xg,"
+                "touches_in_opposition_box,opposition_half_passes,"
+                "ground_duels_won,ground_duels_won_pct,successful_dribbles,"
+                "successful_dribbles_pct,data_source",
+                "1,1,2026-06-12,Completed,3,0,2.4,30,180,40,58,12,67,"
+                "fotmob-parse-bot",
+                "1,2,2026-06-12,Completed,3,0,0.4,8,70,22,45,3,30,"
+                "fotmob-parse-bot",
+            ]
+        ),
+        encoding="utf-8",
+    )
+
+    rows = normalize_worldcup_match_stats(
+        detail,
+        schedule_path=None,
+        fotmob_stats_path=fotmob_stats,
+    )
+
+    assert rows[0]["date"] == "2026-06-12"
+    assert rows[0]["goals"] == 3
+    assert rows[0]["goals_against"] == 0
+    assert rows[0]["xg"] == 2.4
+    assert rows[0]["xg_against"] == 0.4
+    assert rows[0]["touches_in_opposition_box"] == 30
+    assert rows[0]["opposition_half_passes"] == 180
+    assert rows[0]["ground_duels_won_pct"] == 58
+    assert rows[0]["successful_dribbles"] == 12
+    assert rows[0]["data_source"] == "fotmob-parse-bot"
+    assert rows[1]["touches_in_opposition_box_against"] == 30
+
+
 def test_normalize_worldcup_squads_matches_squad_adjustment_contract(tmp_path) -> None:
     detail = tmp_path / "detail"
     _write_detail_csvs(detail)

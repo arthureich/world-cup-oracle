@@ -297,21 +297,41 @@ PROCESSO  → como o time jogou
 RESULTADO → o que o time conseguiu no placar/tabela
 ```
 
-O processo usa xG, chances claras, finalizações no alvo e finalizações, sempre em escala equivalente a gols/xG.
+O processo usa xG, chances claras e métricas FotMob de território/duelos,
+sempre em escala equivalente a gols/xG.
+
+As métricas FotMob atualmente usadas são:
+
+- touches in opposition box;
+- opposition half passes;
+- ground duels won e %;
+- successful dribbles e %.
 
 O resultado usa pontos reais menos pontos esperados.
 
 A nota final é:
 
 ```text
-desempenho_jogo = c_proc · surpresa_proc + c_res · surpresa_res
+desempenho_bruto = c_proc · surpresa_proc + c_res · surpresa_res
 ```
 
 Com parâmetros iniciais:
 
 ```text
 c_proc = 4.0
-c_res  = 1.0
+c_res  = 3.0
+```
+
+O sinal bruto é comprimido por soft cap e calibrado por partida para soma zero:
+
+```text
+delta_partida = 4.0 · tanh(desempenho_bruto / 4.0) − média_do_jogo
+```
+
+Se só houver placar, sem xG/stats de processo, o jogo entra como score-only:
+
+```text
+surpresa_proc = 0
 ```
 
 Também há peso por qualidade da amostra:

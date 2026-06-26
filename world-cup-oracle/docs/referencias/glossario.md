@@ -10,7 +10,7 @@ Média ponderada das notas dos três jogos da fase de grupos.
 
 ```text
 ajuste_desempenho =
-Σ(peso_jogo · desempenho_jogo)
+Σ(delta_ponderado)
 /
 Σ(peso_jogo)
 ```
@@ -88,15 +88,18 @@ Defesa = TSI − Perfil
 
 ---
 
-## Desempenho_jogo
+## Desempenho bruto
 
 Nota de uma seleção em uma partida.
 
 ```text
-desempenho_jogo =
+desempenho_bruto =
 c_proc · surpresa_proc
 + c_res · surpresa_res
 ```
+
+O valor bruto ainda passa por soft cap e centralização zero-sum por partida
+antes de virar `delta_ponderado`.
 
 ---
 

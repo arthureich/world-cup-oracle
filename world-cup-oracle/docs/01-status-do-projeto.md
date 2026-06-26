@@ -179,12 +179,12 @@ Para a Copa 2026, serão usadas estatísticas completas:
 gols
 xG
 xG sofrido
-chutes
-chutes sofridos
-chutes no alvo
-chutes no alvo sofridos
 chances claras
 chances claras cedidas
+touches in opposition box
+opposition half passes
+ground duels won e %
+successful dribbles e %
 posse
 cartão vermelho
 minuto do cartão vermelho
@@ -356,7 +356,8 @@ identificar pênaltis e mando/campo neutro
 ## Status
 
 ```text
-Consolidado em fórmula inicial
+Implementado no pipeline real com FotMob, soft cap, soma zero por partida
+e fallback score-only.
 ```
 
 ## O que está definido
@@ -400,14 +401,31 @@ surpresa_res = pontos_reais − pts_esp
 Nota:
 
 ```text
-desempenho_jogo = c_proc · surpresa_proc + c_res · surpresa_res
+desempenho_bruto = c_proc · surpresa_proc + c_res · surpresa_res
 ```
 
 Parâmetros:
 
 ```text
 c_proc = 4.0
-c_res = 1.0
+c_res = 3.0
+soft_cap = 4.0
+post_groups_weight = 0.30
+post_groups_delta_cap = 2.0
+```
+
+Após o sinal bruto:
+
+```text
+desempenho_comprimido = 4.0 · tanh(desempenho_bruto / 4.0)
+delta_partida = desempenho_comprimido − média_do_jogo
+Σ(delta_partida no jogo) = 0
+```
+
+Depois do peso de jogo, o delta ponderado é centralizado de novo:
+
+```text
+Σ(delta_ponderado no jogo) = 0
 ```
 
 Peso do jogo:
@@ -420,15 +438,27 @@ peso_jogo mínimo = 0.15
 Agregação:
 
 ```text
-ajuste_desempenho = Σ(peso_jogo · desempenho_jogo) / Σ(peso_jogo)
+ajuste_desempenho = Σ(delta_ponderado) / Σ(peso_jogo)
 Performance Grupo = TSI_pré + ajuste_desempenho
+```
+
+Estado dos dados da Copa:
+
+```text
+60 partidas carregadas
+56 partidas com detalhe FotMob completo via API
+4 partidas com estatísticas preenchidas manualmente a partir do FotMob:
+- Japan 1-1 Sweden
+- Tunisia 1-3 Netherlands
+- Turkey 3-2 United States
+- Paraguay 0-0 Australia
 ```
 
 ## Pendências
 
 ```text
-calibrar c_proc e c_res no B9
-confirmar disponibilidade das estatísticas da Copa
+calibrar c_proc, c_res e soft_cap no B9
+substituir as 4 entradas manuais por JSON bruto quando houver crédito na API
 operacionalizar rotação e necessidade competitiva
 ```
 

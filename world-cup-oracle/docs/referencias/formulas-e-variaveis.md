@@ -353,14 +353,57 @@ pontos_reais − pts_esp
 Nota do jogo:
 
 ```text
-desempenho_jogo =
+desempenho_bruto =
 c_proc · surpresa_proc
 + c_res · surpresa_res
 ```
 
 ```text
 c_proc = 4.0
-c_res  = 1.0
+c_res  = 3.0
+```
+
+Compressão:
+
+```text
+desempenho_comprimido =
+4.0 · tanh(desempenho_bruto / 4.0)
+```
+
+Calibração zero-sum por partida:
+
+```text
+delta_partida =
+desempenho_comprimido
+− média(desempenho_comprimido no jogo)
+```
+
+```text
+Σ(delta_partida no jogo) = 0
+```
+
+Aplicação do peso e nova centralização:
+
+```text
+delta_ponderado_pre =
+delta_partida · peso_jogo
+```
+
+```text
+delta_ponderado =
+delta_ponderado_pre
+− média(delta_ponderado_pre no jogo)
+```
+
+```text
+Σ(delta_ponderado no jogo) = 0
+```
+
+Fallback sem processo:
+
+```text
+se não houver xG/stats de processo:
+surpresa_proc = 0
 ```
 
 Peso do jogo:
@@ -385,7 +428,7 @@ Agregação:
 
 ```text
 ajuste_desempenho =
-Σ(peso_jogo · desempenho_jogo)
+Σ(delta_ponderado)
 /
 Σ(peso_jogo)
 ```
@@ -741,7 +784,8 @@ ln(P(gols_B = j | λ_B))
 | `λ_A`, `λ_B` | gols esperados no confronto | B4/B7 |
 | `GD_esp` | diferença de gols esperada | B3 |
 | `GD_proc` | diferença de processo | B3 |
-| `desempenho_jogo` | nota do jogo | B3 |
+| `desempenho_bruto` | nota pré-soft-cap do jogo | B3 |
+| `delta_ponderado` | delta do jogo após soft cap, peso e soma zero | B3 |
 | `peso_jogo` | confiabilidade do jogo | B3 |
 | `ajuste_desempenho` | média ponderada dos jogos de grupo | B3 |
 | `Performance Grupo` | TSI_pré + ajuste_desempenho | B3/B1 |
