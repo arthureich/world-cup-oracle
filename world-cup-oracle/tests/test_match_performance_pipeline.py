@@ -8,6 +8,7 @@ import pytest
 from tactical_oracle.data.io import write_rows_parquet
 from tactical_oracle.pipeline.match_performance import (
     build_real_match_performance_outputs,
+    match_performance_audit_frame,
     match_performance_frame,
     team_performance_adjustment_frame,
 )
@@ -421,6 +422,80 @@ def test_team_performance_adjustment_frame_applies_post_group_weight(tmp_path) -
     assert row["tsi_post_groups"] == pytest.approx(13.0 + centered_delta * 0.30)
 
 
+def test_match_performance_audit_frame_adds_raw_context(tmp_path) -> None:
+    stats = tmp_path / "match_stats.parquet"
+    probabilities = tmp_path / "probabilities.parquet"
+    write_rows_parquet(
+        [
+            {
+                "match_id": "m1",
+                "match_number": 1,
+                "date": "2026-06-11",
+                "team": "Brazil",
+                "opponent": "Argentina",
+                "goals": 2,
+                "goals_against": 1,
+                "xg": 1.7,
+                "xg_against": 0.9,
+                "data_source": "fotmob-manual",
+                "last_updated": "2026-06-26",
+                "status": "finished",
+                "is_home": True,
+                "red_cards": 0,
+                "first_red_card_minute": None,
+            },
+            {
+                "match_id": "m1",
+                "match_number": 1,
+                "date": "2026-06-11",
+                "team": "Argentina",
+                "opponent": "Brazil",
+                "goals": 1,
+                "goals_against": 2,
+                "xg": 0.9,
+                "xg_against": 1.7,
+                "data_source": "fotmob-manual",
+                "last_updated": "2026-06-26",
+                "status": "finished",
+                "is_home": False,
+                "red_cards": 0,
+                "first_red_card_minute": None,
+            },
+        ],
+        stats,
+    )
+    write_rows_parquet(
+        [
+            {
+                "match_id": "m1",
+                "match_number": 1,
+                "team_a": "Brazil",
+                "team_b": "Argentina",
+                "lambda_a": 1.2,
+                "lambda_b": 1.0,
+                "expected_points_a": 1.5,
+                "expected_points_b": 1.2,
+            }
+        ],
+        probabilities,
+    )
+    match_frame = match_performance_frame(
+        match_stats=pl.read_parquet(stats),
+        match_probabilities=pl.read_parquet(probabilities),
+    )
+
+    audit = match_performance_audit_frame(match_frame, pl.read_parquet(stats))
+    row = audit.filter(pl.col("team") == "Brazil").row(0, named=True)
+
+    assert audit.height == 2
+    assert row["score"] == "2-1"
+    assert row["raw_xg"] == pytest.approx(1.7)
+    assert row["xg_difference"] == pytest.approx(0.8)
+    assert row["data_source"] == "fotmob-manual"
+    assert row["has_process_stats"] is True
+    assert row["weighted_match_tsi_delta"] > 0
+
+
 def test_build_real_match_performance_outputs_reads_standard_paths(tmp_path) -> None:
     interim = tmp_path / "interim"
     processed = tmp_path / "processed"
@@ -491,7 +566,9 @@ def test_build_real_match_performance_outputs_reads_standard_paths(tmp_path) -> 
 
     assert set(outputs) == {
         "match_performance.parquet",
+        "match_performance_audit.parquet",
         "team_performance_adjustments.parquet",
     }
     assert outputs["match_performance.parquet"].height == 2
+    assert outputs["match_performance_audit.parquet"].height == 2
     assert outputs["team_performance_adjustments.parquet"].height == 2

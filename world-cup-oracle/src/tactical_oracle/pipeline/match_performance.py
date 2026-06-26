@@ -321,6 +321,114 @@ def match_performance_frame(
     )
 
 
+def _ensure_columns(frame: Any, columns: dict[str, Any]) -> Any:
+    pl = _polars()
+    missing = [
+        pl.lit(default).alias(column)
+        for column, default in columns.items()
+        if column not in frame.columns
+    ]
+    if not missing:
+        return frame
+    return frame.with_columns(missing)
+
+
+def match_performance_audit_frame(match_performance: Any, match_stats: Any) -> Any:
+    pl = _polars()
+    match_stats = _ensure_columns(
+        match_stats,
+        {
+            "xg": None,
+            "xg_against": None,
+            "data_source": None,
+            "last_updated": None,
+            "status": None,
+            "is_home": None,
+            "red_cards": None,
+            "first_red_card_minute": None,
+        },
+    )
+    stats_columns = [
+        "match_id",
+        "match_number",
+        "team",
+        "opponent",
+        "xg",
+        "xg_against",
+        "data_source",
+        "last_updated",
+        "status",
+        "is_home",
+        "red_cards",
+        "first_red_card_minute",
+    ]
+    stats = match_stats.select(stats_columns).rename(
+        {
+            "xg": "raw_xg",
+            "xg_against": "raw_xg_against",
+            "red_cards": "raw_red_cards",
+            "first_red_card_minute": "raw_first_red_card_minute",
+        }
+    )
+    score = (
+        pl.col("goals").cast(pl.Utf8)
+        + pl.lit("-")
+        + pl.col("goals_against").cast(pl.Utf8)
+    )
+    return (
+        match_performance.join(
+            stats,
+            on=["match_id", "match_number", "team", "opponent"],
+            how="left",
+        )
+        .with_columns(
+            score.alias("score"),
+            (pl.col("goals") - pl.col("goals_against")).alias("goal_difference"),
+            (pl.col("raw_xg") - pl.col("raw_xg_against")).alias("xg_difference"),
+        )
+        .select(
+            "match_id",
+            "match_number",
+            "date",
+            "team",
+            "opponent",
+            "score",
+            "goals",
+            "goals_against",
+            "goal_difference",
+            "raw_xg",
+            "raw_xg_against",
+            "xg_difference",
+            "lambda_for",
+            "lambda_against",
+            "expected_goal_difference",
+            "process_for",
+            "process_against",
+            "process_goal_difference",
+            "expected_points",
+            "actual_points",
+            "process_surprise",
+            "result_surprise",
+            "raw_match_tsi_delta",
+            "compressed_match_tsi_delta",
+            "match_tsi_delta",
+            "match_weight",
+            "weighted_match_tsi_delta",
+            "has_process_stats",
+            "minutes_numerical_imbalance",
+            "red_cards",
+            "opponent_red_cards",
+            "raw_red_cards",
+            "raw_first_red_card_minute",
+            "is_home",
+            "status",
+            "data_source",
+            "last_updated",
+        )
+        .sort(["match_number", "team"])
+    )
+
+
 def team_performance_adjustment_frame(
     match_performance: Any,
     tsi_pre_cup: Any,
@@ -387,8 +495,13 @@ def build_real_match_performance_outputs(
         match_performance,
         read_parquet(processed_path / "tsi_pre_cup.parquet"),
     )
+    match_audit = match_performance_audit_frame(
+        match_performance,
+        read_parquet(interim_path / "worldcup_match_stats.parquet"),
+    )
     return {
         "match_performance.parquet": match_performance,
+        "match_performance_audit.parquet": match_audit,
         "team_performance_adjustments.parquet": team_adjustments,
     }
 
