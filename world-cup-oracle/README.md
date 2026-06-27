@@ -78,6 +78,27 @@ pytest
 ruff check .
 ```
 
+## Dashboard
+
+Install the app dependencies and run the local Streamlit dashboard:
+
+```bash
+pip install -e ".[app]"
+streamlit run app/streamlit_app.py
+```
+
+The dashboard reads the processed Parquet outputs in `data/processed/`, including:
+
+```text
+current_group_standings.parquet
+next_matches.parquet
+group_projection.parquet
+team_stage_probabilities.parquet
+knockout_match_probabilities.parquet
+match_performance_audit.parquet
+calibration_b3_review.parquet
+```
+
 ## Notes
 
 This MVP intentionally does not use Spark, PostgreSQL, FastAPI or React. The first version is

@@ -218,11 +218,25 @@ def match_performance_frame(
         .otherwise(0.0)
     )
     disadvantage_minutes = _first_red_card_disadvantage_minutes()
-    match_weight = _clamp_expr(
+    base_match_weight = _clamp_expr(
         1.0 - params.red_card_weight_factor * (_clamp_expr(disadvantage_minutes, 0.0, 90.0) / 90.0),
         params.min_match_weight,
         1.0,
     )
+    game_num = pl.col("match_number").rank("dense").over("team")
+    rotated = pl.when(is_team_a).then(pl.col("team_a_rotated")).otherwise(pl.col("team_b_rotated")).fill_null(False)
+    guaranteed = pl.when(is_team_a).then(pl.col("team_a_guaranteed_first")).otherwise(pl.col("team_b_guaranteed_first")).fill_null(False)
+    has_active_var = rotated | guaranteed
+    multiplier = (
+        pl.when(has_active_var)
+        .then(1.0)
+        .when(game_num == 1)
+        .then(0.8)
+        .when((game_num == 2) | (game_num == 3))
+        .then(1.2)
+        .otherwise(1.0)
+    )
+    match_weight = base_match_weight * multiplier
     has_process_stats = _any_available_expr(PROCESS_AVAILABILITY_COLUMNS)
 
     return (
@@ -254,6 +268,7 @@ def match_performance_frame(
         .with_columns(
             (
                 pl.col("process_goal_difference") - pl.col("expected_goal_difference")
+                + params.actual_gd_influence * (pl.col("goals") - pl.col("goals_against"))
             ).alias("process_surprise")
         )
         .with_columns(

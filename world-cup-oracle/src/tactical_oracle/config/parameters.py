@@ -72,6 +72,7 @@ class PerformanceParameters:
     match_delta_soft_cap: float = 4.0
     min_match_weight: float = 0.15
     red_card_weight_factor: float = 0.5
+    actual_gd_influence: float = 0.15
     offensive_weights: dict[str, float] = field(
         default_factory=lambda: {
             "xg": 0.45,

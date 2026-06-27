@@ -47,7 +47,7 @@ def test_performance_score_separates_process_and_result_surprise() -> None:
 
     assert math.isclose(process_surprise, 0.7)
     assert math.isclose(result_surprise, 1.2)
-    assert math.isclose(score, 4.0)
+    assert math.isclose(score, 6.4)
 
 
 def test_build_match_performance_from_metrics_builds_process_composite() -> None:

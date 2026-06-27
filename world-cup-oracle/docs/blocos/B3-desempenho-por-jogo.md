@@ -27,14 +27,10 @@ Dois canais
 
 Processo:
 
-proc_of =
-composto ofensivo em escala equivalente a xG/gols
-proc_def =
-composto defensivo em escala equivalente a xG/gols
-GD_proc =
-proc_of − proc_def
-surpresa_proc =
-GD_proc − GD_esp
+proc_of = composto ofensivo em escala equivalente a xG/gols
+proc_def = composto defensivo em escala equivalente a xG/gols
+GD_proc = proc_of − proc_def
+surpresa_proc = GD_proc − GD_esp + actual_gd_influence · (gols_reais − gols_sofridos)
 
 Resultado:
 
@@ -49,6 +45,7 @@ Parâmetros iniciais:
 
 c_proc = 4.0
 c_res  = 3.0
+actual_gd_influence = 0.15
 
 c_proc vem da aproximação:
 

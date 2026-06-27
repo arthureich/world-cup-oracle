@@ -106,6 +106,7 @@ calendário, não para substituir o Elo partida a partida.
 |---|---:|---|
 | `c_proc` | 4.0 | Recalibrável |
 | `c_res` | 3.0 | Recalibrável |
+| `actual_gd_influence` | 0.15 | Recalibrável |
 | `match_delta_soft_cap` | 4.0 | Recalibrável |
 | piso `peso_jogo` | 0.15 | Recalibrável |
 | `ρ_vermelho` | 0.5 | Recalibrável |

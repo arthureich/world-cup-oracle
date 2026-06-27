@@ -897,7 +897,7 @@
     "league_name": "World Cup Grp. C",
     "match_id": 53,
     "started": true,
-    "status": "Scheduled",
+    "status": "Completed",
     "utc_time": "2026-06-24T22:00:00.000Z"
   },
   {
@@ -914,8 +914,42 @@
     "league_name": "World Cup Grp. C",
     "match_id": 54,
     "started": true,
-    "status": "Scheduled",
+    "status": "Completed",
     "utc_time": "2026-06-24T22:00:00.000Z"
+  },
+  {
+    "away_score": 2,
+    "away_team": "United States",
+    "away_team_id": 13,
+    "date": "2026-06-26",
+    "finished": true,
+    "fotmob_match_id": 4667775,
+    "home_score": 3,
+    "home_team": "Turkey",
+    "home_team_id": 16,
+    "league_id": 894793,
+    "league_name": "World Cup Grp. D",
+    "match_id": 55,
+    "started": true,
+    "status": "Completed",
+    "utc_time": "2026-06-26T02:00:00.000Z"
+  },
+  {
+    "away_score": 0,
+    "away_team": "Australia",
+    "away_team_id": 15,
+    "date": "2026-06-26",
+    "finished": true,
+    "fotmob_match_id": 4667776,
+    "home_score": 0,
+    "home_team": "Paraguay",
+    "home_team_id": 14,
+    "league_id": 894793,
+    "league_name": "World Cup Grp. D",
+    "match_id": 56,
+    "started": true,
+    "status": "Completed",
+    "utc_time": "2026-06-26T02:00:00.000Z"
   },
   {
     "away_score": 1,
@@ -931,7 +965,7 @@
     "league_name": "World Cup Grp. E",
     "match_id": 57,
     "started": true,
-    "status": "Scheduled",
+    "status": "Completed",
     "utc_time": "2026-06-25T20:00:00.000Z"
   },
   {
@@ -948,7 +982,7 @@
     "league_name": "World Cup Grp. E",
     "match_id": 58,
     "started": true,
-    "status": "Scheduled",
+    "status": "Completed",
     "utc_time": "2026-06-25T20:00:00.000Z"
   },
   {
@@ -965,7 +999,7 @@
     "league_name": "World Cup Grp. F",
     "match_id": 59,
     "started": true,
-    "status": "Scheduled",
+    "status": "Completed",
     "utc_time": "2026-06-25T23:00:00.000Z"
   },
   {
@@ -982,7 +1016,75 @@
     "league_name": "World Cup Grp. F",
     "match_id": 60,
     "started": true,
-    "status": "Scheduled",
+    "status": "Completed",
     "utc_time": "2026-06-25T23:00:00.000Z"
+  },
+  {
+    "away_score": 1,
+    "away_team": "Spain",
+    "away_team_id": 29,
+    "date": "2026-06-27",
+    "finished": true,
+    "fotmob_match_id": 4667802,
+    "home_score": 0,
+    "home_team": "Uruguay",
+    "home_team_id": 32,
+    "league_id": 894797,
+    "league_name": "World Cup Grp. H",
+    "match_id": 63,
+    "started": true,
+    "status": "Completed",
+    "utc_time": "2026-06-27T00:00:00.000Z"
+  },
+  {
+    "away_score": 0,
+    "away_team": "Saudi Arabia",
+    "away_team_id": 31,
+    "date": "2026-06-27",
+    "finished": true,
+    "fotmob_match_id": 4667803,
+    "home_score": 0,
+    "home_team": "Cape Verde",
+    "home_team_id": 30,
+    "league_id": 894797,
+    "league_name": "World Cup Grp. H",
+    "match_id": 64,
+    "started": true,
+    "status": "Completed",
+    "utc_time": "2026-06-27T00:00:00.000Z"
+  },
+  {
+    "away_score": 4,
+    "away_team": "France",
+    "away_team_id": 33,
+    "date": "2026-06-26",
+    "finished": true,
+    "fotmob_match_id": 4667808,
+    "home_score": 1,
+    "home_team": "Norway",
+    "home_team_id": 36,
+    "league_id": 894798,
+    "league_name": "World Cup Grp. I",
+    "match_id": 65,
+    "started": true,
+    "status": "Completed",
+    "utc_time": "2026-06-26T19:00:00.000Z"
+  },
+  {
+    "away_score": 0,
+    "away_team": "Iraq",
+    "away_team_id": 35,
+    "date": "2026-06-26",
+    "finished": true,
+    "fotmob_match_id": 4667809,
+    "home_score": 5,
+    "home_team": "Senegal",
+    "home_team_id": 34,
+    "league_id": 894798,
+    "league_name": "World Cup Grp. I",
+    "match_id": 66,
+    "started": true,
+    "status": "Completed",
+    "utc_time": "2026-06-26T19:00:00.000Z"
   }
 ]

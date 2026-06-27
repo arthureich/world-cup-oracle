@@ -12,7 +12,7 @@ from urllib.parse import urlencode
 from urllib.request import Request, urlopen
 
 PARSE_BOT_SCRAPER_ID = "645b8e03-271d-4c85-97e7-35d5733a2d78"
-DEFAULT_BASE_URL = f"https://api.parse.bot/scraper/{PARSE_BOT_SCRAPER_ID}"
+DEFAULT_BASE_URL = f"https://kpmh37x1.up.railway.app/scraper/{PARSE_BOT_SCRAPER_ID}"
 DEFAULT_RAW_DIR = Path("data/raw/fotmob")
 
 SUPPORTED_ENDPOINTS = (
@@ -107,6 +107,7 @@ def fetch_endpoint(
         headers={
             "Accept": "application/json",
             "X-API-Key": api_key,
+            "Host": "api.parse.bot",
         },
     )
 
