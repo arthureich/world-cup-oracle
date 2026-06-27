@@ -106,6 +106,19 @@ def match_performance_frame(
     pl = _polars()
     params = params or PerformanceParameters()
     match_stats = _ensure_process_columns(match_stats)
+    fixture_weight_columns = (
+        "team_a_rotated",
+        "team_b_rotated",
+        "team_a_guaranteed_first",
+        "team_b_guaranteed_first",
+    )
+    has_fixture_weight_columns = all(
+        column in match_probabilities.columns for column in fixture_weight_columns
+    )
+    match_probabilities = _ensure_columns(
+        match_probabilities,
+        {column: None for column in fixture_weight_columns},
+    )
     opponent_reds = match_stats.select(
         "match_id",
         pl.col("team").alias("opponent"),
@@ -224,9 +237,19 @@ def match_performance_frame(
         1.0,
     )
     game_num = pl.col("match_number").rank("dense").over("team")
-    rotated = pl.when(is_team_a).then(pl.col("team_a_rotated")).otherwise(pl.col("team_b_rotated")).fill_null(False)
-    guaranteed = pl.when(is_team_a).then(pl.col("team_a_guaranteed_first")).otherwise(pl.col("team_b_guaranteed_first")).fill_null(False)
-    has_active_var = rotated | guaranteed
+    rotated = (
+        pl.when(is_team_a)
+        .then(pl.col("team_a_rotated"))
+        .otherwise(pl.col("team_b_rotated"))
+        .fill_null(False)
+    )
+    guaranteed = (
+        pl.when(is_team_a)
+        .then(pl.col("team_a_guaranteed_first"))
+        .otherwise(pl.col("team_b_guaranteed_first"))
+        .fill_null(False)
+    )
+    has_active_var = pl.lit(not has_fixture_weight_columns) | rotated | guaranteed
     multiplier = (
         pl.when(has_active_var)
         .then(1.0)
@@ -267,8 +290,13 @@ def match_performance_frame(
         )
         .with_columns(
             (
-                pl.col("process_goal_difference") - pl.col("expected_goal_difference")
-                + params.actual_gd_influence * (pl.col("goals") - pl.col("goals_against"))
+                pl.when(pl.col("has_process_stats"))
+                .then(
+                    pl.col("process_goal_difference")
+                    - pl.col("expected_goal_difference")
+                    + params.actual_gd_influence * (pl.col("goals") - pl.col("goals_against"))
+                )
+                .otherwise(0.0)
             ).alias("process_surprise")
         )
         .with_columns(

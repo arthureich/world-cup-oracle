@@ -89,9 +89,9 @@ def test_match_performance_frame_builds_tsi_delta_with_red_card_weight(tmp_path)
 
     assert rows["Brazil"]["process_for"] == 2.0
     assert rows["Brazil"]["process_against"] == 0.5
-    assert rows["Brazil"]["raw_match_tsi_delta"] == pytest.approx(10.8)
-    compressed_brazil = _soft_cap(10.8)
-    compressed_argentina = _soft_cap(-10.2)
+    assert rows["Brazil"]["raw_match_tsi_delta"] == pytest.approx(12.0)
+    compressed_brazil = _soft_cap(12.0)
+    compressed_argentina = _soft_cap(-11.4)
     centered_brazil = compressed_brazil - ((compressed_brazil + compressed_argentina) / 2.0)
     assert rows["Brazil"]["compressed_match_tsi_delta"] == pytest.approx(compressed_brazil)
     assert rows["Brazil"]["match_tsi_delta"] == pytest.approx(centered_brazil)
@@ -415,8 +415,8 @@ def test_team_performance_adjustment_frame_applies_post_group_weight(tmp_path) -
     )
     row = team_frame.filter(pl.col("team") == "Brazil").row(0, named=True)
 
-    compressed_delta = _soft_cap(10.8)
-    opponent_compressed_delta = _soft_cap(-10.2)
+    compressed_delta = _soft_cap(12.0)
+    opponent_compressed_delta = _soft_cap(-11.4)
     centered_delta = compressed_delta - ((compressed_delta + opponent_compressed_delta) / 2.0)
     assert row["performance_adjustment"] == pytest.approx(centered_delta)
     assert row["post_groups_tsi_delta"] == pytest.approx(centered_delta * 0.30)
