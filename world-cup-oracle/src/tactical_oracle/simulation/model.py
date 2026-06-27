@@ -104,12 +104,22 @@ def match_probabilities(
                 best_probability = probability
                 best_score = (goals_a, goals_b)
 
+    draw_reduction = draw * params.draw_reduction_factor
+    draw_adjusted = draw - draw_reduction
+    total_win = win_a + win_b
+    if total_win > 0:
+        win_a_adjusted = win_a + draw_reduction * (win_a / total_win)
+        win_b_adjusted = win_b + draw_reduction * (win_b / total_win)
+    else:
+        win_a_adjusted = win_a + draw_reduction * 0.5
+        win_b_adjusted = win_b + draw_reduction * 0.5
+
     return MatchProbabilities(
-        win_a=win_a,
-        draw=draw,
-        win_b=win_b,
-        expected_points_a=3.0 * win_a + draw,
-        expected_points_b=3.0 * win_b + draw,
+        win_a=win_a_adjusted,
+        draw=draw_adjusted,
+        win_b=win_b_adjusted,
+        expected_points_a=3.0 * win_a_adjusted + draw_adjusted,
+        expected_points_b=3.0 * win_b_adjusted + draw_adjusted,
         most_likely_score=best_score,
         most_likely_score_probability=best_probability,
     )
@@ -139,6 +149,12 @@ def simulate_knockout_match(
     rng = rng or np.random.default_rng()
     goals_a_90 = int(rng.poisson(lambda_a))
     goals_b_90 = int(rng.poisson(lambda_b))
+    if goals_a_90 == goals_b_90 and float(rng.random()) < params.draw_reduction_factor:
+        p_a = lambda_a / (lambda_a + lambda_b) if (lambda_a + lambda_b) > 0 else 0.5
+        if float(rng.random()) < p_a:
+            goals_a_90 += 1
+        else:
+            goals_b_90 += 1
 
     if goals_a_90 > goals_b_90:
         return KnockoutResult(team_a, team_b, team_a, goals_a_90, goals_b_90)
@@ -330,6 +346,7 @@ def simulate_group(
     seed: int | None = None,
     fifa_ranks: Mapping[str, int] | None = None,
 ) -> list[GroupStanding]:
+    params = DEFAULT_SIMULATION_PARAMETERS
     rng = np.random.default_rng(seed)
     results: list[MatchResult] = []
     teams: set[str] = set()
@@ -338,12 +355,20 @@ def simulate_group(
             continue
         teams.update([fixture.team_a, fixture.team_b])
         lambda_a, lambda_b = expected_goals_provider(fixture.team_a, fixture.team_b)
+        goals_a = int(rng.poisson(lambda_a))
+        goals_b = int(rng.poisson(lambda_b))
+        if goals_a == goals_b and float(rng.random()) < params.draw_reduction_factor:
+            p_a = lambda_a / (lambda_a + lambda_b) if (lambda_a + lambda_b) > 0 else 0.5
+            if float(rng.random()) < p_a:
+                goals_a += 1
+            else:
+                goals_b += 1
         results.append(
             MatchResult(
                 team_a=fixture.team_a,
                 team_b=fixture.team_b,
-                goals_a=int(rng.poisson(lambda_a)),
-                goals_b=int(rng.poisson(lambda_b)),
+                goals_a=goals_a,
+                goals_b=goals_b,
                 group=group,
             )
         )

@@ -56,7 +56,7 @@ class AttackDefenseParameters:
     profile_multiplier: float = 0.8
     profile_cap: float = 2.0
     base_goals: float = 1.30
-    k: float = 0.09
+    k: float = 0.12
     host_gamma: float = 0.15
     opponent_delta: float = 0.0
     guaranteed_first_tsi_penalty: float = 0.35
@@ -106,6 +106,7 @@ class SimulationParameters:
     penalty_max: float = 0.60
     quick_simulations: int = 50_000
     stable_simulations: int = 200_000
+    draw_reduction_factor: float = 0.10
 
 
 @dataclass(frozen=True)
