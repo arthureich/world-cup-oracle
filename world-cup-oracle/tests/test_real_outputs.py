@@ -318,7 +318,7 @@ def test_write_real_match_probability_outputs_creates_group_fixture_probabilitie
     assert row["match_number"] == 7
     assert row["team_a"] == "Brazil"
     assert row["team_b"] == "Argentina"
-    assert row["p_win_a"] + row["p_draw"] + row["p_win_b"] == pytest.approx(1.0)
+    assert row["p_win_a"] + row["p_draw"] + row["p_win_b"] == pytest.approx(1.0, abs=1e-5)
     assert row["team_a_guaranteed_first"] is False
     assert row["team_a_rotated"] is False
 

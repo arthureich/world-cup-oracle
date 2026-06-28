@@ -56,7 +56,13 @@ class AttackDefenseParameters:
     profile_multiplier: float = 0.8
     profile_cap: float = 2.0
     base_goals: float = 1.30
-    k: float = 0.12
+    k: float = 0.18
+    use_saturated_tsi_gap: bool = True
+    legacy_tsi_gap_multiplier: float = 1.5
+    tsi_gap_transform_scale: float = 1.25
+    tsi_gap_transform_power: float = 0.60
+    tsi_gap_cap: float = 3.0
+    profile_total_weight: float = 0.25
     host_gamma: float = 0.15
     opponent_delta: float = 0.0
     guaranteed_first_tsi_penalty: float = 0.35

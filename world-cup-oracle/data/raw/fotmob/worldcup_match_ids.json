@@ -1020,6 +1020,32 @@
     "utc_time": "2026-06-25T23:00:00.000Z"
   },
   {
+    "away_score": 5,
+    "away_team": "Belgium",
+    "away_team_id": 25,
+    "date": "2026-06-27",
+    "fotmob_match_id": 4667794,
+    "home_score": 1,
+    "home_team": "New Zealand",
+    "home_team_id": 28,
+    "match_id": "61",
+    "status": "Completed",
+    "utc_time": "2026-06-27T03:00:00.000Z"
+  },
+  {
+    "away_score": 1,
+    "away_team": "Iran",
+    "away_team_id": 27,
+    "date": "2026-06-27",
+    "fotmob_match_id": 4667795,
+    "home_score": 1,
+    "home_team": "Egypt",
+    "home_team_id": 26,
+    "match_id": "62",
+    "status": "Completed",
+    "utc_time": "2026-06-27T03:00:00.000Z"
+  },
+  {
     "away_score": 1,
     "away_team": "Spain",
     "away_team_id": 29,

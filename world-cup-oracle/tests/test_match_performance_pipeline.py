@@ -5,6 +5,7 @@ import math
 import polars as pl
 import pytest
 
+from tactical_oracle.config import TSIParameters
 from tactical_oracle.data.io import write_rows_parquet
 from tactical_oracle.pipeline.match_performance import (
     b3_calibration_review_frame,
@@ -418,9 +419,10 @@ def test_team_performance_adjustment_frame_applies_post_group_weight(tmp_path) -
     compressed_delta = _soft_cap(12.0)
     opponent_compressed_delta = _soft_cap(-11.4)
     centered_delta = compressed_delta - ((compressed_delta + opponent_compressed_delta) / 2.0)
+    post_groups_weight = TSIParameters().post_groups_weight
     assert row["performance_adjustment"] == pytest.approx(centered_delta)
-    assert row["post_groups_tsi_delta"] == pytest.approx(centered_delta * 0.30)
-    assert row["tsi_post_groups"] == pytest.approx(13.0 + centered_delta * 0.30)
+    assert row["post_groups_tsi_delta"] == pytest.approx(centered_delta * post_groups_weight)
+    assert row["tsi_post_groups"] == pytest.approx(13.0 + centered_delta * post_groups_weight)
 
 
 def test_match_performance_audit_frame_adds_raw_context(tmp_path) -> None:

@@ -88,8 +88,27 @@ def expected_goals(
     opp_a = params.opponent_delta if b_is_host else 0.0
     opp_b = params.opponent_delta if a_is_host else 0.0
 
-    lambda_a = params.base_goals * math.exp(params.k * (attack_a - defense_b) + host_a - opp_a)
-    lambda_b = params.base_goals * math.exp(params.k * (attack_b - defense_a) + host_b - opp_b)
+    tsi_a, profile_a = reverse_components(attack_a, defense_a)
+    tsi_b, profile_b = reverse_components(attack_b, defense_b)
+    raw_tsi_gap = tsi_a - tsi_b
+    if params.use_saturated_tsi_gap:
+        absolute_gap = abs(raw_tsi_gap)
+        transformed_gap = params.tsi_gap_transform_scale * (
+            absolute_gap**params.tsi_gap_transform_power
+        )
+        effective_tsi_gap = math.copysign(
+            min(params.tsi_gap_cap, transformed_gap),
+            raw_tsi_gap,
+        )
+        profile_signal = params.profile_total_weight * (profile_a + profile_b)
+    else:
+        effective_tsi_gap = params.legacy_tsi_gap_multiplier * raw_tsi_gap
+        profile_signal = profile_a + profile_b
+    matchup_a = effective_tsi_gap + profile_signal
+    matchup_b = -effective_tsi_gap + profile_signal
+
+    lambda_a = params.base_goals * math.exp(params.k * matchup_a + host_a - opp_a)
+    lambda_b = params.base_goals * math.exp(params.k * matchup_b + host_b - opp_b)
     return lambda_a, lambda_b
 
 

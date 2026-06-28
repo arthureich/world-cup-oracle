@@ -12,7 +12,7 @@ SRC = ROOT / "src"
 if str(SRC) not in sys.path:
     sys.path.insert(0, str(SRC))
 
-from tactical_oracle.presentation.summary import read_processed  # noqa: E402
+from tactical_oracle.presentation.summary import processed_path, read_processed  # noqa: E402
 
 APP_TITLE = "World Cup Oracle"
 
@@ -53,8 +53,13 @@ def configure_page(title: str = APP_TITLE) -> None:
 
 
 @st.cache_data(show_spinner=False)
-def load_frame(filename: str) -> pl.DataFrame:
+def _load_frame_cached(filename: str, modified_at_ns: int) -> pl.DataFrame:
     return read_processed(ROOT, filename)
+
+
+def load_frame(filename: str) -> pl.DataFrame:
+    modified_at_ns = processed_path(ROOT, filename).stat().st_mtime_ns
+    return _load_frame_cached(filename, modified_at_ns)
 
 
 def sidebar_context() -> None:
@@ -123,7 +128,11 @@ def compact_probability_frame(frame: pl.DataFrame, columns: list[str]) -> pl.Dat
             "reach_sf",
             "reach_final",
             "champion",
+            "probability",
+            "pass_probability",
+            "conditional_pass_probability",
             "appear_probability",
+            "next_best_pass_probability",
             "win_probability",
             "conditional_win_probability",
         }

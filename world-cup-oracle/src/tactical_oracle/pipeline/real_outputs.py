@@ -492,7 +492,14 @@ def build_real_match_probability_outputs(
     interim_path = Path(interim_dir)
     schedule = _rows_from_parquet(interim_path / "worldcup_schedule.parquet")
     components = _real_components_from_interim(interim_path)
-    return {"match_probabilities.parquet": real_match_probability_rows(schedule, components)}
+    baseline_params = AttackDefenseParameters(use_saturated_tsi_gap=False)
+    return {
+        "match_probabilities.parquet": real_match_probability_rows(
+            schedule,
+            components,
+            params=baseline_params,
+        )
+    }
 
 
 def write_real_elo_outputs(
