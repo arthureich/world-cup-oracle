@@ -67,9 +67,12 @@ with left:
     table(group_peers, height=360)
 
     st.subheader("Partidas Restantes")
-    remaining = next_matches.filter(
-        (pl.col("team_a") == team) | (pl.col("team_b") == team)
-    ).sort("match_number")
+    if next_matches.is_empty() or not {"team_a", "team_b"}.issubset(next_matches.columns):
+        remaining = pl.DataFrame()
+    else:
+        remaining = next_matches.filter(
+            (pl.col("team_a") == team) | (pl.col("team_b") == team)
+        ).sort("match_number")
     if remaining.is_empty():
         st.info("Sem partidas restantes.")
     else:

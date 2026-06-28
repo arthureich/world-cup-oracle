@@ -28,7 +28,10 @@ group_projection = projection.filter(pl.col("group") == selected_group).sort(
     "prob_group_1",
     descending=True,
 )
-group_next = next_matches.filter(pl.col("group") == selected_group).sort("match_number")
+if next_matches.is_empty() or "group" not in next_matches.columns:
+    group_next = pl.DataFrame()
+else:
+    group_next = next_matches.filter(pl.col("group") == selected_group).sort("match_number")
 
 left, right = st.columns([0.9, 1.1])
 with left:
