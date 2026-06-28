@@ -36,7 +36,7 @@ dados brutos
 
 O dado entra em `data/raw`, vira tabelas limpas em `data/interim`, e depois gera outputs
 analiticos em `data/processed`. O Streamlit le esses outputs e apresenta ranking,
-probabilidades, bracket e diagnosticos.
+probabilidades, bracket, tabela geral das selecoes e diagnosticos.
 
 ---
 
@@ -226,10 +226,10 @@ Parametros atuais:
 
 ```text
 base_goals = 1.30
-k = 0.18
+k = 0.20
 a = 1.25
-p = 0.60
-V_max = 3.00
+p = 0.70
+V_max = 3.50
 profile_signal = 0.25 * (Perfil_A + Perfil_B)
 ```
 
@@ -344,10 +344,12 @@ As telas principais mostram:
 
 - ranking TSI atual;
 - probabilidades por fase;
-- proximas partidas;
+- proximas partidas de grupo ou, apos os grupos, confrontos atuais do mata-mata;
 - xG e chance de vitoria/empate/derrota;
 - chance de avancar em mata-mata incluindo prorrogacao e penaltis;
 - bracket projetado;
+- tabela geral das 48 selecoes com status, campanha, Elo, elenco, odds, delta de
+  partidas, TSI atual e probabilidades por fase;
 - selecao individual com caminho e chance por etapa;
 - relatorios de validacao e auditoria.
 
@@ -357,11 +359,23 @@ No bracket:
 - jogos projetados mostram a probabilidade de aquele confronto acontecer;
 - cada card mostra chance de avancar e gols esperados de forma compacta.
 
+Na home, a tabela geral pode ser filtrada por selecao, grupo e status. Isso transforma o
+dashboard em uma mesa de trabalho: da para ver quem esta eliminado, quem esta vivo no
+mata-mata, qual selecao ganhou/perdeu TSI e como isso conversa com as probabilidades.
+
 ---
 
 ## Validacao
 
 O modelo e validado em cima das partidas ja jogadas.
+
+Estado atual do dataset operacional:
+
+```text
+72 partidas de grupo completadas
+48 selecoes com status final de grupo
+relatorio atual: docs/reports/validation-2026-06-28.md
+```
 
 Metricas atuais:
 

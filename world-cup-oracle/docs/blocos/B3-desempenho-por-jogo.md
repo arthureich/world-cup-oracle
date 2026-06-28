@@ -67,8 +67,8 @@ Observação atual:
 Para projeções futuras e mata-mata, o B4 usa a curva sublinear vigente:
 
 d = TSI_A − TSI_B
-V(d) = sign(d) * min(3.00, 1.25 * |d|^0.60)
-k = 0.18
+V(d) = sign(d) * min(3.50, 1.25 * |d|^0.70)
+k = 0.20
 
 O B3 preserva a curva de base usada na auditoria dos jogos de grupo já avaliados para
 evitar reescrever o esperado histórico quando uma curva futura é recalibrada.

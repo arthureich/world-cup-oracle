@@ -91,7 +91,7 @@ def signed(value: float | int | None, digits: int = 2) -> str:
 def table(frame: pl.DataFrame, height: int = 440, hide_index: bool = True) -> None:
     st.dataframe(
         frame,
-        use_container_width=True,
+        width="stretch",
         height=height,
         hide_index=hide_index,
     )

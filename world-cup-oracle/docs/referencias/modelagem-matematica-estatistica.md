@@ -313,9 +313,9 @@ Parametros:
 
 ```text
 a = 1.25
-p = 0.60
-V_max = 3.00
-k = 0.18
+p = 0.70
+V_max = 3.50
+k = 0.20
 base_goals = 1.30
 ```
 
@@ -609,6 +609,26 @@ Rodar testes:
 
 ```bash
 pytest
+```
+
+Dashboard operacional:
+
+```text
+home
+-> indicadores principais
+-> bracket do mata-mata
+-> proximas partidas ou confrontos atuais do mata-mata
+-> tabela geral das 48 selecoes
+-> busca por selecao
+```
+
+A tabela geral une campanha, status, ratings e simulacao:
+
+```text
+status, grupo, posicao, pontos, V/E/D, saldo
+Elo, ajuste de elenco, ajuste de odds
+TSI pre, delta de partidas, TSI atual
+probabilidades de R32, R16, R8, R4, final e titulo
 ```
 
 ---

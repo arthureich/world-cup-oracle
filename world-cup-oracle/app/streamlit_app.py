@@ -40,6 +40,34 @@ BRACKET_STAGES = [
     ("Final", "Final"),
 ]
 
+TEAM_OVERVIEW_PERCENT_COLUMNS = [
+    "Prob R32",
+    "Prob R16",
+    "Prob R8",
+    "Prob R4",
+    "Prob Final",
+    "Prob Win",
+]
+
+TEAM_OVERVIEW_NUMERIC_COLUMNS = [
+    "Elo",
+    "Elenco",
+    "Odds",
+    "TSI pre",
+    "Delta partidas",
+    "TSI atual",
+]
+
+TEAM_OVERVIEW_SORTS = {
+    "Titulo": "Prob Win",
+    "Final": "Prob Final",
+    "Semi": "Prob R4",
+    "Quartas": "Prob R8",
+    "TSI atual": "TSI atual",
+    "Delta partidas": "Delta partidas",
+    "Elo": "Elo",
+}
+
 
 def _stage_leaders(
     stage_probabilities: pl.DataFrame,
@@ -249,6 +277,77 @@ def _teams_overview(
             pl.col("TSI atual").round(3),
             *[(pl.col(column) * 100).round(2) for column in percent_columns],
         ]
+    )
+
+
+def _team_overview_filters(frame: pl.DataFrame) -> pl.DataFrame:
+    controls = st.columns([1.5, 1.0, 1.0, 1.0])
+    search = controls[0].text_input("Buscar selecao", placeholder="Brazil, France, Argentina...")
+    statuses = sorted(frame["Status"].unique().to_list())
+    selected_statuses = controls[1].multiselect("Status", statuses, default=statuses)
+    groups = sorted(frame["Grupo"].unique().to_list())
+    selected_groups = controls[2].multiselect("Grupo", groups, default=groups)
+    sort_label = controls[3].selectbox("Ordenar por", list(TEAM_OVERVIEW_SORTS), index=0)
+
+    filtered = frame.filter(
+        pl.col("Status").is_in(selected_statuses)
+        & pl.col("Grupo").is_in(selected_groups)
+    )
+    if search:
+        filtered = filtered.filter(
+            pl.col("Selecao").str.to_lowercase().str.contains(search.lower())
+        )
+    sort_column = TEAM_OVERVIEW_SORTS[sort_label]
+    return filtered.sort([sort_column, "TSI atual"], descending=[True, True])
+
+
+def _render_team_overview(frame: pl.DataFrame) -> None:
+    summary = st.columns(4)
+    summary[0].metric("Selecoes", frame.height)
+    summary[1].metric(
+        "Ainda vivas",
+        frame.filter(pl.col("Status") != "Eliminado").height,
+    )
+    summary[2].metric(
+        "Melhor TSI",
+        frame.sort("TSI atual", descending=True).row(0, named=True)["Selecao"],
+        number(frame["TSI atual"].max(), 2),
+    )
+    summary[3].metric(
+        "Maior titulo",
+        frame.sort("Prob Win", descending=True).row(0, named=True)["Selecao"],
+        f"{frame['Prob Win'].max():.1f}%",
+    )
+    st.dataframe(
+        frame,
+        width="stretch",
+        height=560,
+        hide_index=True,
+        column_config={
+            "Selecao": st.column_config.TextColumn("Selecao", width="medium"),
+            "Status": st.column_config.TextColumn("Status", width="small"),
+            "Grupo": st.column_config.TextColumn("Grupo", width="small"),
+            "Pos": st.column_config.NumberColumn("Pos", format="%d", width="small"),
+            "Pts": st.column_config.NumberColumn("Pts", format="%d", width="small"),
+            "V": st.column_config.NumberColumn("V", format="%d", width="small"),
+            "E": st.column_config.NumberColumn("E", format="%d", width="small"),
+            "D": st.column_config.NumberColumn("D", format="%d", width="small"),
+            "SG": st.column_config.NumberColumn("SG", format="%d", width="small"),
+            "Elo": st.column_config.NumberColumn("Elo", format="%.0f", width="small"),
+            "Elenco": st.column_config.NumberColumn("Elenco", format="%+.3f", width="small"),
+            "Odds": st.column_config.NumberColumn("Odds", format="%+.3f", width="small"),
+            "TSI pre": st.column_config.NumberColumn("TSI pre", format="%.3f", width="small"),
+            "Delta partidas": st.column_config.NumberColumn(
+                "Delta partidas",
+                format="%+.3f",
+                width="small",
+            ),
+            "TSI atual": st.column_config.NumberColumn("TSI atual", format="%.3f", width="small"),
+            **{
+                column: st.column_config.NumberColumn(column, format="%.2f%%", width="small")
+                for column in TEAM_OVERVIEW_PERCENT_COLUMNS
+            },
+        },
     )
 
 
@@ -510,6 +609,32 @@ def _next_knockout_matches(bracket: pl.DataFrame) -> pl.DataFrame:
     )
 
 
+def _render_next_matches(frame: pl.DataFrame) -> None:
+    status_counts = frame.group_by("Status").len().to_dicts()
+    status_text = " | ".join(f"{row['Status']}: {row['len']}" for row in status_counts)
+    st.caption(status_text)
+    st.dataframe(
+        frame,
+        width="stretch",
+        height=430,
+        hide_index=True,
+        column_config={
+            "Jogo": st.column_config.NumberColumn("Jogo", format="%d", width="small"),
+            "Status": st.column_config.TextColumn("Status", width="small"),
+            "Duelo": st.column_config.TextColumn("Duelo", width="large"),
+            "Prob duelo": st.column_config.NumberColumn("Prob duelo", format="%.1f%%"),
+            "xG A": st.column_config.NumberColumn("xG A", format="%.2f"),
+            "xG B": st.column_config.NumberColumn("xG B", format="%.2f"),
+            "Vit A 90": st.column_config.NumberColumn("Vit A 90", format="%.1f%%"),
+            "Empate 90": st.column_config.NumberColumn("Empate 90", format="%.1f%%"),
+            "Vit B 90": st.column_config.NumberColumn("Vit B 90", format="%.1f%%"),
+            "Avanca A": st.column_config.NumberColumn("Avanca A", format="%.1f%%"),
+            "Avanca B": st.column_config.NumberColumn("Avanca B", format="%.1f%%"),
+            "Mais provavel": st.column_config.TextColumn("Mais provavel", width="medium"),
+        },
+    )
+
+
 def _stage_probability_rows(row: dict[str, object]) -> pl.DataFrame:
     return pl.DataFrame(
         [
@@ -593,7 +718,7 @@ st.divider()
 st.subheader("Proximas partidas")
 if next_matches.is_empty():
     st.caption("Fase de grupos encerrada. Mostrando os confrontos atuais do mata-mata.")
-    table(_next_knockout_matches(likely_bracket), height=430)
+    _render_next_matches(_next_knockout_matches(likely_bracket))
 else:
     next_view = (
         next_matches.sort("match_number")
@@ -646,7 +771,26 @@ else:
             ]
         )
     )
-    table(next_view, height=430)
+    st.dataframe(
+        next_view,
+        width="stretch",
+        height=430,
+        hide_index=True,
+        column_config={
+            "Jogo": st.column_config.NumberColumn("Jogo", format="%d", width="small"),
+            "Grupo": st.column_config.TextColumn("Grupo", width="small"),
+            "Duelo": st.column_config.TextColumn("Duelo", width="large"),
+            "xG A": st.column_config.NumberColumn("xG A", format="%.2f"),
+            "xG B": st.column_config.NumberColumn("xG B", format="%.2f"),
+            "Vit A": st.column_config.NumberColumn("Vit A", format="%.1f%%"),
+            "Empate": st.column_config.NumberColumn("Empate", format="%.1f%%"),
+            "Vit B": st.column_config.NumberColumn("Vit B", format="%.1f%%"),
+            "Pts esp A": st.column_config.NumberColumn("Pts esp A", format="%.2f"),
+            "Pts esp B": st.column_config.NumberColumn("Pts esp B", format="%.2f"),
+            "Placar provavel": st.column_config.TextColumn("Placar provavel", width="small"),
+            "Favorito": st.column_config.TextColumn("Favorito", width="medium"),
+        },
+    )
 
 st.subheader("Tabela geral das selecoes")
 team_overview = _teams_overview(
@@ -660,7 +804,8 @@ team_overview = _teams_overview(
     team_performance,
     match_audit,
 )
-table(team_overview, height=520)
+filtered_team_overview = _team_overview_filters(team_overview)
+_render_team_overview(filtered_team_overview)
 
 st.divider()
 

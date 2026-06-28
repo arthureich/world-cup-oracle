@@ -88,10 +88,10 @@ base * exp(k * (−V(d) + profile_signal))
 Parâmetros atuais:
 
 base = 1.30
-k    = 0.18
+k    = 0.20
 a    = 1.25
-p    = 0.60
-Vmax = 3.00
+p    = 0.70
+Vmax = 3.50
 w_perfil = 0.25
 γ    = 0.15
 δ    = 0.00

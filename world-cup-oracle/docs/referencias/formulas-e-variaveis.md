@@ -525,10 +525,10 @@ Parâmetros atuais para jogos futuros/pós-grupos:
 
 ```text
 base = 1.30
-k = 0.18
+k = 0.20
 a = 1.25
-p = 0.60
-V_max = 3.00
+p = 0.70
+V_max = 3.50
 w_perfil = 0.25
 ```
 

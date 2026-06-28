@@ -48,10 +48,10 @@ transformation:
 
 ```text
 d = TSI_A - TSI_B
-V(d) = sign(d) * min(3.00, 1.25 * |d|^0.60)
+V(d) = sign(d) * min(3.50, 1.25 * |d|^0.70)
 
-lambda_A = 1.30 * exp(0.18 * ( V(d) + profile_signal))
-lambda_B = 1.30 * exp(0.18 * (-V(d) + profile_signal))
+lambda_A = 1.30 * exp(0.20 * ( V(d) + profile_signal))
+lambda_B = 1.30 * exp(0.20 * (-V(d) + profile_signal))
 ```
 
 That lets balanced games move from 51/49 toward a more useful 55/45 when one side is

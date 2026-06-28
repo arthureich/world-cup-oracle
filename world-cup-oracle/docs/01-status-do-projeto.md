@@ -23,7 +23,8 @@ O projeto ja tem um MVP local funcional:
 - Poisson para placares;
 - simulacao de grupos e mata-mata;
 - bracket projetado;
-- dashboard Streamlit;
+- dashboard Streamlit com bracket, proximas partidas/mata-mata e tabela geral das 48
+  selecoes;
 - atualizacao pos-partida;
 - validacao com Brier, Log Loss, calibracao e likelihood de placar.
 
@@ -59,17 +60,16 @@ pytest
 Relatorio de validacao atual:
 
 ```text
-docs/reports/validation-2026-06-27.md
+docs/reports/validation-2026-06-28.md
 ```
 
 Metricas registradas no ultimo run:
 
 ```text
-partidas avaliadas: 66
-Brier Score: 0.536203
-Log Loss: 0.918149
-Expected Calibration Error: 0.143981
-Score negative log-likelihood: 2.972953
+partidas avaliadas: 72
+Brier Score: 0.535508
+Log Loss: 0.918619
+Expected Calibration Error: 0.148874
 ```
 
 Observacao:
@@ -120,6 +120,8 @@ O nucleo estatistico esta pronto para iterar:
 - calcular avanco em mata-mata com prorrogacao e penaltis;
 - simular o torneio;
 - apresentar probabilidades por fase;
+- apresentar a tabela geral das 48 selecoes com status, campanha, Elo, elenco, odds,
+  delta de partidas, TSI atual e probabilidades por fase;
 - auditar performance das partidas;
 - atualizar dados ja jogados;
 - validar probabilidades.
