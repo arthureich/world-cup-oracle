@@ -1,8 +1,8 @@
 from __future__ import annotations
 
-from tactical_oracle.data.io import read_parquet
-from tactical_oracle.data.mocks import write_mock_parquets
-from tactical_oracle.pipeline.normalize import normalize_mock_raw
+from world_cup_oracle.data.io import read_parquet
+from world_cup_oracle.data.mocks import write_mock_parquets
+from world_cup_oracle.pipeline.normalize import normalize_mock_raw
 
 
 def test_normalize_mock_raw_writes_canonical_interim_tables(tmp_path) -> None:

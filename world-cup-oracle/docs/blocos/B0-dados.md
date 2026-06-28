@@ -393,7 +393,7 @@ cap = odds_adjustment_cap
 Comando para normalizar o snapshot manual:
 
 ```bash
-tactical-oracle-normalize-outrights
+world-cup-oracle-normalize-outrights
 ```
 
 Entrada padrao:
@@ -446,7 +446,7 @@ todo payload bruto deve passar pelo cache local
 Comando:
 
 ```bash
-tactical-oracle-collect-odds --sport upcoming --regions eu
+world-cup-oracle-collect-odds --sport upcoming --regions eu
 ```
 
 Saidas:
@@ -508,7 +508,7 @@ Esses melhoram o modelo, mas nao bloqueiam o nucleo Elo / TSI / simulacao.
 Antes de recalcular outputs oficiais, rodar:
 
 ```bash
-tactical-oracle-audit-data
+world-cup-oracle-audit-data
 ```
 
 Saidas:
@@ -549,7 +549,7 @@ data/raw/annex-c.pdf
 Comando:
 
 ```bash
-tactical-oracle-extract-annex-c --pdf data/raw/annex-c.pdf
+world-cup-oracle-extract-annex-c --pdf data/raw/annex-c.pdf
 ```
 
 Saida:
@@ -561,7 +561,7 @@ data/interim/worldcup_annex_c.parquet
 Validacao:
 
 ```bash
-tactical-oracle-validate-annex-c data/interim/worldcup_annex_c.parquet --complete
+world-cup-oracle-validate-annex-c data/interim/worldcup_annex_c.parquet --complete
 ```
 
 ## Imputacao De Valores De Elenco
@@ -570,7 +570,7 @@ Quando um jogador do elenco nao tiver valor confiavel, preencher com a media dos
 jogadores confiaveis da propria selecao:
 
 ```bash
-tactical-oracle-impute-squads
+world-cup-oracle-impute-squads
 ```
 
 Regra aplicada:

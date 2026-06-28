@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-from tactical_oracle.data.io import read_parquet, write_rows_parquet
-from tactical_oracle.pipeline.validation_report import build_worldcup_validation_report
+from world_cup_oracle.data.io import read_parquet, write_rows_parquet
+from world_cup_oracle.pipeline.validation_report import build_worldcup_validation_report
 
 
 def test_build_worldcup_validation_report_writes_metrics(tmp_path) -> None:

@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-from tactical_oracle.data.io import read_parquet
-from tactical_oracle.pipeline.outputs import build_mock_outputs, write_mock_outputs
+from world_cup_oracle.data.io import read_parquet
+from world_cup_oracle.pipeline.outputs import build_mock_outputs, write_mock_outputs
 
 
 def test_build_mock_outputs_contains_core_tables() -> None:

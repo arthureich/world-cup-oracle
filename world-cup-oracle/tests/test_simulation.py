@@ -4,7 +4,7 @@ import math
 
 import numpy as np
 
-from tactical_oracle.simulation import (
+from world_cup_oracle.simulation import (
     GroupFixture,
     MatchResult,
     best_third_placed,

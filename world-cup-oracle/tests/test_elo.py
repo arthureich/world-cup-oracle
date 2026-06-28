@@ -2,8 +2,8 @@ from __future__ import annotations
 
 import math
 
-from tactical_oracle.data.schemas import Match
-from tactical_oracle.elo import (
+from world_cup_oracle.data.schemas import Match
+from world_cup_oracle.elo import (
     actual_result_for_team,
     compute_elo_ratings,
     expected_result,

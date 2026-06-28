@@ -1,10 +1,10 @@
 from __future__ import annotations
 
-from tactical_oracle.attack_defense import split_attack_defense
-from tactical_oracle.calibration import evaluate_attack_defense_parameters
-from tactical_oracle.config import AttackDefenseParameters
-from tactical_oracle.data.io import read_parquet, write_rows_parquet
-from tactical_oracle.pipeline.calibration import write_attack_defense_calibration_outputs
+from world_cup_oracle.attack_defense import split_attack_defense
+from world_cup_oracle.calibration import evaluate_attack_defense_parameters
+from world_cup_oracle.config import AttackDefenseParameters
+from world_cup_oracle.data.io import read_parquet, write_rows_parquet
+from world_cup_oracle.pipeline.calibration import write_attack_defense_calibration_outputs
 
 
 def test_evaluate_attack_defense_parameters_scores_predictions() -> None:
@@ -85,7 +85,7 @@ def test_write_attack_defense_calibration_outputs_writes_three_artifacts(
         interim / "matches_cycle.parquet",
     )
     monkeypatch.setattr(
-        "tactical_oracle.pipeline.calibration.attack_defense_grid",
+        "world_cup_oracle.pipeline.calibration.attack_defense_grid",
         lambda: [
             AttackDefenseParameters(base_goals=1.2, k=0.05, host_gamma=0.0),
             AttackDefenseParameters(base_goals=1.3, k=0.09, host_gamma=0.1),

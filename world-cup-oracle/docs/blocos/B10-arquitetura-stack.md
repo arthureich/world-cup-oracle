@@ -39,7 +39,7 @@ data/
   snapshots/
 
 src/
-  tactical_oracle/
+  world_cup_oracle/
     config/
     data/
     elo/
@@ -64,8 +64,8 @@ tests/
 ## Comandos implementados
 
 ```text
-tactical-oracle-mocks
-tactical-oracle-mock-pipeline
+world-cup-oracle-mocks
+world-cup-oracle-mock-pipeline
 ```
 
 O primeiro grava datasets mockados em Parquet.

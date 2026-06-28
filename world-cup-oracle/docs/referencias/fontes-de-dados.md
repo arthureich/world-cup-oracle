@@ -96,7 +96,7 @@ buscar por competição/temporada quando usar API
 Exemplo de comando local:
 
 ```bash
-tactical-oracle-data-spike \
+world-cup-oracle-data-spike \
   --kaggle-results path/to/results.csv \
   --kaggle-shootouts path/to/shootouts.csv
 ```
@@ -145,7 +145,7 @@ fifa_rank
 Exemplo de comando local:
 
 ```bash
-tactical-oracle-data-spike \
+world-cup-oracle-data-spike \
   --fifa-ranking data/raw/fifa_ranking_2022-12-22.json
 ```
 
@@ -195,7 +195,7 @@ https://api.fifa.com/api/v3/calendar/matches?IdCompetition=17&IdSeason=285023&la
 Normalização:
 
 ```bash
-tactical-oracle-worldcup-structure
+world-cup-oracle-worldcup-structure
 ```
 
 Saídas atuais:
@@ -235,7 +235,7 @@ data/raw/world-cup-detail/match_lineups.csv
 Normalização:
 
 ```bash
-tactical-oracle-worldcup-detail
+world-cup-oracle-worldcup-detail
 ```
 
 Saídas atuais:
@@ -439,7 +439,7 @@ market_value_trusted = false
 Para habilitar o ajuste de elenco, usar um dataset Transfermarkt confiável:
 
 ```bash
-tactical-oracle-transfermarkt-squads \
+world-cup-oracle-transfermarkt-squads \
   --players-csv data/raw/transfermarkt/players.csv.gz \
   --valuations-csv data/raw/transfermarkt/player_valuations.csv.gz \
   --as-of 2026-06-11

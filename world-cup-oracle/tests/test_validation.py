@@ -2,13 +2,13 @@ from __future__ import annotations
 
 import math
 
-from tactical_oracle.odds import (
+from world_cup_oracle.odds import (
     american_to_decimal,
     champion_market_adjustments_from_rows,
     devig_three_way,
     long_term_market_adjustments_from_rows,
 )
-from tactical_oracle.validation import (
+from world_cup_oracle.validation import (
     brier_score,
     calibration_bins,
     expected_calibration_error,

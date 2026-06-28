@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720" role="img" aria-label="World Cup Oracle dashboard overview">
+  <rect width="1280" height="720" fill="#f6f7f9"/>
+  <rect x="40" y="32" width="1200" height="656" rx="16" fill="#ffffff" stroke="#d8dde6"/>
+  <text x="72" y="82" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="30" font-weight="700" fill="#17202a">World Cup Oracle</text>
+  <text x="72" y="116" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="16" fill="#53606f">TSI ranking, match probabilities and tournament projection</text>
+
+  <rect x="72" y="150" width="250" height="112" rx="10" fill="#eef6f0" stroke="#bed7c6"/>
+  <text x="94" y="184" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="14" fill="#53606f">Top TSI</text>
+  <text x="94" y="224" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="34" font-weight="700" fill="#1d5c32">France</text>
+  <text x="246" y="224" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="24" font-weight="700" fill="#1d5c32">15.71</text>
+
+  <rect x="350" y="150" width="250" height="112" rx="10" fill="#f7f2df" stroke="#e1d39b"/>
+  <text x="372" y="184" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="14" fill="#53606f">Title leader</text>
+  <text x="372" y="224" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="34" font-weight="700" fill="#7a5a08">Argentina</text>
+  <text x="520" y="224" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="24" font-weight="700" fill="#7a5a08">16%</text>
+
+  <rect x="628" y="150" width="250" height="112" rx="10" fill="#edf3fb" stroke="#bfd1ea"/>
+  <text x="650" y="184" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="14" fill="#53606f">Validation</text>
+  <text x="650" y="224" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="34" font-weight="700" fill="#244c7a">121</text>
+  <text x="722" y="224" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="18" fill="#244c7a">tests passing</text>
+
+  <rect x="906" y="150" width="250" height="112" rx="10" fill="#f4eef8" stroke="#d7c1e7"/>
+  <text x="928" y="184" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="14" fill="#53606f">Model metric</text>
+  <text x="928" y="224" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="34" font-weight="700" fill="#694184">Log Loss</text>
+  <text x="1072" y="224" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="24" font-weight="700" fill="#694184">0.918</text>
+
+  <rect x="72" y="302" width="520" height="308" rx="12" fill="#ffffff" stroke="#d8dde6"/>
+  <text x="96" y="342" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="20" font-weight="700" fill="#17202a">Next Match</text>
+  <text x="96" y="390" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="30" font-weight="700" fill="#17202a">Brazil vs Japan</text>
+  <text x="96" y="430" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="18" fill="#53606f">Expected goals: 1.76 - 1.06</text>
+  <rect x="96" y="466" width="430" height="28" rx="14" fill="#e9edf3"/>
+  <rect x="96" y="466" width="291" height="28" rx="14" fill="#2e7d51"/>
+  <text x="96" y="532" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="24" font-weight="700" fill="#2e7d51">Brazil 68%</text>
+  <text x="384" y="532" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="24" font-weight="700" fill="#53606f">Japan 32%</text>
+
+  <rect x="632" y="302" width="524" height="308" rx="12" fill="#ffffff" stroke="#d8dde6"/>
+  <text x="656" y="342" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="20" font-weight="700" fill="#17202a">Stage Probabilities</text>
+  <g font-family="Inter, Segoe UI, Arial, sans-serif" font-size="15" fill="#53606f">
+    <text x="656" y="386">Team</text><text x="930" y="386">Final</text><text x="1040" y="386">Title</text>
+    <text x="656" y="428">Argentina</text><text x="930" y="428">31%</text><text x="1040" y="428">16%</text>
+    <text x="656" y="470">France</text><text x="930" y="470">29%</text><text x="1040" y="470">15%</text>
+    <text x="656" y="512">Spain</text><text x="930" y="512">25%</text><text x="1040" y="512">13%</text>
+    <text x="656" y="554">Brazil</text><text x="930" y="554">19%</text><text x="1040" y="554">9%</text>
+  </g>
+  <line x1="656" y1="400" x2="1118" y2="400" stroke="#e0e4eb"/>
+  <line x1="656" y1="442" x2="1118" y2="442" stroke="#eef1f5"/>
+  <line x1="656" y1="484" x2="1118" y2="484" stroke="#eef1f5"/>
+  <line x1="656" y1="526" x2="1118" y2="526" stroke="#eef1f5"/>
+</svg>

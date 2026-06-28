@@ -590,19 +590,19 @@ comparar Brier e Log Loss do modelo contra mercado
 Atualizar depois de novas partidas:
 
 ```bash
-python -m tactical_oracle.pipeline.update_after_matches
+python -m world_cup_oracle.pipeline.update_after_matches
 ```
 
 Buscar novos detalhes via API/cache:
 
 ```bash
-python -m tactical_oracle.pipeline.update_after_matches --fetch-fotmob
+python -m world_cup_oracle.pipeline.update_after_matches --fetch-fotmob
 ```
 
 Rodar validacao:
 
 ```bash
-python -m tactical_oracle.pipeline.validation_report
+python -m world_cup_oracle.pipeline.validation_report
 ```
 
 Rodar testes:

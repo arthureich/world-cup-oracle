@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import math
 
-from tactical_oracle.pipeline.data_quality import odds_coverage_rows, squad_coverage_rows
+from world_cup_oracle.pipeline.data_quality import odds_coverage_rows, squad_coverage_rows
 
 
 def test_squad_coverage_rows_summarizes_called_up_squad() -> None:

@@ -2,8 +2,8 @@ from __future__ import annotations
 
 import json
 
-from tactical_oracle.data.cache import ApiCache
-from tactical_oracle.pipeline.the_odds_api import odds_match_rows_from_events
+from world_cup_oracle.data.cache import ApiCache
+from world_cup_oracle.pipeline.the_odds_api import odds_match_rows_from_events
 
 
 def test_odds_match_rows_from_events_normalizes_h2h_market() -> None:

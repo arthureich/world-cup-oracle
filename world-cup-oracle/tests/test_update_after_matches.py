@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from tactical_oracle.pipeline import update_after_matches
+from world_cup_oracle.pipeline import update_after_matches
 
 
 def test_schedule_file_for_post_group_step_accepts_interim_prefixed_path() -> None:

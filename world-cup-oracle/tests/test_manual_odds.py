@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import math
 
-from tactical_oracle.pipeline.manual_odds import normalized_outright_rows
+from world_cup_oracle.pipeline.manual_odds import normalized_outright_rows
 
 
 def test_normalized_outright_rows_devigs_american_winner_odds() -> None:

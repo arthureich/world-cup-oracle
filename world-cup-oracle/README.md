@@ -1,105 +1,202 @@
 # World Cup Oracle
 
-World Cup Oracle is a local analytical MVP for modeling the 2026 World Cup.
+World Cup Oracle is a local analytics system for the 2026 World Cup. It estimates team
+strength, match probabilities, expected goals, bracket paths and title odds from a
+reproducible Python + Parquet pipeline.
 
-The project builds a small, testable pipeline:
+The project is intentionally not a web-service architecture. It is a compact analytical
+MVP built for transparent modeling, fast iteration and explainable outputs.
 
-1. FIFA points initialize a custom cycle Elo.
-2. Elo is adjusted by match result, importance, goal margin, penalties, home field and recency.
-3. Adjusted Elo maps to TSI, the Team Strength Index.
-4. TSI receives capped squad and long-term odds adjustments.
-5. TSI is split into attack and defense through a style profile.
-6. Attack and defense produce expected goals.
-7. Poisson and Monte Carlo functions simulate matches, groups and knockouts.
-8. Group-stage performance separates process and result surprise.
-9. Validation utilities compute Brier Score, Log Loss, calibration bins and score likelihood.
+![Dashboard overview](docs/assets/screenshots/dashboard-overview.svg)
+
+## Why This Matters
+
+World Cup predictions are usually presented as a single ranking or a single simulated
+winner. That hides the most important part: uncertainty.
+
+This project treats the tournament as a distribution of possible futures. A strong team can
+still lose. A weaker team can still have a real path. The useful question is not only "who
+wins?", but:
+
+- how strong is each team right now;
+- where does that strength come from;
+- how much does matchup shape the result;
+- what does the most likely bracket look like;
+- which probabilities are well calibrated;
+- when should the model update after new evidence.
+
+## What It Does
+
+- Builds a custom cycle Elo from FIFA points and international results.
+- Maps adjusted Elo into TSI, the Team Strength Index.
+- Adds capped schedule, squad and long-term market adjustments.
+- Splits TSI into attack and defense through a style profile.
+- Converts team strength into expected goals by matchup.
+- Uses Poisson for 90-minute score probabilities.
+- Simulates groups, best third-place teams, extra time, penalties and knockouts.
+- Updates TSI after completed World Cup matches.
+- Validates predictions with Brier Score, Log Loss, calibration bins and score likelihood.
+- Exports dashboard-ready Parquet tables.
+
+## Example Decision
+
+One modeling question was how much a small TSI edge should matter in knockouts.
+
+Using a plain exponential gap made large mismatches produce too much xG. Using a weak gap
+made elite matchups look too close. The current compromise applies a limited sublinear
+transformation:
+
+```text
+d = TSI_A - TSI_B
+V(d) = sign(d) * min(3.00, 1.25 * |d|^0.60)
+
+lambda_A = 1.30 * exp(0.18 * ( V(d) + profile_signal))
+lambda_B = 1.30 * exp(0.18 * (-V(d) + profile_signal))
+```
+
+That lets balanced games move from 51/49 toward a more useful 55/45 when one side is
+slightly stronger, while preventing extreme mismatches from exploding into unrealistic xG.
+
+## Current Output Shape
+
+The pipeline writes the core analytical layer to `data/processed/`:
+
+```text
+ratings_elo.parquet
+tsi_pre_cup.parquet
+attack_defense_post_groups.parquet
+match_probabilities.parquet
+match_probabilities_post_groups.parquet
+team_stage_probabilities.parquet
+knockout_match_probabilities.parquet
+match_performance_audit.parquet
+validation_summary.parquet
+```
+
+The dashboard reads those files directly. No database or backend server is required.
+
+![Knockout projection](docs/assets/screenshots/knockout-bracket.svg)
+
+## Final Result
+
+The MVP can answer questions like:
+
+- "What is Brazil vs Japan in expected goals and advancement probability?"
+- "Who is most likely to reach the semifinal?"
+- "Which projected knockout card is confirmed and which is still conditional?"
+- "How much did a completed match change a team's current TSI?"
+- "Is the model calibrated against completed games?"
+
+The latest validation pipeline reports completed-match metrics into:
+
+```text
+docs/reports/validation-YYYY-MM-DD.md
+data/processed/validation_summary.parquet
+data/processed/validation_calibration_bins.parquet
+```
+
+## Architecture
+
+```text
+raw data / API cache
+-> normalized Parquet
+-> Elo and TSI
+-> squad and odds adjustments
+-> attack / defense
+-> expected goals
+-> Poisson match model
+-> Monte Carlo tournament simulation
+-> validation report
+-> Streamlit dashboard
+```
+
+Stack:
+
+```text
+Python
+Polars
+Parquet
+NumPy / SciPy
+Streamlit
+pytest
+ruff
+Markdown
+```
+
+This MVP intentionally does not use Spark, PostgreSQL, FastAPI or React.
 
 ## Setup
 
 ```bash
 python -m venv .venv
 source .venv/bin/activate
-pip install -e ".[dev]"
+pip install -e ".[dev,app]"
 ```
 
-## Mock data
+On Windows PowerShell:
 
-The code ships with in-memory mock datasets and a writer for Parquet fixtures.
+```powershell
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+pip install -e ".[dev,app]"
+```
+
+## Run The Dashboard
 
 ```bash
-tactical-oracle-mocks
-```
-
-That creates:
-
-```text
-data/raw/teams_mock.parquet
-data/raw/fifa_points_mock.parquet
-data/raw/matches_cycle_mock.parquet
-data/raw/worldcup_groups_mock.parquet
-data/raw/worldcup_schedule_mock.parquet
-data/raw/squads_mock.parquet
-data/raw/odds_long_term_mock.parquet
-data/raw/worldcup_annex_c_mock.parquet
-```
-
-## Smoke pipeline
-
-```bash
-tactical-oracle-mock-pipeline
-```
-
-## Processed outputs
-
-```bash
-tactical-oracle-normalize-mocks
-tactical-oracle-validate-annex-c data/interim/worldcup_annex_c.parquet
-tactical-oracle-build-mock-outputs
-```
-
-That creates:
-
-```text
-data/processed/ratings_elo.parquet
-data/processed/squad_adjustments.parquet
-data/processed/odds_adjustments.parquet
-data/processed/tsi_pre_cup.parquet
-data/processed/attack_defense_pre_cup.parquet
-data/processed/match_probabilities.parquet
-```
-
-`tactical-oracle-validate-annex-c --complete` requires the full official Annex C table with
-495 combinations. The bundled mock table is intentionally partial and only exercises the loader.
-
-## Tests
-
-```bash
-pytest
-ruff check .
-```
-
-## Dashboard
-
-Install the app dependencies and run the local Streamlit dashboard:
-
-```bash
-pip install -e ".[app]"
 streamlit run app/streamlit_app.py
 ```
 
-The dashboard reads the processed Parquet outputs in `data/processed/`, including:
+## Update After New Matches
 
-```text
-current_group_standings.parquet
-next_matches.parquet
-group_projection.parquet
-team_stage_probabilities.parquet
-knockout_match_probabilities.parquet
-match_performance_audit.parquet
-calibration_b3_review.parquet
+Use local/cache data only:
+
+```bash
+python -m world_cup_oracle.pipeline.update_after_matches
 ```
 
-## Notes
+Fetch new FotMob details and then recalculate:
 
-This MVP intentionally does not use Spark, PostgreSQL, FastAPI or React. The first version is
-local, analytical and file-based.
+```bash
+python -m world_cup_oracle.pipeline.update_after_matches --fetch-fotmob
+```
+
+## Validation
+
+```bash
+python -m world_cup_oracle.pipeline.validation_report
+```
+
+The odds comparison activates when this file exists:
+
+```text
+data/interim/odds_match_by_match.parquet
+```
+
+## Mock Pipeline
+
+The repository still ships a tiny mock pipeline for smoke tests and onboarding:
+
+```bash
+world-cup-oracle-mocks
+world-cup-oracle-normalize-mocks
+world-cup-oracle-validate-annex-c data/interim/worldcup_annex_c.parquet
+world-cup-oracle-build-mock-outputs
+```
+
+The full official Annex C table has 495 combinations. The bundled mock table is intentionally
+partial and only exercises the loader.
+
+## Quality
+
+```bash
+ruff check .
+pytest
+```
+
+Current baseline:
+
+```text
+ruff check . -> passing
+pytest -> 121 tests passing
+```

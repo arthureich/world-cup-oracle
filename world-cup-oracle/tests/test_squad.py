@@ -2,8 +2,8 @@ from __future__ import annotations
 
 import math
 
-from tactical_oracle.data.mocks import squads_mock
-from tactical_oracle.squad import (
+from world_cup_oracle.data.mocks import squads_mock
+from world_cup_oracle.squad import (
     age_factor,
     player_effective_value,
     player_value_from_row,

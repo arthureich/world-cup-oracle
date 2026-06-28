@@ -5,9 +5,9 @@ import math
 import polars as pl
 import pytest
 
-from tactical_oracle.config import TSIParameters
-from tactical_oracle.data.io import write_rows_parquet
-from tactical_oracle.pipeline.match_performance import (
+from world_cup_oracle.config import TSIParameters
+from world_cup_oracle.data.io import write_rows_parquet
+from world_cup_oracle.pipeline.match_performance import (
     b3_calibration_review_frame,
     build_real_match_performance_outputs,
     match_performance_audit_frame,

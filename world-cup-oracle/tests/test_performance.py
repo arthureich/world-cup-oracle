@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import math
 
-from tactical_oracle.performance import (
+from world_cup_oracle.performance import (
     actual_points,
     aggregate_performance_adjustment,
     build_match_performance,
@@ -12,7 +12,7 @@ from tactical_oracle.performance import (
     performance_score,
     weighted_metric_score,
 )
-from tactical_oracle.tsi import tsi_post_groups
+from world_cup_oracle.tsi import tsi_post_groups
 
 
 def test_actual_points_uses_match_result() -> None:

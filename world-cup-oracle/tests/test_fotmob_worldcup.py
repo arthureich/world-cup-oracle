@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from tactical_oracle.pipeline.fotmob_worldcup import (
+from world_cup_oracle.pipeline.fotmob_worldcup import (
     extract_match_team_stats,
     extract_worldcup_day_matches,
     map_local_to_fotmob,

@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720" role="img" aria-label="World Cup Oracle knockout stage projection">
+  <rect width="1280" height="720" fill="#f6f7f9"/>
+  <text x="54" y="72" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="32" font-weight="700" fill="#17202a">Simulation - Knockout Stage</text>
+  <text x="54" y="104" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="16" fill="#53606f">Projected bracket with advancement probability and expected goals</text>
+
+  <g font-family="Inter, Segoe UI, Arial, sans-serif">
+    <text x="54" y="154" font-size="16" font-weight="700" fill="#53606f">Round of 16</text>
+    <text x="356" y="154" font-size="16" font-weight="700" fill="#53606f">Quarterfinal</text>
+    <text x="656" y="154" font-size="16" font-weight="700" fill="#53606f">Semifinal</text>
+    <text x="956" y="154" font-size="16" font-weight="700" fill="#53606f">Final</text>
+  </g>
+
+  <g font-family="Inter, Segoe UI, Arial, sans-serif" font-size="15">
+    <rect x="54" y="182" width="230" height="92" rx="10" fill="#ffffff" stroke="#f0c44b" stroke-width="3"/>
+    <text x="74" y="212" fill="#7a5a08" font-weight="700">Projected - 62%</text>
+    <text x="74" y="242" fill="#17202a">Brazil 68%  xG 1.76</text>
+    <text x="74" y="264" fill="#53606f">Japan 32%  xG 1.06</text>
+
+    <rect x="54" y="308" width="230" height="92" rx="10" fill="#ffffff" stroke="#2e7d51" stroke-width="3"/>
+    <text x="74" y="338" fill="#2e7d51" font-weight="700">Confirmed</text>
+    <text x="74" y="368" fill="#17202a">Argentina 81%  xG 2.05</text>
+    <text x="74" y="390" fill="#53606f">Cape Verde 19%  xG 0.75</text>
+
+    <rect x="54" y="434" width="230" height="92" rx="10" fill="#ffffff" stroke="#f0c44b" stroke-width="3"/>
+    <text x="74" y="464" fill="#7a5a08" font-weight="700">Projected - 58%</text>
+    <text x="74" y="494" fill="#17202a">France 56%  xG 1.49</text>
+    <text x="74" y="516" fill="#53606f">Spain 44%  xG 1.26</text>
+
+    <rect x="354" y="245" width="230" height="92" rx="10" fill="#ffffff" stroke="#f0c44b" stroke-width="3"/>
+    <text x="374" y="275" fill="#7a5a08" font-weight="700">Projected - 41%</text>
+    <text x="374" y="305" fill="#17202a">Brazil 44%  xG 1.21</text>
+    <text x="374" y="327" fill="#53606f">Argentina 56%  xG 1.44</text>
+
+    <rect x="354" y="434" width="230" height="92" rx="10" fill="#ffffff" stroke="#f0c44b" stroke-width="3"/>
+    <text x="374" y="464" fill="#7a5a08" font-weight="700">Projected - 37%</text>
+    <text x="374" y="494" fill="#17202a">France 55%  xG 1.40</text>
+    <text x="374" y="516" fill="#53606f">Argentina 45%  xG 1.21</text>
+
+    <rect x="654" y="338" width="230" height="92" rx="10" fill="#ffffff" stroke="#f0c44b" stroke-width="3"/>
+    <text x="674" y="368" fill="#7a5a08" font-weight="700">Projected - 24%</text>
+    <text x="674" y="398" fill="#17202a">Argentina 52%</text>
+    <text x="674" y="420" fill="#53606f">France 48%</text>
+
+    <rect x="954" y="338" width="230" height="92" rx="10" fill="#ffffff" stroke="#2e7d51" stroke-width="3"/>
+    <text x="974" y="368" fill="#2e7d51" font-weight="700">Champion path</text>
+    <text x="974" y="398" fill="#17202a">Argentina</text>
+    <text x="974" y="420" fill="#53606f">Title probability 16%</text>
+  </g>
+
+  <g stroke="#aeb7c4" stroke-width="3" fill="none">
+    <path d="M284 228 H318 V291 H354"/>
+    <path d="M284 354 H318 V291"/>
+    <path d="M284 480 H318 V480 H354"/>
+    <path d="M584 291 H620 V384 H654"/>
+    <path d="M584 480 H620 V384"/>
+    <path d="M884 384 H954"/>
+  </g>
+</svg>

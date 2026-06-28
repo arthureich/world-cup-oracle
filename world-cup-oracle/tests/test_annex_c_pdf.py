@@ -1,11 +1,11 @@
 from __future__ import annotations
 
-from tactical_oracle.pipeline.annex_c_pdf import annex_c_rows_from_pdf_text
+from world_cup_oracle.pipeline.annex_c_pdf import annex_c_rows_from_pdf_text
 
 
 def test_annex_c_rows_from_pdf_text_parses_option_assignments(monkeypatch) -> None:
     monkeypatch.setattr(
-        "tactical_oracle.pipeline.annex_c_pdf.EXPECTED_ANNEX_C_COMBINATIONS",
+        "world_cup_oracle.pipeline.annex_c_pdf.EXPECTED_ANNEX_C_COMBINATIONS",
         2,
     )
     rows = annex_c_rows_from_pdf_text(

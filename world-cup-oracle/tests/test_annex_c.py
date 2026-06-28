@@ -2,8 +2,8 @@ from __future__ import annotations
 
 import pytest
 
-from tactical_oracle.data.mocks import worldcup_annex_c_mock
-from tactical_oracle.simulation import (
+from world_cup_oracle.data.mocks import worldcup_annex_c_mock
+from world_cup_oracle.simulation import (
     annex_c_assignments,
     build_annex_c_table,
     validate_annex_c_table,

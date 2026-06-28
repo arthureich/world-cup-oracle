@@ -306,7 +306,7 @@ Saidas principais:
 O projeto ja tem um comando para atualizar o pipeline depois que novas partidas entram:
 
 ```bash
-python -m tactical_oracle.pipeline.update_after_matches
+python -m world_cup_oracle.pipeline.update_after_matches
 ```
 
 Por padrao ele nao gasta API. Ele usa o que ja esta no cache/local, normaliza os dados e
@@ -323,7 +323,7 @@ recalcula:
 Para buscar dados novos no FotMob/cache da API:
 
 ```bash
-python -m tactical_oracle.pipeline.update_after_matches --fetch-fotmob
+python -m world_cup_oracle.pipeline.update_after_matches --fetch-fotmob
 ```
 
 Flags manuais tambem existem para jogos de terceira rodada ou contexto especial:
@@ -375,7 +375,7 @@ Metricas atuais:
 Comando:
 
 ```bash
-python -m tactical_oracle.pipeline.validation_report
+python -m world_cup_oracle.pipeline.validation_report
 ```
 
 Saidas:

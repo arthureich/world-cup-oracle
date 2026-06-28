@@ -12,7 +12,7 @@ SRC = ROOT / "src"
 if str(SRC) not in sys.path:
     sys.path.insert(0, str(SRC))
 
-from tactical_oracle.presentation.summary import processed_path, read_processed  # noqa: E402
+from world_cup_oracle.presentation.summary import processed_path, read_processed  # noqa: E402
 
 APP_TITLE = "World Cup Oracle"
 

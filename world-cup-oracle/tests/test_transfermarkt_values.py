@@ -2,8 +2,8 @@ from __future__ import annotations
 
 import gzip
 
-from tactical_oracle.data.io import read_parquet, write_rows_parquet
-from tactical_oracle.pipeline.transfermarkt_values import (
+from world_cup_oracle.data.io import read_parquet, write_rows_parquet
+from world_cup_oracle.pipeline.transfermarkt_values import (
     apply_transfermarkt_values_to_squads,
     impute_team_mean_market_values,
     write_transfermarkt_squads,

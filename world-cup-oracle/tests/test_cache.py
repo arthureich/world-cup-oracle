@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from tactical_oracle.data import ApiCache, params_hash
+from world_cup_oracle.data import ApiCache, params_hash
 
 
 def test_params_hash_is_stable_for_sorted_params() -> None:

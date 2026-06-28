@@ -86,19 +86,19 @@ data/interim/odds_match_by_match.parquet nao existir.
 Atualizar o pipeline depois de novas partidas locais/cacheadas:
 
 ```bash
-python -m tactical_oracle.pipeline.update_after_matches
+python -m world_cup_oracle.pipeline.update_after_matches
 ```
 
 Buscar novos dados FotMob/API e depois recalcular:
 
 ```bash
-python -m tactical_oracle.pipeline.update_after_matches --fetch-fotmob
+python -m world_cup_oracle.pipeline.update_after_matches --fetch-fotmob
 ```
 
 Gerar relatorio de validacao:
 
 ```bash
-python -m tactical_oracle.pipeline.validation_report
+python -m world_cup_oracle.pipeline.validation_report
 ```
 
 Rodar testes:

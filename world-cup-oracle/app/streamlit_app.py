@@ -18,10 +18,10 @@ from oracle_ui import (
     team_stage_row,
 )
 
-from tactical_oracle.attack_defense import expected_goals
-from tactical_oracle.config import AttackDefenseParameters, SimulationParameters
-from tactical_oracle.pipeline.tournament_projection import load_knockout_template
-from tactical_oracle.simulation import match_probabilities, penalty_win_probability
+from world_cup_oracle.attack_defense import expected_goals
+from world_cup_oracle.config import AttackDefenseParameters, SimulationParameters
+from world_cup_oracle.pipeline.tournament_projection import load_knockout_template
+from world_cup_oracle.simulation import match_probabilities, penalty_win_probability
 
 STAGE_FUNNEL = [
     ("qualify_r32", "R32"),

@@ -3,7 +3,7 @@ requires = ["hatchling>=1.25"]
 build-backend = "hatchling.build"
 
 [project]
-name = "tactical-oracle"
+name = "world-cup-oracle"
 version = "0.1.0"
 description = "Local analytical model and simulator for the 2026 World Cup."
 readme = "README.md"
@@ -20,24 +20,24 @@ app = ["streamlit>=1.36"]
 dev = ["pytest>=8.2", "ruff>=0.5"]
 
 [project.scripts]
-tactical-oracle-mocks = "tactical_oracle.data.mocks:main"
-tactical-oracle-mock-pipeline = "tactical_oracle.pipeline.mock_pipeline:main"
-tactical-oracle-build-mock-outputs = "tactical_oracle.pipeline.outputs:main"
-tactical-oracle-normalize-mocks = "tactical_oracle.pipeline.normalize:main"
-tactical-oracle-build-real-match-performance = "tactical_oracle.pipeline.match_performance:main"
-tactical-oracle-build-post-group-probabilities = "tactical_oracle.pipeline.real_outputs:post_group_match_probabilities_main"
-tactical-oracle-project-tournament = "tactical_oracle.pipeline.tournament_projection:main"
-tactical-oracle-fetch-fotmob = "tactical_oracle.pipeline.fotmob_parse_bot:main"
-tactical-oracle-fetch-fotmob-worldcup = "tactical_oracle.pipeline.fotmob_worldcup:main"
-tactical-oracle-validate-annex-c = "tactical_oracle.simulation.annex_c:main"
-tactical-oracle-collect-odds = "tactical_oracle.pipeline.the_odds_api:main"
-tactical-oracle-normalize-outrights = "tactical_oracle.pipeline.manual_odds:main"
-tactical-oracle-audit-data = "tactical_oracle.pipeline.data_quality:main"
-tactical-oracle-impute-squads = "tactical_oracle.pipeline.transfermarkt_values:impute_main"
-tactical-oracle-extract-annex-c = "tactical_oracle.pipeline.annex_c_pdf:main"
-tactical-oracle-calibrate-attack-defense = "tactical_oracle.pipeline.calibration:main"
-tactical-oracle-validate-worldcup = "tactical_oracle.pipeline.validation_report:main"
-tactical-oracle-update-after-matches = "tactical_oracle.pipeline.update_after_matches:main"
+world-cup-oracle-mocks = "world_cup_oracle.data.mocks:main"
+world-cup-oracle-mock-pipeline = "world_cup_oracle.pipeline.mock_pipeline:main"
+world-cup-oracle-build-mock-outputs = "world_cup_oracle.pipeline.outputs:main"
+world-cup-oracle-normalize-mocks = "world_cup_oracle.pipeline.normalize:main"
+world-cup-oracle-build-real-match-performance = "world_cup_oracle.pipeline.match_performance:main"
+world-cup-oracle-build-post-group-probabilities = "world_cup_oracle.pipeline.real_outputs:post_group_match_probabilities_main"
+world-cup-oracle-project-tournament = "world_cup_oracle.pipeline.tournament_projection:main"
+world-cup-oracle-fetch-fotmob = "world_cup_oracle.pipeline.fotmob_parse_bot:main"
+world-cup-oracle-fetch-fotmob-worldcup = "world_cup_oracle.pipeline.fotmob_worldcup:main"
+world-cup-oracle-validate-annex-c = "world_cup_oracle.simulation.annex_c:main"
+world-cup-oracle-collect-odds = "world_cup_oracle.pipeline.the_odds_api:main"
+world-cup-oracle-normalize-outrights = "world_cup_oracle.pipeline.manual_odds:main"
+world-cup-oracle-audit-data = "world_cup_oracle.pipeline.data_quality:main"
+world-cup-oracle-impute-squads = "world_cup_oracle.pipeline.transfermarkt_values:impute_main"
+world-cup-oracle-extract-annex-c = "world_cup_oracle.pipeline.annex_c_pdf:main"
+world-cup-oracle-calibrate-attack-defense = "world_cup_oracle.pipeline.calibration:main"
+world-cup-oracle-validate-worldcup = "world_cup_oracle.pipeline.validation_report:main"
+world-cup-oracle-update-after-matches = "world_cup_oracle.pipeline.update_after_matches:main"
 
 [tool.pytest.ini_options]
 pythonpath = ["src"]

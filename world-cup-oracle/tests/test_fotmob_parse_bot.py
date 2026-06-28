@@ -4,8 +4,8 @@ import json
 
 import pytest
 
-from tactical_oracle.pipeline import fotmob_parse_bot
-from tactical_oracle.pipeline.fotmob_parse_bot import (
+from world_cup_oracle.pipeline import fotmob_parse_bot
+from world_cup_oracle.pipeline.fotmob_parse_bot import (
     FotMobApiError,
     canonical_endpoint_params,
     endpoint_url,

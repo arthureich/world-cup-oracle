@@ -2,8 +2,8 @@ from __future__ import annotations
 
 import json
 
-from tactical_oracle.data.io import read_parquet, write_rows_parquet
-from tactical_oracle.pipeline.worldcup_structure import (
+from world_cup_oracle.data.io import read_parquet, write_rows_parquet
+from world_cup_oracle.pipeline.worldcup_structure import (
     normalize_worldcup_groups,
     normalize_worldcup_schedule,
     write_worldcup_structure_outputs,

@@ -3,7 +3,7 @@ from __future__ import annotations
 import polars as pl
 import pytest
 
-from tactical_oracle.presentation.summary import (
+from world_cup_oracle.presentation.summary import (
     available_teams,
     biggest_tsi_moves,
     decisive_next_matches,

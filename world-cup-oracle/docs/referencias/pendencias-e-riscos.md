@@ -338,8 +338,8 @@ Afeta geração de Parquet mockado e execução formal dos testes.
 ```text
 instalar com pip install -e ".[dev]"
 rodar pytest
-rodar tactical-oracle-mocks
-rodar tactical-oracle-mock-pipeline
+rodar world-cup-oracle-mocks
+rodar world-cup-oracle-mock-pipeline
 ```
 
 ---

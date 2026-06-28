@@ -2,9 +2,9 @@ from __future__ import annotations
 
 import pytest
 
-from tactical_oracle.attack_defense import build_components
-from tactical_oracle.data.io import read_parquet, write_rows_parquet
-from tactical_oracle.pipeline.real_outputs import (
+from world_cup_oracle.attack_defense import build_components
+from world_cup_oracle.data.io import read_parquet, write_rows_parquet
+from world_cup_oracle.pipeline.real_outputs import (
     average_opponent_elo,
     cycle_goal_rates,
     filter_matches_to_fifa_teams,

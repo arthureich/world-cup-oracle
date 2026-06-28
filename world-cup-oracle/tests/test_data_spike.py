@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-from tactical_oracle.data.io import read_parquet
-from tactical_oracle.pipeline.data_spike import (
+from world_cup_oracle.data.io import read_parquet
+from world_cup_oracle.pipeline.data_spike import (
     normalize_fifa_api_ranking,
     normalize_fifa_ranking,
     normalize_kaggle_matches,

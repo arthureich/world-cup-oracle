@@ -2,8 +2,8 @@ from __future__ import annotations
 
 import math
 
-from tactical_oracle.elo import EloRating
-from tactical_oracle.tsi import (
+from world_cup_oracle.elo import EloRating
+from world_cup_oracle.tsi import (
     build_tsi_ratings,
     map_elo_distribution_to_tsi,
     map_elo_to_tsi,

@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from tactical_oracle.pipeline.tournament_projection import (
+from world_cup_oracle.pipeline.tournament_projection import (
     build_next_match_rows,
     current_group_standing_rows,
     resolve_round_of_32_placeholder,

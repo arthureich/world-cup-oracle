@@ -330,7 +330,7 @@ probabilidade = 0 em todas as fases futuras
 Comando operacional atual:
 
 ```bash
-python -m tactical_oracle.pipeline.update_after_matches
+python -m world_cup_oracle.pipeline.update_after_matches
 ```
 
 Por padrão, o comando não chama API. Ele usa arquivos locais/cacheados, normaliza os
@@ -340,7 +340,7 @@ torneio e validação.
 Para buscar novos detalhes FotMob/cache:
 
 ```bash
-python -m tactical_oracle.pipeline.update_after_matches --fetch-fotmob
+python -m world_cup_oracle.pipeline.update_after_matches --fetch-fotmob
 ```
 
 ---
@@ -380,7 +380,7 @@ diagnósticos
 Comando:
 
 ```bash
-python -m tactical_oracle.pipeline.validation_report
+python -m world_cup_oracle.pipeline.validation_report
 ```
 
 Artefatos:
