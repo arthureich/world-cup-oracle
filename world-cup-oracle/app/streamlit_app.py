@@ -89,6 +89,169 @@ def _knockout_match_favorites(knockout_probabilities: pl.DataFrame) -> pl.DataFr
     return pl.DataFrame(rows).sort("match_number")
 
 
+def _current_status(row: dict[str, object]) -> str:
+    if float(row.get("champion", 0.0)) >= 0.999:
+        return "Campeao"
+    if float(row.get("reach_final", 0.0)) >= 0.999:
+        return "Final"
+    if float(row.get("reach_sf", 0.0)) >= 0.999:
+        return "R4"
+    if float(row.get("reach_qf", 0.0)) >= 0.999:
+        return "R8"
+    if float(row.get("reach_r16", 0.0)) >= 0.999:
+        return "R16"
+    if float(row.get("qualify_r32", 0.0)) >= 0.999:
+        return "R32"
+    if float(row.get("prob_eliminated_group", 0.0)) >= 0.999:
+        return "Eliminado"
+    return "Grupo"
+
+
+def _record_frame(match_audit: pl.DataFrame) -> pl.DataFrame:
+    return (
+        match_audit.with_columns(
+            [
+                (pl.col("goals") > pl.col("goals_against")).cast(pl.Int64).alias("vitorias"),
+                (pl.col("goals") == pl.col("goals_against")).cast(pl.Int64).alias("empates"),
+                (pl.col("goals") < pl.col("goals_against")).cast(pl.Int64).alias("derrotas"),
+            ]
+        )
+        .group_by("team")
+        .agg(
+            [
+                pl.sum("vitorias").alias("vitorias"),
+                pl.sum("empates").alias("empates"),
+                pl.sum("derrotas").alias("derrotas"),
+            ]
+        )
+    )
+
+
+def _teams_overview(
+    stage_probabilities: pl.DataFrame,
+    group_projection: pl.DataFrame,
+    standings: pl.DataFrame,
+    tsi_pre: pl.DataFrame,
+    elo: pl.DataFrame,
+    squad: pl.DataFrame,
+    odds: pl.DataFrame,
+    performance: pl.DataFrame,
+    match_audit: pl.DataFrame,
+) -> pl.DataFrame:
+    records = _record_frame(match_audit)
+    frame = (
+        stage_probabilities.join(
+            group_projection.select(["team", "group", "prob_eliminated_group"]),
+            on="team",
+            how="left",
+        )
+        .join(
+            standings.select(["team", "position", "points", "goal_difference"]),
+            on="team",
+            how="left",
+        )
+        .join(records, on="team", how="left")
+        .join(
+            tsi_pre.select(["team", "tsi_pre", "squad_adjustment", "odds_adjustment"]),
+            on="team",
+            how="left",
+        )
+        .join(elo.select(["team", "adjusted_elo"]), on="team", how="left")
+        .join(squad.select(["team", "squad_adjustment"]), on="team", how="left", suffix="_squad")
+        .join(odds.select(["team", "odds_adjustment"]), on="team", how="left", suffix="_odds")
+        .join(
+            performance.select(["team", "post_groups_tsi_delta", "tsi_post_groups"]),
+            on="team",
+            how="left",
+        )
+        .with_columns(
+            [
+                pl.coalesce(["squad_adjustment_squad", "squad_adjustment"]).alias("elenco"),
+                pl.coalesce(["odds_adjustment_odds", "odds_adjustment"]).alias("odds"),
+            ]
+        )
+        .with_columns(
+            pl.struct(
+                [
+                    "champion",
+                    "reach_final",
+                    "reach_sf",
+                    "reach_qf",
+                    "reach_r16",
+                    "qualify_r32",
+                    "prob_eliminated_group",
+                ]
+            )
+            .map_elements(_current_status, return_dtype=pl.String)
+            .alias("status")
+        )
+        .select(
+            [
+                "team",
+                "status",
+                "group",
+                "position",
+                "points",
+                "vitorias",
+                "empates",
+                "derrotas",
+                "goal_difference",
+                "adjusted_elo",
+                "elenco",
+                "odds",
+                "tsi_pre",
+                "post_groups_tsi_delta",
+                "tsi_post_groups",
+                "qualify_r32",
+                "reach_r16",
+                "reach_qf",
+                "reach_sf",
+                "reach_final",
+                "champion",
+            ]
+        )
+        .fill_null(0)
+        .rename(
+            {
+                "team": "Selecao",
+                "status": "Status",
+                "group": "Grupo",
+                "position": "Pos",
+                "points": "Pts",
+                "vitorias": "V",
+                "empates": "E",
+                "derrotas": "D",
+                "goal_difference": "SG",
+                "adjusted_elo": "Elo",
+                "elenco": "Elenco",
+                "odds": "Odds",
+                "tsi_pre": "TSI pre",
+                "post_groups_tsi_delta": "Delta partidas",
+                "tsi_post_groups": "TSI atual",
+                "qualify_r32": "Prob R32",
+                "reach_r16": "Prob R16",
+                "reach_qf": "Prob R8",
+                "reach_sf": "Prob R4",
+                "reach_final": "Prob Final",
+                "champion": "Prob Win",
+            }
+        )
+        .sort(["Prob Win", "TSI atual"], descending=[True, True])
+    )
+    percent_columns = ["Prob R32", "Prob R16", "Prob R8", "Prob R4", "Prob Final", "Prob Win"]
+    return frame.with_columns(
+        [
+            pl.col("Elo").round(0),
+            pl.col("Elenco").round(3),
+            pl.col("Odds").round(3),
+            pl.col("TSI pre").round(3),
+            pl.col("Delta partidas").round(3),
+            pl.col("TSI atual").round(3),
+            *[(pl.col(column) * 100).round(2) for column in percent_columns],
+        ]
+    )
+
+
 def _direct_match_projection(
     team_a: str,
     team_b: str,
@@ -283,6 +446,70 @@ def _render_bracket(bracket: pl.DataFrame) -> None:
             _render_match_card(row, column)
 
 
+def _next_knockout_matches(bracket: pl.DataFrame) -> pl.DataFrame:
+    first_stage = bracket.sort("match_number").row(0, named=True)["stage"]
+    return (
+        bracket.filter(pl.col("stage") == first_stage)
+        .with_columns(
+            [
+                (pl.col("team_a") + " x " + pl.col("team_b")).alias("Duelo"),
+                pl.when(pl.col("is_confirmed")).then(pl.lit("Confirmado")).otherwise(pl.lit("Projetado")).alias("Status"),
+                pl.when(pl.col("p_advance_a") >= pl.col("p_advance_b"))
+                .then(pl.col("team_a"))
+                .otherwise(pl.col("team_b"))
+                .alias("Mais provavel"),
+            ]
+        )
+        .select(
+            [
+                "match_number",
+                "Status",
+                "Duelo",
+                "duel_occurrence_probability",
+                "lambda_a",
+                "lambda_b",
+                "p_win_a",
+                "p_draw",
+                "p_win_b",
+                "p_advance_a",
+                "p_advance_b",
+                "Mais provavel",
+            ]
+        )
+        .rename(
+            {
+                "match_number": "Jogo",
+                "duel_occurrence_probability": "Prob duelo",
+                "lambda_a": "xG A",
+                "lambda_b": "xG B",
+                "p_win_a": "Vit A 90",
+                "p_draw": "Empate 90",
+                "p_win_b": "Vit B 90",
+                "p_advance_a": "Avanca A",
+                "p_advance_b": "Avanca B",
+            }
+        )
+        .with_columns(
+            [
+                pl.col("xG A").round(2),
+                pl.col("xG B").round(2),
+                *[
+                    (pl.col(column) * 100).round(1)
+                    for column in [
+                        "Prob duelo",
+                        "Vit A 90",
+                        "Empate 90",
+                        "Vit B 90",
+                        "Avanca A",
+                        "Avanca B",
+                    ]
+                ],
+            ]
+        )
+        .sort("Jogo")
+    )
+
+
 def _stage_probability_rows(row: dict[str, object]) -> pl.DataFrame:
     return pl.DataFrame(
         [
@@ -322,6 +549,12 @@ group_projection = load_frame("group_projection.parquet")
 team_performance = load_frame("team_performance_adjustments.parquet")
 attack_defense = load_frame("attack_defense_post_groups.parquet")
 knockout = load_frame("knockout_match_probabilities.parquet")
+standings = load_frame("current_group_standings.parquet")
+tsi_pre = load_frame("tsi_pre_cup.parquet")
+elo = load_frame("ratings_elo.parquet")
+squad = load_frame("squad_adjustments.parquet")
+odds = load_frame("odds_adjustments.parquet")
+match_audit = load_frame("match_performance_audit.parquet")
 
 page_header("Simulacao da Copa", "Probabilidades atuais com TSI pos-grupos, Poisson e Monte Carlo")
 
@@ -357,18 +590,27 @@ _render_bracket(likely_bracket)
 
 st.divider()
 
-left, right = st.columns([1.02, 0.98])
-
-with left:
-    st.subheader("Proximas partidas")
+st.subheader("Proximas partidas")
+if next_matches.is_empty():
+    st.caption("Fase de grupos encerrada. Mostrando os confrontos atuais do mata-mata.")
+    table(_next_knockout_matches(likely_bracket), height=430)
+else:
     next_view = (
         next_matches.sort("match_number")
+        .with_columns(
+            [
+                (pl.col("team_a") + " x " + pl.col("team_b")).alias("Duelo"),
+                pl.when(pl.col("expected_points_a") >= pl.col("expected_points_b"))
+                .then(pl.col("team_a"))
+                .otherwise(pl.col("team_b"))
+                .alias("Favorito"),
+            ]
+        )
         .select(
             [
                 "match_number",
                 "group",
-                "team_a",
-                "team_b",
+                "Duelo",
                 "lambda_a",
                 "lambda_b",
                 "p_win_a",
@@ -377,32 +619,48 @@ with left:
                 "expected_points_a",
                 "expected_points_b",
                 "most_likely_score",
+                "Favorito",
             ]
         )
+        .rename(
+            {
+                "match_number": "Jogo",
+                "group": "Grupo",
+                "lambda_a": "xG A",
+                "lambda_b": "xG B",
+                "p_win_a": "Vit A",
+                "p_draw": "Empate",
+                "p_win_b": "Vit B",
+                "expected_points_a": "Pts esp A",
+                "expected_points_b": "Pts esp B",
+                "most_likely_score": "Placar provavel",
+            }
+        )
         .with_columns(
-            pl.col("lambda_a").round(2),
-            pl.col("lambda_b").round(2),
-            pl.col("expected_points_a").round(2),
-            pl.col("expected_points_b").round(2),
+            [
+                pl.col("xG A").round(2),
+                pl.col("xG B").round(2),
+                pl.col("Pts esp A").round(2),
+                pl.col("Pts esp B").round(2),
+                *[(pl.col(column) * 100).round(1) for column in ["Vit A", "Empate", "Vit B"]],
+            ]
         )
     )
-    table(compact_probability_frame(next_view, next_view.columns), height=410)
+    table(next_view, height=430)
 
-with right:
-    st.subheader("Favorito para passar por jogo")
-    knockout_favorites = _knockout_match_favorites(knockout).select(
-        [
-            "match_number",
-            "stage",
-            "most_likely_to_pass",
-            "pass_probability",
-            "conditional_pass_probability",
-            "appear_probability",
-            "next_best_team",
-            "next_best_pass_probability",
-        ]
-    )
-    table(compact_probability_frame(knockout_favorites, knockout_favorites.columns), height=410)
+st.subheader("Tabela geral das selecoes")
+team_overview = _teams_overview(
+    stage,
+    group_projection,
+    standings,
+    tsi_pre,
+    elo,
+    squad,
+    odds,
+    team_performance,
+    match_audit,
+)
+table(team_overview, height=520)
 
 st.divider()
 
