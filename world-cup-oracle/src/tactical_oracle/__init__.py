@@ -1,4 +1,4 @@
-"""Tactical Oracle: local analytical World Cup model."""
+"""World Cup Oracle: local analytical World Cup model."""
 
 __all__ = ["__version__"]
 

@@ -1,6 +1,6 @@
 # Fórmulas e Variáveis
 
-Projeto: **Tactical Oracle**
+Projeto: **World Cup Oracle**
 
 Referência técnica central das fórmulas, variáveis e saídas do sistema.
 
@@ -502,13 +502,34 @@ peso_pré · Perfil_pré
 Gols esperados:
 
 ```text
+d = TSI_A − TSI_B
+V(d) = sign(d) · min(V_max, a · |d|^p)
+```
+
+```text
+profile_signal =
+w_perfil · (Perfil_A + Perfil_B)
+```
+
+```text
 λ_A =
-base · exp(k · (Ataque_A − Defesa_B))
+base · exp(k · (V(d) + profile_signal))
 ```
 
 ```text
 λ_B =
-base · exp(k · (Ataque_B − Defesa_A))
+base · exp(k · (−V(d) + profile_signal))
+```
+
+Parâmetros atuais para jogos futuros/pós-grupos:
+
+```text
+base = 1.30
+k = 0.18
+a = 1.25
+p = 0.60
+V_max = 3.00
+w_perfil = 0.25
 ```
 
 Anfitrião:
@@ -521,6 +542,13 @@ base · exp(k · (Ataque_host − Defesa_opp) + γ)
 ```text
 λ_opp =
 base · exp(k · (Ataque_opp − Defesa_host) − δ)
+```
+
+Observação:
+
+```text
+O B3 usa probabilidades de base preservadas para auditoria dos jogos de grupo.
+A curva sublinear atual é usada para projeções futuras e mata-mata.
 ```
 
 ---
@@ -758,6 +786,23 @@ LL_placar =
 ln(P(gols_A = i | λ_A))
 +
 ln(P(gols_B = j | λ_B))
+```
+
+Expected Calibration Error:
+
+```text
+ECE =
+Σ_bins (n_bin / n_total) ·
+|media_prob_prevista_bin − frequencia_observada_bin|
+```
+
+Comparação contra odds jogo a jogo:
+
+```text
+odds americanas/decimais
+→ probabilidades implícitas
+→ normalização para remover margem
+→ Brier/Log Loss modelo vs mercado
 ```
 
 ---

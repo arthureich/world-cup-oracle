@@ -72,15 +72,27 @@ Perfil_final =
 Limite
 Perfil ∈ [−2.000, +2.000]
 Gols esperados
-λ_A =
-base · exp(k · (Ataque_A − Defesa_B))
-λ_B =
-base · exp(k · (Ataque_B − Defesa_A))
+Componente de força do confronto:
 
-Parâmetros iniciais:
+d = TSI_A − TSI_B
+V(d) = sign(d) * min(V_max, a * |d|^p)
+
+profile_signal =
+w_perfil * (Perfil_A + Perfil_B)
+
+λ_A =
+base * exp(k * ( V(d) + profile_signal))
+λ_B =
+base * exp(k * (−V(d) + profile_signal))
+
+Parâmetros atuais:
 
 base = 1.30
-k    = 0.09
+k    = 0.18
+a    = 1.25
+p    = 0.60
+Vmax = 3.00
+w_perfil = 0.25
 γ    = 0.15
 δ    = 0.00
 Anfitrião

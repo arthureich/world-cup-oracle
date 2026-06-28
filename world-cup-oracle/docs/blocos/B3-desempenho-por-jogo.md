@@ -51,9 +51,9 @@ c_proc vem da aproximação:
 
 d(GD)/d(ΔTSI) ≈ 2 · k · base
 
-Com k = 0.09 e base = 1.30:
+Na aproximação inicial do B3:
 
-2 · 0.09 · 1.30 ≈ 0.234 gols por ponto de TSI
+d(GD)/d(ΔTSI) ≈ 0.234 gols por ponto de TSI
 
 Logo:
 
@@ -61,6 +61,17 @@ Logo:
 
 c_res foi elevado para 3.0 para evitar que empates ou vitórias
 claramente acima do esperado sejam anulados demais pelo processo.
+
+Observação atual:
+
+Para projeções futuras e mata-mata, o B4 usa a curva sublinear vigente:
+
+d = TSI_A − TSI_B
+V(d) = sign(d) * min(3.00, 1.25 * |d|^0.60)
+k = 0.18
+
+O B3 preserva a curva de base usada na auditoria dos jogos de grupo já avaliados para
+evitar reescrever o esperado histórico quando uma curva futura é recalibrada.
 
 Compressão e soma zero
 

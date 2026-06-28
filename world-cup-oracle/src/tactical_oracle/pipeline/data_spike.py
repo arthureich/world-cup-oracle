@@ -323,7 +323,7 @@ def write_data_spike_outputs(
 
 def _build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
-        description="Normalize local data-spike CSV files into Tactical Oracle Parquet inputs."
+        description="Normalize local data-spike CSV files into World Cup Oracle Parquet inputs."
     )
     parser.add_argument("--kaggle-results", help="Path to Kaggle/martj42 results.csv")
     parser.add_argument("--kaggle-shootouts", help="Optional path to Kaggle/martj42 shootouts.csv")

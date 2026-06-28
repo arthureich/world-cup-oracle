@@ -1,6 +1,6 @@
 # Decisões de Modelagem
 
-Projeto: **Tactical Oracle**
+Projeto: **World Cup Oracle**
 
 Registro das decisões metodológicas e seus motivos.
 

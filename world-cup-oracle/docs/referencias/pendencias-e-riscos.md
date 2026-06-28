@@ -1,6 +1,6 @@
 # Pendências e Riscos
 
-Projeto: **Tactical Oracle**
+Projeto: **World Cup Oracle**
 
 ---
 

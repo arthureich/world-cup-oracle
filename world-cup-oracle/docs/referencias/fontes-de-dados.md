@@ -1,6 +1,6 @@
 # Fontes de Dados
 
-Projeto: **Tactical Oracle**
+Projeto: **World Cup Oracle**
 
 Este documento registra as fontes necessárias, regras de uso e riscos de cobertura.
 

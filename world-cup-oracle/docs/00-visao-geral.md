@@ -1,456 +1,429 @@
-# Tactical Oracle — Visão Geral
+# World Cup Oracle - Visao Geral
 
-## O que é o projeto
+## O que e o projeto
 
-**Tactical Oracle** é um projeto de modelagem estatística para a Copa do Mundo 2026.
+**World Cup Oracle** e um sistema analitico para modelar a Copa do Mundo 2026.
 
-O objetivo é estimar a força das seleções, calcular probabilidades por jogo e simular a Copa inteira para responder perguntas como:
+Ele junta dados historicos, elenco, mercado, estatisticas de jogo e simulacao para
+responder perguntas praticas:
 
-- Qual seleção é mais forte antes da Copa?
-- Qual é a chance de cada seleção passar de grupo?
-- Qual é a chance de chegar às oitavas, quartas, semifinal, final e título?
-- Qual é a probabilidade de vitória, empate e derrota em cada jogo?
-- Qual é o placar mais provável?
-- A seleção jogou melhor ou pior do que o esperado?
-- Como a força muda após a fase de grupos e durante o mata-mata?
+- qual selecao esta mais forte agora;
+- qual e a chance de cada selecao vencer um jogo;
+- quantos gols cada confronto deve produzir;
+- qual caminho mais provavel no mata-mata;
+- qual probabilidade de cada selecao chegar em cada fase;
+- como a forca muda depois da fase de grupos e de jogos do mata-mata;
+- se o modelo esta calibrado ou confiante demais.
 
-O projeto combina rating próprio, ajuste de elenco, calibração leve por odds, decomposição ataque/defesa, modelo de gols esperados, simulação Monte Carlo e validação probabilística.
-
----
-
-## Ideia central
-
-A métrica principal do sistema é o **TSI — Team Strength Index**.
-
-```text
-TSI = força geral da seleção
-escala: 0.000 a 20.000
-```
-
-Interpretação aproximada:
-
-```text
-7.000–8.000   ≈ seleções mais fracas da Copa
-14.000–16.000 ≈ seleções mais fortes da Copa
-16.000+       ≈ seleção histórica/absurda
-20.000        ≈ teto praticamente impossível
-```
-
-O TSI não é uma cópia do Ranking FIFA, do Elo ou das odds. Ele é uma força própria construída em etapas.
+O foco do projeto nao e "cravar" um campeao. O foco e produzir probabilidades coerentes,
+auditaveis e atualizaveis conforme novos jogos entram.
 
 ---
 
-## Pipeline geral
+## Como pensar no sistema
+
+Uma forma simples de ver o projeto:
 
 ```text
-Pontos FIFA
-→ Elo inicial
-→ Elo próprio do ciclo da Copa 2026
-→ Elo ajustado por recência
-→ TSI_base
-→ ajuste_elenco
-→ TSI_modelo
-→ ajuste_odds
-→ TSI_pré-Copa
-→ Ataque / Defesa
-→ λ por confronto
-→ simulação da Copa
-→ Performance Grupo
-→ TSI pós-grupos
+dados brutos
+-> tabelas normalizadas
+-> rating das selecoes
+-> gols esperados por confronto
+-> simulacao de jogos e torneio
+-> dashboard e relatorios
+-> validacao do modelo
 ```
 
-Em termos intuitivos:
-
-1. O Ranking FIFA ajuda a dar um ponto de partida.
-2. O Elo próprio mede o desempenho recente no ciclo da Copa.
-3. O elenco corrige diferenças entre resultados passados e força atual dos convocados.
-4. As odds puxam levemente o modelo na direção do mercado, sem copiar o mercado.
-5. O TSI final vira a força geral da seleção.
-6. O TSI é dividido em Ataque e Defesa.
-7. Ataque e Defesa viram gols esperados.
-8. Gols esperados alimentam Poisson e Monte Carlo.
-9. A simulação gera probabilidades por jogo e por fase.
-10. Depois dos grupos, o desempenho real atualiza a força.
+O dado entra em `data/raw`, vira tabelas limpas em `data/interim`, e depois gera outputs
+analiticos em `data/processed`. O Streamlit le esses outputs e apresenta ranking,
+probabilidades, bracket e diagnosticos.
 
 ---
 
-## Escopo de dados
+## A metrica central: TSI
 
-O escopo histórico foi simplificado para o **ciclo da Copa 2026**.
+A metrica principal e o **TSI - Team Strength Index**.
 
 ```text
-Ciclo Copa 2026 = após a Copa 2022 até antes da Copa 2026
+TSI = forca geral da selecao
+escala = 0 a 20
 ```
 
-Entram prioritariamente:
+Interpretacao aproximada:
 
-- Eliminatórias da Copa 2026;
-- Copas continentais;
-- Nations League e competições oficiais similares;
-- playoffs;
-- amistosos, se disponíveis.
+```text
+7-9    selecoes fracas ou de baixo teto no torneio
+10-12  selecoes medias
+13-14  selecoes competitivas
+15-16  candidatas fortes
+16+    selecao historicamente muito acima do campo
+```
 
-A ideia é medir a força da seleção no ciclo competitivo que leva à Copa 2026, e não reconstruir toda a história recente do futebol internacional.
+O TSI nao e simplesmente FIFA, Elo, elenco ou odds. Ele e uma composicao:
+
+```text
+pontos FIFA
+-> Elo inicial
+-> Elo proprio do ciclo 2026
+-> TSI_base
+-> ajuste de calendario
+-> ajuste de elenco
+-> TSI_modelo
+-> ajuste de odds
+-> TSI_pre
+-> TSI atual / pos-grupos / pos-mata-mata
+```
+
+Em termos de dados:
+
+- FIFA inicializa o Elo, mas nao entra diretamente no TSI final;
+- Elo mede resultado historico no ciclo da Copa 2026;
+- calendario corrige adversarios mais faceis ou mais duros;
+- elenco captura qualidade atual dos convocados;
+- odds entram como ajuste leve de mercado;
+- desempenho real na Copa atualiza a forca depois dos grupos e durante o mata-mata.
 
 ---
 
-## Como o TSI é construído
+## Dados usados
 
-O TSI pré-Copa nasce em três etapas principais.
+O projeto trabalha com tabelas pequenas e locais em Parquet. Isso deixa o pipeline
+reprodutivel e facil de debugar.
 
-### 1. Elo próprio
+Principais entradas:
 
-O Elo é calculado jogo a jogo no ciclo da Copa 2026.
+- `matches_cycle`: jogos internacionais do ciclo da Copa 2026;
+- `fifa_points`: ranking/pontos FIFA usados no Elo inicial;
+- `worldcup_groups`: grupos da Copa;
+- `worldcup_schedule`: calendario e chaveamento;
+- `worldcup_annex_c`: combinacoes oficiais dos melhores terceiros;
+- `squads`: convocados, setor, idade, clube e valor;
+- `odds_long_term`: odds pre-Copa de campeao/passagem;
+- `odds_match_by_match`: odds jogo a jogo para validacao;
+- `worldcup_match_stats`: gols, xG e estatisticas FotMob da Copa.
 
-Ele considera:
+Regra importante de placar:
 
-- resultado real;
+```text
+goals_a/goals_b excluem disputa de penaltis
+penalty_winner guarda o vencedor dos penaltis
+```
+
+Isso evita contaminar Elo, Poisson e validacao de gols com uma disputa que nao e parte do
+placar modelado.
+
+---
+
+## Elo proprio
+
+O Elo proprio mede forca historica recente no ciclo 2026.
+
+Ele usa:
+
+- pontos FIFA como ponto de partida;
 - resultado esperado;
-- importância da partida;
-- mando/campo neutro;
-- margem de gols, limitada para evitar exageros;
-- pênaltis como empate com pequeno bônus;
-- ajuste final por recência.
+- resultado real;
+- mando;
+- peso de importancia da competicao;
+- margem de gols com teto;
+- penaltis como quase empate;
+- ajuste de recencia.
 
-O Ranking FIFA não entra diretamente no TSI. Ele serve apenas para inicializar o Elo.
+Formula base:
 
-### 2. Ajuste de elenco
+```text
+novo_Elo =
+Elo_atual
++ K * peso_importancia * multiplicador_margem * (resultado_real - resultado_esperado)
+```
 
-O elenco corrige o que o histórico ainda não mostrou.
+O resultado esperado segue a formula classica do Elo:
 
-Exemplos:
+```text
+E_A = 1 / (1 + 10 ^ ((Elo_B - Elo_A_ajustado) / 400))
+```
 
-- uma geração nova explodiu recentemente;
-- o valor de mercado já captura parte do envelhecimento da seleção;
-- o time tem muitos jogadores fortes em um setor e buracos em outro;
-- o valor de mercado cru ainda precisa ser agregado sem deixar estrelas isoladas dominarem.
-
-O projeto usa valor de mercado como âncora direta, com minutagem recente, nível de
-clube/liga e balanço entre setores quando essas fontes estiverem disponíveis.
-
-### 3. Ajuste de odds
-
-As odds entram como calibração leve.
-
-O mercado usado no ajuste pré-Copa é de longo prazo:
-
-- passar da fase de grupos;
-- campeão, para afinar o topo.
-
-Odds jogo a jogo ficam reservadas para validação, evitando circularidade.
+Depois do ciclo, o Elo ajustado e transformado em `TSI_base`.
 
 ---
 
-## Ataque, Defesa e Perfil
+## Elenco
 
-Depois de calcular o TSI, o projeto separa a força em dois componentes:
+O ajuste de elenco tenta responder:
+
+> O time que os resultados historicos descrevem ainda parece o time que vai jogar agora?
+
+Para isso, o projeto agrega jogadores por setor:
+
+```text
+GOL, DEF, MEI, ATA
+```
+
+Cada jogador entra com valor de mercado ajustado, e o valor e comprimido:
+
+```text
+valor_agregado_jogador = log(1 + valor_efetivo)
+```
+
+Depois o sistema calcula z-score por setor contra as outras selecoes. Assim, uma selecao
+nao e avaliada isoladamente: ela e comparada com o campo da Copa.
+
+O score de elenco combina:
+
+- media dos setores;
+- penalidade para setor criticamente fraco;
+- transformacao para a escala do TSI;
+- cap para impedir que elenco sozinho reescreva o modelo.
+
+---
+
+## Odds
+
+As odds entram em dois lugares diferentes.
+
+No **B6**, odds de longo prazo ajustam levemente o TSI pre-Copa:
+
+- campeao;
+- passar de fase, quando disponivel.
+
+No **B9**, odds jogo a jogo sao usadas apenas para validacao:
+
+- comparar Log Loss do modelo contra mercado;
+- comparar Brier Score;
+- detectar quando o modelo esta muito longe da precificacao externa.
+
+Isso evita circularidade: odds do proprio jogo nao sao usadas para prever esse mesmo jogo.
+
+---
+
+## Ataque, defesa e gols esperados
+
+Depois do TSI, a forca e separada em dois componentes:
 
 ```text
 Ataque = TSI + Perfil
-Defesa = TSI − Perfil
+Defesa = TSI - Perfil
 ```
 
-O **Perfil** não mede força. Ele mede tendência de jogo:
+O `Perfil` nao e forca. Ele representa estilo/abertura:
+
+- perfil positivo tende a jogos mais abertos;
+- perfil negativo tende a jogos mais travados.
+
+Para transformar forca em gols esperados, o modelo usa uma curva exponencial com uma
+transformacao sublinear no gap de TSI. Isso aumenta diferencas pequenas de forma util,
+mas evita xG absurdo quando a diferenca de forca e muito grande.
 
 ```text
-saldo de gols  → eixo de força  → TSI/Elo
-total de gols  → eixo de perfil → Ataque/Defesa
+d = TSI_A - TSI_B
+V(d) = sinal(d) * min(V_max, a * |d|^p)
+
+lambda_A = base_goals * exp(k * (V(d) + profile_signal))
+lambda_B = base_goals * exp(k * (-V(d) + profile_signal))
 ```
 
-Perfil positivo indica seleção mais associada a jogos abertos.  
-Perfil negativo indica seleção mais associada a jogos travados.
+Parametros atuais:
 
-Isso permite diferenciar dois times de força parecida:
+```text
+base_goals = 1.30
+k = 0.18
+a = 1.25
+p = 0.60
+V_max = 3.00
+profile_signal = 0.25 * (Perfil_A + Perfil_B)
+```
 
-- um forte e ofensivo;
-- outro forte e defensivo.
+Para anfitriao:
+
+```text
+lambda_host = lambda * exp(gamma)
+lambda_opp = lambda * exp(-delta)
+```
+
+com `gamma = 0.15` e `delta = 0.00`.
 
 ---
 
-## Gols esperados
+## Probabilidades de partida
 
-Para cada confronto, Ataque e Defesa viram gols esperados.
-
-```text
-λ_A = base · exp(k · (Ataque_A − Defesa_B))
-λ_B = base · exp(k · (Ataque_B − Defesa_A))
-```
-
-Onde:
+Com os gols esperados, o modelo calcula a distribuicao de placares:
 
 ```text
-λ_A = gols esperados do time A em 90 minutos
-λ_B = gols esperados do time B em 90 minutos
+gols_A ~ Poisson(lambda_A)
+gols_B ~ Poisson(lambda_B)
 ```
 
-Parâmetros iniciais:
+Disso saem:
 
-```text
-base = 1.30
-k    = 0.09
-γ    = 0.15
-δ    = 0.00
-```
-
-Também existe bônus de anfitrião para jogos disputados no país daquela seleção.
-
----
-
-## Simulação da Copa
-
-O B7 usa Poisson independente:
-
-```text
-gols_A ~ Poisson(λ_A)
-gols_B ~ Poisson(λ_B)
-```
-
-Isso gera:
-
-- probabilidade de vitória A;
+- probabilidade de vitoria A em 90 minutos;
 - probabilidade de empate;
-- probabilidade de vitória B;
-- placar mais provável;
-- gols esperados.
-
-Na fase de grupos, o sistema simula:
-
-```text
-12 grupos de 4
-classificam 1º e 2º de cada grupo
-+ 8 melhores terceiros
-→ Round of 32
-```
+- probabilidade de vitoria B em 90 minutos;
+- placar mais provavel;
+- pontos esperados na fase de grupos;
+- probabilidade de avancar em mata-mata, incluindo prorrogacao e penaltis.
 
 No mata-mata:
 
-1. simula os 90 minutos;
-2. se empatar, simula prorrogação com λ proporcional a 30 minutos;
-3. se continuar empatado, simula pênaltis com vantagem limitada pela diferença de TSI.
-
-Volume de simulações:
-
 ```text
-50.000  → dashboard rápido
-200.000+ → resultado mais estável
+90 minutos -> Poisson normal
+empate -> prorrogacao com lambda / 3
+novo empate -> penaltis com vantagem limitada por TSI
 ```
 
 ---
 
-## Atualização durante a Copa
+## Simulacao da Copa
 
-O projeto roda em três momentos principais.
+O simulador usa Monte Carlo para repetir a Copa muitas vezes.
 
-### 1. Pré-Copa
-
-Calcula:
-
-- Elo ajustado;
-- TSI_base;
-- ajuste de elenco;
-- ajuste de odds;
-- TSI_pré;
-- Ataque e Defesa;
-- probabilidades iniciais.
-
-### 2. Após a fase de grupos
-
-Calcula:
-
-- desempenho real vs esperado;
-- Performance Grupo;
-- TSI pós-grupos;
-- Perfil de grupos;
-- Ataque e Defesa atualizados;
-- probabilidades do mata-mata real.
-
-A atualização do TSI é:
+Formato:
 
 ```text
-TSI_pós = TSI_pré + 0.30 · ajuste_desempenho
+12 grupos de 4
+1o e 2o de cada grupo classificam
+8 melhores terceiros classificam
+Round of 32
+mata-mata ate a final
 ```
 
-Com limite:
+O Anexo C oficial define como os melhores terceiros entram no chaveamento. Ele e carregado
+como dado, nao inferido por regra improvisada.
 
-```text
-TSI_pós − TSI_pré ∈ [−2.000, +2.000]
-```
+Saidas principais:
 
-### 3. Após cada jogo do mata-mata
-
-O sistema atualiza ratings e re-simula o restante da competição.
-
-Seleções eliminadas recebem probabilidade zero nas fases futuras.
+- probabilidade de chegar em cada fase;
+- probabilidade de titulo;
+- confronto mais provavel por slot do mata-mata;
+- vencedor mais provavel de cada duelo;
+- xG e chance de avancar em cada jogo;
+- tabela de proximas partidas;
+- bracket projetado no dashboard.
 
 ---
 
-## Desempenho por jogo
+## Atualizacao durante a Copa
 
-O B3 mede se uma seleção jogou melhor ou pior do que o esperado.
+O projeto ja tem um comando para atualizar o pipeline depois que novas partidas entram:
 
-O esperado vem dos λ pré-jogo.
-
-O real é separado em dois canais:
-
-```text
-PROCESSO  → como o time jogou
-RESULTADO → o que o time conseguiu no placar/tabela
+```bash
+python -m tactical_oracle.pipeline.update_after_matches
 ```
 
-O processo usa xG, chances claras e métricas FotMob de território/duelos,
-sempre em escala equivalente a gols/xG.
+Por padrao ele nao gasta API. Ele usa o que ja esta no cache/local, normaliza os dados e
+recalcula:
 
-As métricas FotMob atualmente usadas são:
+- estatisticas de partida;
+- performance por jogo;
+- TSI atual;
+- ataque/defesa atualizados;
+- probabilidades das proximas partidas;
+- projecao de grupos e mata-mata;
+- relatorio de validacao.
 
-- touches in opposition box;
-- opposition half passes;
-- ground duels won e %;
-- successful dribbles e %.
+Para buscar dados novos no FotMob/cache da API:
 
-O resultado usa pontos reais menos pontos esperados.
-
-A nota final é:
-
-```text
-desempenho_bruto = c_proc · surpresa_proc + c_res · surpresa_res
+```bash
+python -m tactical_oracle.pipeline.update_after_matches --fetch-fotmob
 ```
 
-Com parâmetros iniciais:
+Flags manuais tambem existem para jogos de terceira rodada ou contexto especial:
 
-```text
-c_proc = 4.0
-c_res  = 3.0
-```
+- selecao ja garantida em primeiro: reduz levemente a forca no calculo daquele jogo;
+- selecao poupando jogadores: reduz de forma mais forte.
 
-O sinal bruto é comprimido por soft cap e calibrado por partida para soma zero:
-
-```text
-delta_partida = 4.0 · tanh(desempenho_bruto / 4.0) − média_do_jogo
-```
-
-Se só houver placar, sem xG/stats de processo, o jogo entra como score-only:
-
-```text
-surpresa_proc = 0
-```
-
-Também há peso por qualidade da amostra:
-
-- cartão vermelho e minuto da expulsão;
-- rotação/poupança;
-- necessidade competitiva.
+Essas flags entram manualmente na tabela de calendario/partidas porque detectar isso por
+dado estruturado seria complexo e fragil no MVP.
 
 ---
 
-## Validação e calibração
+## Dashboard
 
-O B9 mede se o modelo está calibrado.
+O Streamlit apresenta o modelo como produto analitico, nao como pagina de marketing.
 
-Ele valida:
+As telas principais mostram:
 
-- probabilidades de vitória/empate/derrota;
-- gols esperados;
-- distribuição de placares;
-- empates e placares baixos;
+- ranking TSI atual;
 - probabilidades por fase;
-- comparação com odds jogo a jogo.
+- proximas partidas;
+- xG e chance de vitoria/empate/derrota;
+- chance de avancar em mata-mata incluindo prorrogacao e penaltis;
+- bracket projetado;
+- selecao individual com caminho e chance por etapa;
+- relatorios de validacao e auditoria.
 
-Métricas principais:
+No bracket:
+
+- jogos confirmados aparecem separados dos projetados;
+- jogos projetados mostram a probabilidade de aquele confronto acontecer;
+- cada card mostra chance de avancar e gols esperados de forma compacta.
+
+---
+
+## Validacao
+
+O modelo e validado em cima das partidas ja jogadas.
+
+Metricas atuais:
 
 - Brier Score;
 - Log Loss;
-- Calibration Curve;
 - Expected Calibration Error;
-- log-likelihood do placar;
-- erro dos gols esperados;
-- comparação contra mercado.
+- calibration bins;
+- log-likelihood do placar exato;
+- comparacao contra odds jogo a jogo, quando o arquivo existir.
 
-A regra é evitar overfitting: o modelo só fica mais complexo se a validação mostrar ganho claro.
+Comando:
+
+```bash
+python -m tactical_oracle.pipeline.validation_report
+```
+
+Saidas:
+
+```text
+data/processed/validation_match_predictions.parquet
+data/processed/validation_summary.parquet
+data/processed/validation_calibration_bins.parquet
+data/processed/validation_odds_comparison.parquet
+docs/reports/validation-YYYY-MM-DD.md
+```
+
+Essa parte e importante porque o modelo deve melhorar por evidencia, nao por sensacao.
+Se uma curva mais complexa nao melhora Brier, Log Loss ou calibracao de forma consistente,
+ela nao deve substituir uma versao mais simples.
 
 ---
 
-## Stack recomendada
+## Stack
 
-Stack inicial recomendada:
+Stack atual:
 
 ```text
 Python
 Polars
-DuckDB
 Parquet
 NumPy / SciPy
 Streamlit
 pytest
-Markdown / MkDocs
-Git
+Markdown
 ```
 
-Arquitetura geral:
-
-```text
-Parquet raw data
-↓
-Polars / DuckDB normalization
-↓
-ratings pipeline
-  Elo
-  TSI
-  elenco
-  odds
-  ataque/defesa
-↓
-simulation engine
-  Poisson
-  grupos
-  mata-mata
-  Monte Carlo
-↓
-validation engine
-  Brier
-  Log Loss
-  calibration curves
-↓
-outputs Parquet
-↓
-Streamlit dashboard
-```
-
-Como a obtenção de dados históricos é o maior risco, o pipeline deve ter cache local obrigatório para respostas de API.
+O MVP e local e analitico. Nao usa Spark, PostgreSQL, FastAPI ou React.
 
 ---
 
-## Resultado esperado
+## Principio do projeto
 
-O produto final deve permitir visualizar:
+O World Cup Oracle trata futebol como distribuicao de possibilidades.
 
-- ranking TSI;
-- força ofensiva e defensiva;
-- probabilidade por fase;
-- probabilidade por jogo;
-- gols esperados;
-- placar mais provável;
-- evolução da força durante a Copa;
-- comparação entre seleções;
-- diagnóstico de calibração.
+Uma selecao com 70% de chance ainda perde muitas vezes. Uma selecao com 20% ainda tem um
+caminho real. A qualidade do modelo esta em estimar essas chances com escala, coerencia e
+calibracao.
 
----
+Por isso, cada numero importante deve ter:
 
-## Filosofia do projeto
-
-O Tactical Oracle não tenta prever futebol como se fosse determinístico.
-
-Ele tenta estimar probabilidades bem calibradas.
-
-A pergunta principal não é:
-
-```text
-quem vai ganhar?
-```
-
-A pergunta correta é:
-
-```text
-qual é a distribuição mais realista de resultados possíveis?
-```
-
-O sistema combina força histórica, qualidade atual do elenco, sinal do mercado, estilo de jogo, gols esperados e simulação para produzir essa distribuição.
+- dado de origem;
+- formula ou metodo;
+- output em Parquet;
+- forma de auditoria;
+- validacao posterior.

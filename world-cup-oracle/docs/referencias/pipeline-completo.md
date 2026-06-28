@@ -1,6 +1,6 @@
 # Pipeline Completo
 
-Projeto: **Tactical Oracle**
+Projeto: **World Cup Oracle**
 
 Este documento descreve a ordem de execução do sistema.
 
@@ -327,6 +327,22 @@ Times eliminados:
 probabilidade = 0 em todas as fases futuras
 ```
 
+Comando operacional atual:
+
+```bash
+python -m tactical_oracle.pipeline.update_after_matches
+```
+
+Por padrão, o comando não chama API. Ele usa arquivos locais/cacheados, normaliza os
+detalhes disponíveis, recalcula performance, TSI atual, probabilidades, projeção de
+torneio e validação.
+
+Para buscar novos detalhes FotMob/cache:
+
+```bash
+python -m tactical_oracle.pipeline.update_after_matches --fetch-fotmob
+```
+
 ---
 
 ## 12. Validação
@@ -361,6 +377,22 @@ parâmetros recomendados
 diagnósticos
 ```
 
+Comando:
+
+```bash
+python -m tactical_oracle.pipeline.validation_report
+```
+
+Artefatos:
+
+```text
+data/processed/validation_match_predictions.parquet
+data/processed/validation_summary.parquet
+data/processed/validation_calibration_bins.parquet
+data/processed/validation_odds_comparison.parquet
+docs/reports/validation-YYYY-MM-DD.md
+```
+
 ---
 
 ## Ordem de execução sugerida
@@ -393,4 +425,8 @@ group_stage_performance.parquet
 tsi_post_groups.parquet
 validation_report.md
 dashboard_data.parquet
+team_stage_probabilities.parquet
+knockout_match_probabilities.parquet
+next_matches.parquet
+validation_summary.parquet
 ```

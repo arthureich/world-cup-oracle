@@ -1,6 +1,6 @@
-# Tactical Oracle
+# World Cup Oracle
 
-Tactical Oracle is a local analytical MVP for modeling the 2026 World Cup.
+World Cup Oracle is a local analytical MVP for modeling the 2026 World Cup.
 
 The project builds a small, testable pipeline:
 

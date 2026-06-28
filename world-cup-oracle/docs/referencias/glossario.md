@@ -1,6 +1,6 @@
 # Glossário
 
-Projeto: **Tactical Oracle**
+Projeto: **World Cup Oracle**
 
 ---
 

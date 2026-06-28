@@ -1,6 +1,6 @@
 # Parâmetros
 
-Projeto: **Tactical Oracle**
+Projeto: **World Cup Oracle**
 
 Lista dos parâmetros principais, valores iniciais e pontos recalibráveis.
 
@@ -162,10 +162,29 @@ Composto ofensivo:
 | Parâmetro | Valor | Status |
 |---|---:|---|
 | `base` | 1.30 | Recalibrável |
-| `k` | 0.09 | Recalibrável |
+| `k` | 0.18 | Recalibrável |
 | `γ` | 0.15 | Recalibrável |
 | `δ` | 0.00 | Recalibrável |
 | `δ_max_sugerido` | 0.05 | Recalibrável |
+
+Transformacao vigente do gap de TSI para jogos futuros e mata-mata:
+
+```text
+d = TSI_A - TSI_B
+V(d) = sign(d) * min(3.00, 1.25 * |d|^0.60)
+
+lambda_A = 1.30 * exp(0.18 * ( V(d) + profile_signal))
+lambda_B = 1.30 * exp(0.18 * (-V(d) + profile_signal))
+
+profile_signal = 0.25 * (Perfil_A + Perfil_B)
+```
+
+Observacao operacional:
+
+```text
+O B3 preserva a curva de base usada para auditar os jogos de grupo ja avaliados.
+A curva sublinear acima e usada para projecoes futuras, mata-mata e dashboard.
+```
 
 ---
 

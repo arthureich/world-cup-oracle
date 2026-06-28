@@ -392,7 +392,7 @@ def write_data_quality_outputs(
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Audit real Tactical Oracle input data.")
+    parser = argparse.ArgumentParser(description="Audit real World Cup Oracle input data.")
     parser.add_argument("--interim-dir", default="data/interim")
     parser.add_argument("--output-dir", default="data/processed")
     args = parser.parse_args()
