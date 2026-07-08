@@ -1,4 +1,4 @@
-# Pipeline Completo
+﻿# Pipeline Completo
 
 Projeto: **World Cup Oracle**
 
@@ -343,6 +343,39 @@ Para buscar novos detalhes FotMob/cache:
 python -m world_cup_oracle.pipeline.update_after_matches --fetch-fotmob
 ```
 
+### Checkpoint 2026-07-08
+
+Estado operacional apos as oitavas:
+
+```text
+matches.csv: 96 jogos completos
+worldcup_match_team_stats.csv: 192 linhas por selecao/jogo
+worldcup_match_stats.parquet: 192 linhas
+knockout_match_performance.parquet: 48 linhas
+```
+
+Vencedores fixados nas oitavas:
+
+```text
+France, Morocco, Norway, England, Spain, Belgium, Argentina, Switzerland
+```
+
+`Switzerland x Colombia` terminou 0-0 no placar modelado e foi decidido nos penaltis.
+A classificacao usa o vencedor dos penaltis; a performance do jogo continua baseada em
+placar, xG e processo sem adicionar gols da disputa.
+
+Apos cada rodada de mata-mata concluida:
+
+```text
+1. gravar resultado bruto em data/raw/world-cup-detail/matches.csv
+2. atualizar worldcup_match_ids.json e worldcup_match_team_stats.csv pelo cache FotMob
+3. normalizar worldcup_match_stats.parquet
+4. calcular knockout_match_performance.parquet
+5. atualizar team_current_strength.parquet
+6. fixar vencedores reais no bracket
+7. simular apenas o restante do torneio
+```
+
 ---
 
 ## 12. Validação
@@ -430,3 +463,5 @@ knockout_match_probabilities.parquet
 next_matches.parquet
 validation_summary.parquet
 ```
+
+

@@ -8,8 +8,30 @@ configure_page("Audit | World Cup Oracle")
 sidebar_context()
 
 performance = load_frame("match_performance_audit.parquet")
+knockout_performance = load_frame("knockout_match_performance_audit.parquet")
 review = load_frame("calibration_b3_review.parquet")
 team_adjustments = load_frame("team_performance_adjustments.parquet")
+current_strength = load_frame("team_current_strength.parquet")
+
+if not knockout_performance.is_empty():
+    performance = pl.concat([performance, knockout_performance], how="diagonal_relaxed")
+if not current_strength.is_empty():
+    team_adjustments = (
+        team_adjustments.join(
+            current_strength.select(["team", "knockout_tsi_delta", "tsi_current"]),
+            on="team",
+            how="left",
+        )
+        .with_columns(
+            [
+                pl.col("knockout_tsi_delta").fill_null(0.0),
+                (pl.col("post_groups_tsi_delta") + pl.col("knockout_tsi_delta").fill_null(0.0))
+                .alias("post_groups_tsi_delta"),
+                pl.coalesce(["tsi_current", "tsi_post_groups"]).alias("tsi_post_groups"),
+            ]
+        )
+        .drop(["knockout_tsi_delta", "tsi_current"])
+    )
 
 page_header("Auditoria", "TSI, desempenho por jogo e casos de calibracao B3")
 

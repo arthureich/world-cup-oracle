@@ -1,4 +1,4 @@
-# Modelagem Matematica e Estatistica
+﻿# Modelagem Matematica e Estatistica
 
 Este documento detalha a parte quantitativa do World Cup Oracle: variaveis, formulas,
 hipoteses, motivos das escolhas e pontos calibraveis.
@@ -585,6 +585,39 @@ comparar Brier e Log Loss do modelo contra mercado
 
 ---
 
+## Atualizacao iterativa no mata-mata
+
+Depois dos grupos, o modelo passa a usar `TSI_atual` para o restante do torneio.
+Quando um jogo de mata-mata termina, ele gera um delta pareado:
+
+```text
+delta_jogo(A) + delta_jogo(B) = 0
+```
+
+Esse delta combina resultado e processo observado, com cap para evitar que um unico jogo
+reescreva toda a forca da selecao:
+
+```text
+TSI_atual_time = TSI_pos_grupos_time + soma(delta_mata_mata_time)
+```
+
+A simulacao do bracket usa os vencedores reais ja conhecidos e so projeta os jogos ainda
+nao disputados. Isso evita retroatividade: depois que uma selecao avanca, o jogo anterior
+fica fixado, e as probabilidades seguintes usam o TSI atualizado daquele caminho.
+
+Penaltis sao tratados como decisao de classificacao, nao como gols adicionais:
+
+```text
+goals_for/goals_against = placar ate o fim do jogo
+penalty_winner = vencedor da disputa, quando existir
+```
+
+Assim, um 0-0 decidido nos penaltis continua sendo 0-0 para Poisson, xG, validacao de
+gols e performance de processo; o vencedor dos penaltis apenas define quem segue no
+chaveamento.
+
+---
+
 ## 13. Comandos operacionais
 
 Atualizar depois de novas partidas:
@@ -650,3 +683,5 @@ Limites atuais:
 - odds historicas gratuitas sao limitadas;
 - rotacao e contexto competitivo ainda exigem flags manuais;
 - calibracao fica melhor conforme mais partidas reais entram.
+
+

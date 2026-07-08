@@ -45,7 +45,7 @@ class TSIParameters:
     schedule_adjustment_cap: float = 0.35
     squad_adjustment_cap: float = 1.0
     odds_adjustment_cap: float = 0.75
-    post_groups_weight: float = 0.30
+    post_groups_weight: float = 0.15
     post_groups_delta_cap: float = 2.0
 
 
@@ -56,12 +56,14 @@ class AttackDefenseParameters:
     profile_multiplier: float = 0.8
     profile_cap: float = 2.0
     base_goals: float = 1.30
-    k: float = 0.20
+    k: float = 0.12
     use_saturated_tsi_gap: bool = True
     legacy_tsi_gap_multiplier: float = 1.5
-    tsi_gap_transform_scale: float = 1.25
-    tsi_gap_transform_power: float = 0.70
-    tsi_gap_cap: float = 3.5
+    tsi_gap_transform_scale: float = 1.75
+    tsi_gap_transform_power: float = 0.80
+    tsi_gap_cap: float = 5.0
+
+
     profile_total_weight: float = 0.25
     host_gamma: float = 0.15
     opponent_delta: float = 0.0

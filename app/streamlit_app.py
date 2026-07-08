@@ -1,4 +1,4 @@
-from __future__ import annotations
+﻿from __future__ import annotations
 
 from html import escape
 
@@ -458,16 +458,21 @@ def _likely_bracket(knockout_probabilities: pl.DataFrame, components: pl.DataFra
             displayed_initial_teams.add(team_b)
 
         projection = _direct_match_projection(team_a, team_b, components_by_team)
-        winner = team_a if projection["p_advance_a"] >= projection["p_advance_b"] else team_b
+        side_a = team_match_probability.get((match_number, team_a), {})
+        side_b = team_match_probability.get((match_number, team_b), {})
+        team_a_appear = float(side_a.get("appear_probability", 0.0))
+        team_b_appear = float(side_b.get("appear_probability", 0.0))
+        team_a_real_win = float(side_a.get("win_probability", 0.0)) >= 0.999
+        team_b_real_win = float(side_b.get("win_probability", 0.0)) >= 0.999
+        if team_a_real_win or team_b_real_win:
+            winner = team_a if team_a_real_win else team_b
+        else:
+            winner = team_a if projection["p_advance_a"] >= projection["p_advance_b"] else team_b
         runner_up = team_b if winner == team_a else team_a
         displayed_winners[match_number] = winner
         displayed_runners_up[match_number] = runner_up
 
-        side_a = team_match_probability.get((match_number, team_a), {})
-        side_b = team_match_probability.get((match_number, team_b), {})
         winner_side = side_a if winner == team_a else side_b
-        team_a_appear = float(side_a.get("appear_probability", 0.0))
-        team_b_appear = float(side_b.get("appear_probability", 0.0))
 
         rows.append(
             {
@@ -500,7 +505,7 @@ def _render_match_card(row: dict[str, object], target: object) -> None:
     if not is_confirmed:
         status = (
             f"Duelo ~{pct(float(row['duel_occurrence_probability']), 0)} | "
-            f"{team_a} {pct(float(row['team_a_appear_probability']), 0)} · "
+            f"{team_a} {pct(float(row['team_a_appear_probability']), 0)} - "
             f"{team_b} {pct(float(row['team_b_appear_probability']), 0)}"
         )
     team_a_weight = "800" if team_a == winner else "500"
@@ -517,7 +522,7 @@ def _render_match_card(row: dict[str, object], target: object) -> None:
             line-height: 1.18;
         ">
           <div style="color:#697586;font-size:10px;margin-bottom:3px;">
-            Jogo {row["match_number"]} · {escape(status)}
+            Jogo {row["match_number"]} - {escape(status)}
           </div>
           <div style="display:flex;justify-content:space-between;gap:6px;
                       font-weight:{team_a_weight};">
@@ -673,6 +678,8 @@ next_matches = load_frame("next_matches.parquet")
 group_projection = load_frame("group_projection.parquet")
 team_performance = load_frame("team_performance_adjustments.parquet")
 attack_defense = load_frame("attack_defense_post_groups.parquet")
+current_strength = load_frame("team_current_strength.parquet")
+attack_defense_current = load_frame("attack_defense_current.parquet")
 knockout = load_frame("knockout_match_probabilities.parquet")
 standings = load_frame("current_group_standings.parquet")
 tsi_pre = load_frame("tsi_pre_cup.parquet")
@@ -680,6 +687,29 @@ elo = load_frame("ratings_elo.parquet")
 squad = load_frame("squad_adjustments.parquet")
 odds = load_frame("odds_adjustments.parquet")
 match_audit = load_frame("match_performance_audit.parquet")
+knockout_audit = load_frame("knockout_match_performance_audit.parquet")
+
+if not current_strength.is_empty():
+    team_performance = (
+        team_performance.join(
+            current_strength.select(["team", "knockout_tsi_delta", "tsi_current"]),
+            on="team",
+            how="left",
+        )
+        .with_columns(
+            [
+                pl.col("knockout_tsi_delta").fill_null(0.0),
+                (pl.col("post_groups_tsi_delta") + pl.col("knockout_tsi_delta").fill_null(0.0))
+                .alias("post_groups_tsi_delta"),
+                pl.coalesce(["tsi_current", "tsi_post_groups"]).alias("tsi_post_groups"),
+            ]
+        )
+        .drop(["knockout_tsi_delta", "tsi_current"])
+    )
+if not attack_defense_current.is_empty():
+    attack_defense = attack_defense_current
+if not knockout_audit.is_empty():
+    match_audit = pl.concat([match_audit, knockout_audit], how="diagonal_relaxed")
 
 page_header("Simulacao da Copa", "Probabilidades atuais com TSI pos-grupos, Poisson e Monte Carlo")
 
@@ -709,7 +739,7 @@ for column, row in zip(leader_cols, leaders.to_dicts(), strict=True):
 
 st.divider()
 
-st.subheader("Simulação - Knockout Stage")
+st.subheader("Simulacao - Knockout Stage")
 likely_bracket = _likely_bracket(knockout, attack_defense)
 _render_bracket(likely_bracket)
 
@@ -857,3 +887,4 @@ st.caption(
     "As tabelas usam os arquivos em data/processed. "
     "Recalcule os outputs apos mudar parametros."
 )
+

@@ -1,4 +1,4 @@
-# Status do Projeto
+﻿# Status do Projeto
 
 ## Projeto
 
@@ -53,23 +53,28 @@ O projeto ja tem um MVP local funcional:
 Ultima bateria registrada:
 
 ```text
-pytest
-121 passed
+ruff check app src tests
+All checks passed
+
+pytest tests/test_tournament_projection.py tests/test_match_performance_pipeline.py -q
+11 passed
 ```
 
 Relatorio de validacao atual:
 
 ```text
-docs/reports/validation-2026-06-28.md
+docs/reports/validation-2026-07-08.md
 ```
 
 Metricas registradas no ultimo run:
 
 ```text
-partidas avaliadas: 72
-Brier Score: 0.535508
-Log Loss: 0.918619
-Expected Calibration Error: 0.148874
+partidas avaliadas na validacao 1X2: 72
+partidas completadas no operacional: 96
+jogos de mata-mata auditados: 24
+Brier Score: 0.509684
+Log Loss: 0.874943
+Expected Calibration Error: 0.142348
 ```
 
 Observacao:
@@ -128,6 +133,37 @@ O nucleo estatistico esta pronto para iterar:
 
 ---
 
+## Checkpoint de torneio
+
+Atualizado em 2026-07-08, com todas as oitavas concluidas.
+
+Quartas de final atuais:
+
+```text
+France x Morocco
+Spain x Belgium
+England x Norway
+Argentina x Switzerland
+```
+
+Top probabilidades de titulo no run atual:
+
+```text
+Spain 25.4%
+France 20.5%
+Argentina 18.3%
+England 13.6%
+Norway 7.8%
+Morocco 6.6%
+Belgium 4.1%
+Switzerland 3.7%
+```
+
+O pipeline agora usa `team_current_strength.parquet` e `attack_defense_current.parquet`
+para simular o restante do mata-mata com TSI atualizado iterativamente.
+
+---
+
 ## Pendencias reais
 
 As pendencias agora sao mais de produto, dados e calibracao fina do que de estrutura.
@@ -154,3 +190,5 @@ As pendencias agora sao mais de produto, dados e calibracao fina do que de estru
 - Penaltis ficam separados do placar.
 - Anexo C dos melhores terceiros e dado carregado, nao inferido.
 - Flags de rotacao/garantia de primeiro lugar sao manuais no MVP.
+
+

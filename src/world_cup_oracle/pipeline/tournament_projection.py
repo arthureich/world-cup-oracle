@@ -8,15 +8,22 @@ from typing import Any
 import numpy as np
 
 from world_cup_oracle.attack_defense import expected_goals_from_components, split_attack_defense
+from world_cup_oracle.config import TSIParameters
 from world_cup_oracle.data.io import read_parquet, write_rows_parquet
+from world_cup_oracle.pipeline.match_performance import (
+    match_performance_audit_frame,
+    match_performance_frame,
+)
 from world_cup_oracle.simulation import (
     MatchResult,
     annex_c_assignments,
     best_third_placed,
     build_annex_c_table,
+    match_probabilities,
     rank_group,
     simulate_knockout_match,
 )
+from world_cup_oracle.utils import clamp
 
 DEFAULT_KNOCKOUT_SOURCE = Path("data/raw/fifa_worldcup_2026_matches.json")
 STAGE_COLUMNS = (
@@ -208,6 +215,19 @@ def components_from_rows(rows: list[dict[str, Any]]) -> dict[str, Any]:
     }
 
 
+def component_rows_from_components(components: dict[str, Any]) -> list[dict[str, Any]]:
+    return [
+        {
+            "team": component.team,
+            "tsi": component.tsi,
+            "profile": component.profile,
+            "attack": component.attack,
+            "defense": component.defense,
+        }
+        for component in sorted(components.values(), key=lambda row: row.tsi, reverse=True)
+    ]
+
+
 def build_next_match_rows(
     schedule_rows: list[dict[str, Any]],
     probability_rows: list[dict[str, Any]],
@@ -291,6 +311,201 @@ def _increment_stage(team_states: dict[str, dict[str, Any]], team: str, stage: s
     team_states[team]["stage_counts"][stage] += 1
 
 
+def _knockout_stats_by_match(
+    match_stats_rows: list[dict[str, Any]],
+) -> dict[int, list[dict[str, Any]]]:
+    grouped: dict[int, list[dict[str, Any]]] = {}
+    for row in match_stats_rows:
+        match_number = int(row["match_number"])
+        if match_number < 73:
+            continue
+        grouped.setdefault(match_number, []).append(row)
+    return {match_number: rows for match_number, rows in grouped.items() if len(rows) >= 2}
+
+
+def _knockout_probability_row(
+    match_number: int,
+    stats_rows: list[dict[str, Any]],
+    team_a: str,
+    team_b: str,
+    components: dict[str, Any],
+) -> dict[str, Any]:
+    lambda_a, lambda_b = expected_goals_from_components(components[team_a], components[team_b])
+    probabilities = match_probabilities(lambda_a, lambda_b)
+    match_id = next(str(row["match_id"]) for row in stats_rows if str(row["team"]) == team_a)
+    return {
+        "match_id": match_id,
+        "match_number": match_number,
+        "team_a": team_a,
+        "team_b": team_b,
+        "lambda_a": lambda_a,
+        "lambda_b": lambda_b,
+        "expected_points_a": probabilities.expected_points_a,
+        "expected_points_b": probabilities.expected_points_b,
+        "team_a_rotated": False,
+        "team_b_rotated": False,
+        "team_a_guaranteed_first": False,
+        "team_b_guaranteed_first": False,
+    }
+
+
+def knockout_match_performance_rows(
+    stats_rows: list[dict[str, Any]],
+    team_a: str,
+    team_b: str,
+    components: dict[str, Any],
+) -> list[dict[str, Any]]:
+    import polars as pl
+
+    if team_a not in components or team_b not in components:
+        return []
+    teams_with_stats = {str(row["team"]) for row in stats_rows}
+    if team_a not in teams_with_stats or team_b not in teams_with_stats:
+        return []
+    match_number = int(stats_rows[0]["match_number"])
+    probabilities = pl.DataFrame(
+        [_knockout_probability_row(match_number, stats_rows, team_a, team_b, components)]
+    )
+    performance = match_performance_frame(pl.DataFrame(stats_rows), probabilities)
+    return performance.to_dicts()
+
+
+def knockout_match_audit_rows(
+    stats_rows: list[dict[str, Any]],
+    team_a: str,
+    team_b: str,
+    components: dict[str, Any],
+) -> list[dict[str, Any]]:
+    import polars as pl
+
+    performance_rows = knockout_match_performance_rows(stats_rows, team_a, team_b, components)
+    if not performance_rows:
+        return []
+    return match_performance_audit_frame(
+        pl.DataFrame(performance_rows),
+        pl.DataFrame(stats_rows),
+    ).to_dicts()
+
+
+def _apply_knockout_performance_rows(
+    components: dict[str, Any],
+    performance_rows: list[dict[str, Any]],
+    tsi_params: TSIParameters | None = None,
+) -> dict[str, Any]:
+    tsi_params = tsi_params or TSIParameters()
+    updated = dict(components)
+    for row in performance_rows:
+        team = str(row["team"])
+        if team not in updated:
+            continue
+        component = updated[team]
+        tsi_delta = float(row["weighted_match_tsi_delta"]) * tsi_params.post_groups_weight
+        next_tsi = clamp(component.tsi + tsi_delta, tsi_params.tsi_min, tsi_params.tsi_max)
+        updated[team] = split_attack_defense(team, next_tsi, component.profile)
+    return updated
+
+
+def _known_knockout_updates(
+    group_rows: list[dict[str, Any]],
+    schedule_rows: list[dict[str, Any]],
+    match_stats_rows: list[dict[str, Any]],
+    annex_rows: list[dict[str, Any]],
+    components: dict[str, Any],
+    knockout_template: list[dict[str, Any]],
+    known_knockout_winners: dict[int, str],
+) -> tuple[dict[str, Any], list[dict[str, Any]], list[dict[str, Any]]]:
+    if not known_knockout_winners:
+        return components, [], []
+
+    rankings = rank_all_groups(group_rows, known_results(schedule_rows, match_stats_rows))
+    thirds = best_third_placed(rankings, count=8, fifa_ranks=fifa_ranks(group_rows))
+    third_groups = "".join(sorted(standing.group for standing in thirds))
+    third_assignments = annex_c_assignments(third_groups, build_annex_c_table(annex_rows))
+    slot_map = group_slot_map(rankings, thirds)
+    stats_by_match = _knockout_stats_by_match(match_stats_rows)
+    active_components = dict(components)
+    winners: dict[int, str] = {}
+    runners_up: dict[int, str] = {}
+    performance_rows: list[dict[str, Any]] = []
+    audit_rows: list[dict[str, Any]] = []
+
+    for fixture in knockout_template:
+        match_number = int(fixture["match_number"])
+        placeholder_a = str(fixture["placeholder_a"])
+        placeholder_b = str(fixture["placeholder_b"])
+        try:
+            team_a = _resolve_knockout_placeholder(
+                placeholder_a,
+                placeholder_b,
+                slot_map,
+                third_assignments,
+                winners,
+                runners_up,
+            )
+            team_b = _resolve_knockout_placeholder(
+                placeholder_b,
+                placeholder_a,
+                slot_map,
+                third_assignments,
+                winners,
+                runners_up,
+            )
+        except KeyError:
+            break
+
+        winner = known_knockout_winners.get(match_number)
+        if winner is None or winner not in {team_a, team_b}:
+            break
+
+        stats_rows = stats_by_match.get(match_number, [])
+        match_performance = knockout_match_performance_rows(
+            stats_rows,
+            team_a,
+            team_b,
+            active_components,
+        )
+        match_audit = knockout_match_audit_rows(
+            stats_rows,
+            team_a,
+            team_b,
+            active_components,
+        )
+        performance_rows.extend(match_performance)
+        audit_rows.extend(match_audit)
+        active_components = _apply_knockout_performance_rows(
+            active_components,
+            match_performance,
+        )
+
+        loser = team_b if winner == team_a else team_a
+        winners[match_number] = winner
+        runners_up[match_number] = loser
+
+    return active_components, performance_rows, audit_rows
+
+
+def _team_current_strength_rows(
+    base_components: dict[str, Any],
+    current_components: dict[str, Any],
+) -> list[dict[str, Any]]:
+    rows = []
+    for team, base in sorted(base_components.items()):
+        current = current_components.get(team, base)
+        knockout_delta = current.tsi - base.tsi
+        rows.append(
+            {
+                "team": team,
+                "tsi_post_groups": base.tsi,
+                "knockout_tsi_delta": knockout_delta,
+                "tsi_current": current.tsi,
+                "profile": current.profile,
+                "attack": current.attack,
+                "defense": current.defense,
+            }
+        )
+    return sorted(rows, key=lambda row: float(row["tsi_current"]), reverse=True)
+
+
 def _simulate_knockout(
     group_rankings: dict[str, Any],
     qualified_thirds: list[Any],
@@ -300,10 +515,13 @@ def _simulate_knockout(
     rng: np.random.Generator,
     team_states: dict[str, dict[str, Any]],
     match_team_counts: dict[tuple[int, str], dict[str, int]],
+    known_knockout_winners: dict[int, str] | None = None,
+    known_knockout_deltas: dict[int, dict[str, float]] | None = None,
 ) -> None:
     third_groups = "".join(sorted(standing.group for standing in qualified_thirds))
     third_assignments = annex_c_assignments(third_groups, annex_table)
     slot_map = group_slot_map(group_rankings, qualified_thirds)
+    active_components = dict(components)
     winners: dict[int, str] = {}
     runners_up: dict[int, str] = {}
 
@@ -327,20 +545,26 @@ def _simulate_knockout(
             winners,
             runners_up,
         )
-        component_a = components[team_a]
-        component_b = components[team_b]
-        lambda_a, lambda_b = expected_goals_from_components(component_a, component_b)
-        result = simulate_knockout_match(
-            team_a,
-            team_b,
-            lambda_a,
-            lambda_b,
-            component_a.tsi,
-            component_b.tsi,
-            rng=rng,
-        )
-        winner = result.winner
-        loser = team_b if winner == team_a else team_a
+        component_a = active_components[team_a]
+        component_b = active_components[team_b]
+
+        if known_knockout_winners and match_number in known_knockout_winners:
+            winner = known_knockout_winners[match_number]
+            loser = team_b if winner == team_a else team_a
+        else:
+            lambda_a, lambda_b = expected_goals_from_components(component_a, component_b)
+            result = simulate_knockout_match(
+                team_a,
+                team_b,
+                lambda_a,
+                lambda_b,
+                component_a.tsi,
+                component_b.tsi,
+                rng=rng,
+            )
+            winner = result.winner
+            loser = team_b if winner == team_a else team_a
+
         winners[match_number] = winner
         runners_up[match_number] = loser
         for team in (team_a, team_b):
@@ -360,6 +584,77 @@ def _simulate_knockout(
             _increment_stage(team_states, winner, "reach_final")
         elif stage == "Final":
             _increment_stage(team_states, winner, "champion")
+
+        match_deltas = (known_knockout_deltas or {}).get(match_number, {})
+        for team, tsi_delta in match_deltas.items():
+            if team not in active_components:
+                continue
+            component = active_components[team]
+            next_tsi = clamp(component.tsi + tsi_delta, 0.0, 20.0)
+            active_components[team] = split_attack_defense(team, next_tsi, component.profile)
+
+
+def load_known_knockout_winners(
+    match_ids_path: Path = Path("data/raw/fotmob/worldcup_match_ids.json"),
+    get_match_details_dir: Path = Path("data/raw/fotmob/get_match_details"),
+) -> dict[int, str]:
+    if not match_ids_path.exists():
+        return {}
+
+    import glob
+    try:
+        with match_ids_path.open("r", encoding="utf-8") as handle:
+            matches_info = json.load(handle)
+    except Exception:
+        return {}
+
+    winners: dict[int, str] = {}
+    for m in matches_info:
+        match_id = m.get("match_id")
+        if match_id is None or match_id < 73:
+            continue
+        if not m.get("finished") and m.get("status") != "Completed":
+            continue
+
+
+        fotmob_id = m.get("fotmob_match_id")
+        if fotmob_id is None:
+            continue
+
+        # Look for cached JSON file
+        pattern = str(get_match_details_dir / f"get_match_details_match_id-{fotmob_id}_*.json")
+        files = glob.glob(pattern)
+        if not files:
+            continue
+
+        try:
+            with open(files[0], encoding="utf-8") as handle:
+                payload = json.load(handle)
+            data = payload.get("data", {})
+            header = data.get("header", {})
+            status = header.get("status", {})
+            reason = status.get("reason", {})
+
+            home_team = m.get("home_team")
+            away_team = m.get("away_team")
+            home_score = m.get("home_score")
+            away_score = m.get("away_score")
+
+            if reason and "Pen" in reason.get("short", ""):
+                who_lost = header.get("status", {}).get("whoLostOnPenalties")
+                if who_lost == home_team:
+                    winners[match_id] = away_team
+                else:
+                    winners[match_id] = home_team
+            else:
+                if home_score > away_score:
+                    winners[match_id] = home_team
+                else:
+                    winners[match_id] = away_team
+        except Exception:
+            continue
+
+    return winners
 
 
 def tournament_projection_outputs(
@@ -386,6 +681,21 @@ def tournament_projection_outputs(
         for row in group_rows
     }
     match_team_counts: dict[tuple[int, str], dict[str, int]] = {}
+    known_knockout_winners = load_known_knockout_winners()
+    current_components, knockout_performance, knockout_audit = _known_knockout_updates(
+        group_rows,
+        schedule_rows,
+        match_stats_rows,
+        annex_rows,
+        components,
+        knockout_template,
+        known_knockout_winners,
+    )
+    known_knockout_deltas: dict[int, dict[str, float]] = {}
+    for row in knockout_performance:
+        known_knockout_deltas.setdefault(int(row["match_number"]), {})[
+            str(row["team"])
+        ] = float(row["weighted_match_tsi_delta"]) * TSIParameters().post_groups_weight
 
     for _ in range(simulations):
         simulated = simulated_group_results(schedule_rows, probability_rows, completed, rng)
@@ -422,7 +732,10 @@ def tournament_projection_outputs(
             rng,
             team_states,
             match_team_counts,
+            known_knockout_winners=known_knockout_winners,
+            known_knockout_deltas=known_knockout_deltas,
         )
+
 
     group_projection = []
     stage_probabilities = []
@@ -490,6 +803,13 @@ def tournament_projection_outputs(
             reverse=True,
         ),
         "knockout_match_probabilities.parquet": knockout_match_probabilities,
+        "knockout_match_performance.parquet": knockout_performance,
+        "knockout_match_performance_audit.parquet": knockout_audit,
+        "attack_defense_current.parquet": component_rows_from_components(current_components),
+        "team_current_strength.parquet": _team_current_strength_rows(
+            components,
+            current_components,
+        ),
     }
 
 

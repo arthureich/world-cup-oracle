@@ -1,4 +1,27 @@
-# World Cup Oracle
+﻿# World Cup Oracle
+
+## Current Tournament Snapshot
+
+Updated through the end of the Round of 16 on 2026-07-08.
+
+```text
+Operational completed matches: 96
+Group-stage validation matches: 72
+Knockout matches audited: 24
+Current live teams: 8
+```
+
+Current quarter-finals:
+
+```text
+France vs Morocco
+Spain vs Belgium
+England vs Norway
+Argentina vs Switzerland
+```
+
+The model now updates `TSI_current` after completed knockout games, fixes known winners
+in the bracket, and simulates only the remaining tournament path.
 
 World Cup Oracle is a local analytics system for the 2026 World Cup. It estimates team
 strength, match probabilities, expected goals, bracket paths and title odds from a
@@ -200,3 +223,5 @@ Current baseline:
 ruff check . -> passing
 pytest -> 121 tests passing
 ```
+
+

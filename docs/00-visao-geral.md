@@ -1,4 +1,4 @@
-# World Cup Oracle - Visao Geral
+﻿# World Cup Oracle - Visao Geral
 
 ## O que e o projeto
 
@@ -365,6 +365,42 @@ mata-mata, qual selecao ganhou/perdeu TSI e como isso conversa com as probabilid
 
 ---
 
+## Checkpoint operacional - 2026-07-08
+
+A base operacional esta atualizada ate o fim das oitavas de final:
+
+```text
+96 partidas completadas
+72 partidas de grupo
+16 jogos de Round of 32
+8 jogos de Round of 16
+```
+
+O mata-mata agora esta fixado pelos resultados reais ate as quartas:
+
+```text
+France x Morocco
+Spain x Belgium
+England x Norway
+Argentina x Switzerland
+```
+
+Os jogos de mata-mata completos entram em `knockout_match_performance.parquet` e
+`knockout_match_performance_audit.parquet`. Para cada confronto, o delta de performance e
+zero-sum: o ganho de TSI de uma selecao e a perda da outra no mesmo jogo. Penaltis definem
+quem avanca, mas nao entram como gols no placar modelado.
+
+O TSI atual usado nas proximas simulacoes e:
+
+```text
+TSI_atual = TSI_pos_grupos + soma_deltas_mata_mata
+```
+
+Assim, uma selecao que vence no mata-mata pode chegar mais forte ao jogo seguinte, e uma
+selecao eliminada fica com probabilidade zero nas fases futuras.
+
+---
+
 ## Validacao
 
 O modelo e validado em cima das partidas ja jogadas.
@@ -372,9 +408,11 @@ O modelo e validado em cima das partidas ja jogadas.
 Estado atual do dataset operacional:
 
 ```text
-72 partidas de grupo completadas
-48 selecoes com status final de grupo
-relatorio atual: docs/reports/validation-2026-06-28.md
+96 partidas completadas no bruto operacional
+72 partidas de grupo usadas na validacao 1X2
+24 jogos de mata-mata auditados com deltas zero-sum
+8 selecoes vivas nas quartas de final
+relatorio atual: docs/reports/validation-2026-07-08.md
 ```
 
 Metricas atuais:
@@ -441,3 +479,5 @@ Por isso, cada numero importante deve ter:
 - output em Parquet;
 - forma de auditoria;
 - validacao posterior.
+
+

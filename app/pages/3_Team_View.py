@@ -21,9 +21,31 @@ sidebar_context()
 stage = load_frame("team_stage_probabilities.parquet")
 group_projection = load_frame("group_projection.parquet")
 team_performance = load_frame("team_performance_adjustments.parquet")
+current_strength = load_frame("team_current_strength.parquet")
 next_matches = load_frame("next_matches.parquet")
 knockout = load_frame("knockout_match_probabilities.parquet")
 performance_audit = load_frame("match_performance_audit.parquet")
+knockout_audit = load_frame("knockout_match_performance_audit.parquet")
+
+if not current_strength.is_empty():
+    team_performance = (
+        team_performance.join(
+            current_strength.select(["team", "knockout_tsi_delta", "tsi_current"]),
+            on="team",
+            how="left",
+        )
+        .with_columns(
+            [
+                pl.col("knockout_tsi_delta").fill_null(0.0),
+                (pl.col("post_groups_tsi_delta") + pl.col("knockout_tsi_delta").fill_null(0.0))
+                .alias("post_groups_tsi_delta"),
+                pl.coalesce(["tsi_current", "tsi_post_groups"]).alias("tsi_post_groups"),
+            ]
+        )
+        .drop(["knockout_tsi_delta", "tsi_current"])
+    )
+if not knockout_audit.is_empty():
+    performance_audit = pl.concat([performance_audit, knockout_audit], how="diagonal_relaxed")
 
 page_header("Selecao", "Forca atual, caminho projetado e desempenho recente")
 
