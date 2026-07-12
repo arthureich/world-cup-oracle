@@ -365,25 +365,33 @@ mata-mata, qual selecao ganhou/perdeu TSI e como isso conversa com as probabilid
 
 ---
 
-## Checkpoint operacional - 2026-07-08
+## Checkpoint operacional - 2026-07-12
 
-A base operacional esta atualizada ate o fim das oitavas de final:
+A base operacional esta atualizada ate o fim das quartas de final:
 
 ```text
-96 partidas completadas
+100 partidas completadas
 72 partidas de grupo
 16 jogos de Round of 32
 8 jogos de Round of 16
+4 jogos de Quarter-final
 ```
 
-O mata-mata agora esta fixado pelos resultados reais ate as quartas:
+O mata-mata agora esta fixado pelos resultados reais ate as semifinais:
 
 ```text
-France x Morocco
-Spain x Belgium
-England x Norway
-Argentina x Switzerland
+France x Spain
+Argentina x England
 ```
+
+Probabilidades principais apos as quartas:
+
+```text
+Semi 101: Spain 51.3% x 48.7% France
+Semi 102: Argentina 55.2% x 44.8% England
+Titulo: Spain 30.1%, France 28.1%, Argentina 24.2%, England 17.6%
+```
+
 
 Os jogos de mata-mata completos entram em `knockout_match_performance.parquet` e
 `knockout_match_performance_audit.parquet`. Para cada confronto, o delta de performance e
@@ -408,11 +416,11 @@ O modelo e validado em cima das partidas ja jogadas.
 Estado atual do dataset operacional:
 
 ```text
-96 partidas completadas no bruto operacional
+100 partidas completadas no bruto operacional
 72 partidas de grupo usadas na validacao 1X2
-24 jogos de mata-mata auditados com deltas zero-sum
-8 selecoes vivas nas quartas de final
-relatorio atual: docs/reports/validation-2026-07-08.md
+28 jogos de mata-mata auditados com deltas zero-sum
+4 selecoes vivas nas semifinais
+relatorio atual: docs/reports/validation-2026-07-12.md
 ```
 
 Metricas atuais:

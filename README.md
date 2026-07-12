@@ -2,22 +2,20 @@
 
 ## Current Tournament Snapshot
 
-Updated through the end of the Round of 16 on 2026-07-08.
+Updated through the end of the quarter-finals on 2026-07-12.
 
 ```text
-Operational completed matches: 96
+Operational completed matches: 100
 Group-stage validation matches: 72
-Knockout matches audited: 24
-Current live teams: 8
+Knockout matches audited: 28
+Current live teams: 4
 ```
 
-Current quarter-finals:
+Current semi-finals:
 
 ```text
-France vs Morocco
-Spain vs Belgium
-England vs Norway
-Argentina vs Switzerland
+France vs Spain
+Argentina vs England
 ```
 
 The model now updates `TSI_current` after completed knockout games, fixes known winners

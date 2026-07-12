@@ -343,22 +343,39 @@ Para buscar novos detalhes FotMob/cache:
 python -m world_cup_oracle.pipeline.update_after_matches --fetch-fotmob
 ```
 
-### Checkpoint 2026-07-08
+### Checkpoint 2026-07-12
 
-Estado operacional apos as oitavas:
-
-```text
-matches.csv: 96 jogos completos
-worldcup_match_team_stats.csv: 192 linhas por selecao/jogo
-worldcup_match_stats.parquet: 192 linhas
-knockout_match_performance.parquet: 48 linhas
-```
-
-Vencedores fixados nas oitavas:
+Estado operacional apos as quartas:
 
 ```text
-France, Morocco, Norway, England, Spain, Belgium, Argentina, Switzerland
+matches.csv: 100 jogos completos
+worldcup_match_team_stats.csv: 200 linhas por selecao/jogo
+worldcup_match_stats.parquet: 200 linhas
+knockout_match_performance.parquet: 56 linhas
 ```
+
+Vencedores fixados nas quartas:
+
+```text
+France, Spain, England, Argentina
+```
+
+Resultados das quartas fixados neste checkpoint:
+
+```text
+France 2-0 Morocco
+Spain 2-1 Belgium
+England 2-1 Norway
+Argentina 3-1 Switzerland
+```
+
+Semifinais projetadas com TSI atual:
+
+```text
+France x Spain
+Argentina x England
+```
+
 
 `Switzerland x Colombia` terminou 0-0 no placar modelado e foi decidido nos penaltis.
 A classificacao usa o vencedor dos penaltis; a performance do jogo continua baseada em

@@ -63,15 +63,15 @@ pytest tests/test_tournament_projection.py tests/test_match_performance_pipeline
 Relatorio de validacao atual:
 
 ```text
-docs/reports/validation-2026-07-08.md
+docs/reports/validation-2026-07-12.md
 ```
 
 Metricas registradas no ultimo run:
 
 ```text
 partidas avaliadas na validacao 1X2: 72
-partidas completadas no operacional: 96
-jogos de mata-mata auditados: 24
+partidas completadas no operacional: 100
+jogos de mata-mata auditados: 28
 Brier Score: 0.509684
 Log Loss: 0.874943
 Expected Calibration Error: 0.142348
@@ -135,28 +135,22 @@ O nucleo estatistico esta pronto para iterar:
 
 ## Checkpoint de torneio
 
-Atualizado em 2026-07-08, com todas as oitavas concluidas.
+Atualizado em 2026-07-12, com todas as oitavas concluidas.
 
-Quartas de final atuais:
+Semifinais atuais:
 
 ```text
-France x Morocco
-Spain x Belgium
-England x Norway
-Argentina x Switzerland
+France x Spain
+Argentina x England
 ```
 
 Top probabilidades de titulo no run atual:
 
 ```text
-Spain 25.4%
-France 20.5%
-Argentina 18.3%
-England 13.6%
-Norway 7.8%
-Morocco 6.6%
-Belgium 4.1%
-Switzerland 3.7%
+Spain 30.1%
+France 28.1%
+Argentina 24.2%
+England 17.6%
 ```
 
 O pipeline agora usa `team_current_strength.parquet` e `attack_defense_current.parquet`
