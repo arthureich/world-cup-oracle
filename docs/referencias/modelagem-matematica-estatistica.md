@@ -476,7 +476,7 @@ Agregacao:
 
 ```text
 ajuste_desempenho = soma(delta_ponderado) / soma(peso_jogo)
-TSI_pos = TSI_pre + 0.30 * ajuste_desempenho
+TSI_pos = TSI_pre + 0.15 * ajuste_desempenho
 ```
 
 Cap:

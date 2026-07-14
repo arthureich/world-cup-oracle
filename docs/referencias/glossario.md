@@ -330,7 +330,7 @@ TSI atualizado após fase de grupos.
 
 ```text
 TSI_pós =
-TSI_pré + 0.30 · ajuste_desempenho
+TSI_pré + 0.15 · ajuste_desempenho
 ```
 
 ---

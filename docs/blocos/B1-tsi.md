@@ -63,7 +63,7 @@ TSI_pós =
 
 Equivalente:
 
-TSI_pós = TSI_pré + 0.30 · ajuste_desempenho
+TSI_pós = TSI_pré + 0.15 · ajuste_desempenho
 
 Limite:
 

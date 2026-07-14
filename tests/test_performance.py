@@ -108,5 +108,5 @@ def test_group_performance_feeds_tsi_post_groups() -> None:
     performance_group = group_performance_tsi(10.0, performance_adjustment=3.0)
 
     assert performance_group == 13.0
-    assert math.isclose(tsi_post_groups(10.0, performance_group - 10.0), 10.9)
+    assert math.isclose(tsi_post_groups(10.0, performance_group - 10.0), 10.45)
 

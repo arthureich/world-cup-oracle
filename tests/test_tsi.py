@@ -41,7 +41,7 @@ def test_tsi_adjustments_are_capped() -> None:
 def test_tsi_post_groups_caps_delta_after_weighting() -> None:
     assert tsi_post_groups(10.0, 100.0) == 12.0
     assert tsi_post_groups(10.0, -100.0) == 8.0
-    assert math.isclose(tsi_post_groups(10.0, 3.0), 10.9)
+    assert math.isclose(tsi_post_groups(10.0, 3.0), 10.45)
 
 
 def test_build_tsi_ratings_keeps_components() -> None:
